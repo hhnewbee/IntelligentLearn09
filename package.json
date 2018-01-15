@@ -4,7 +4,9 @@
   "description": "智能学习，前端",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "devServer": "webpack-dev-server --config ./vProgect/webpack.config.dev.js"
+
   },
   "repository": {
     "type": "git",

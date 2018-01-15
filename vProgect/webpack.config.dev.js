@@ -53,7 +53,7 @@ module.exports= {
         })
     ],
     devServer:{
-        contentBase:'./mui',
+        contentBase:'./dist',
         port:3000
     },
     devtool: '#eval-source-map',
