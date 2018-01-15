@@ -16,5 +16,21 @@
   "bugs": {
     "url": "https://github.com/hhnewbee/IntelligentLearn09/issues"
   },
-  "homepage": "https://github.com/hhnewbee/IntelligentLearn09#readme"
+  "homepage": "https://github.com/hhnewbee/IntelligentLearn09#readme",
+  "dependencies": {
+    "axios": "^0.17.1",
+    "koa": "^2.4.1",
+    "koa-body": "^2.5.0",
+    "koa-cors": "0.0.16",
+    "koa-router": "^7.3.0",
+    "koa-static": "^4.0.2",
+    "mint-ui": "^2.2.13",
+    "moment": "^2.20.1",
+    "mysql2": "^1.5.1",
+    "node-uuid": "^1.4.8",
+    "sequelize": "^4.31.0",
+    "vue": "^2.5.13",
+    "vue-preview": "^1.0.5",
+    "vue-router": "^3.0.1"
+  }
 }
