@@ -3,7 +3,7 @@ const path=require('path');
 const htmlWebpackPlugin=require('html-webpack-plugin');
 module.exports= {
     entry: {
-        main:'./vProgect/src/main.js'
+        main:'./vProgect/src/index.js'
     },
     output:{
         path:path.join(__dirname,'dist'),

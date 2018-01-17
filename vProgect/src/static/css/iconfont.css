@@ -1,0 +1,57 @@
+/*font-awesome的图标*/
+@font-face {
+    font-family: 'FontAwesome';
+    src: url('./fonts/fontawesome-webfont.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+.fa {
+    display: inline-block;
+    font: normal normal normal 14px/1 FontAwesome;
+    font-size: inherit;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.fa-comments-o:before {
+    content: "\f0e6";
+}
+.fa-window-restore:before {
+    content: "\f2d2";
+}
+.fa-arrows-alt:before {
+    content: "\f0b2";
+}
+.fa-minus:before {
+    content: "\f068";
+}
+.fa-search:before {
+    content: "\f002";
+}
+
+
+/*阿里的图标*/
+@font-face {
+    font-family: "iconfont";
+    src: url('./fonts/iconfont.ttf') format('truetype');
+}
+
+.iconfont {
+    font-family:"iconfont" !important;
+    font-size: inherit;
+    font-style:normal;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-pinglun:before {
+    content: "\e603";
+}
+.icon-liaotian:before {
+    content: "\e624";
+}
+.icon-pinglun1:before {
+    content: "\e62c";
+}
+
