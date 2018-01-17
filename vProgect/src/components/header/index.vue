@@ -1,8 +1,5 @@
 <template>
     <div class="header_">
-        <div v-resize="options" class="d">
-            拖拽缩放
-        </div>
         <el-popover
                 ref="popover2"
                 placement="bottom"
@@ -23,22 +20,11 @@
 </template>
 
 <script>
-    //导入element-ui
-    import {Menu, MenuItem, Submenu, Popover, Button} from 'element-ui';
-    import VResize from 'v-resize'
+
     export default {
-        directives: {
-            resize: VResize,
-        },
 
         data() {
             return {
-                options: {
-                    onResize(params) {
-                        console.log(params)
-                    },
-                    directions: ['left', 'top'],
-                },
                 activeIndex: '1',
                 activeIndex2: '1'
             }
@@ -47,19 +33,6 @@
             handleSelect(key, keyPath) {
                 console.log(key, keyPath);
             }
-        }
-        ,
-        components: {
-            [Menu.name]:
-            Menu,
-            [MenuItem.name]:
-            MenuItem,
-            [Submenu.name]:
-            Submenu,
-            [Popover.name]:
-            Popover,
-            [Button.name]:
-            Button
         }
     }
 </script>

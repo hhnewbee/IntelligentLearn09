@@ -29,6 +29,17 @@
 .fa-search:before {
     content: "\f002";
 }
+.fa-heart:before {
+    content: "\f004";
+}
+.fa-comments:before {
+    content: "\f086";
+}
+.fa-reply:before {
+    content: "\f112";
+}
+
+
 
 
 /*阿里的图标*/
