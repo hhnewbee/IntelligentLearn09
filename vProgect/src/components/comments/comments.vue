@@ -28,39 +28,6 @@
                         <div class="content">
                             {{comment.content}}
                         </div>
-                        <div class="l1 l2">
-                            <div class="item">
-                                <div class="portrial">
-                                    <img src="image/shazia-mirza-22259413.jpg">
-                                </div>
-                                <div class="box">
-                                    <div class="head">
-                                        <div class="name">
-                                            name
-                                        </div>
-                                        <div class="tag">
-                                            auto
-                                        </div>
-                                        <div class="time">
-                                            1 hour late
-                                        </div>
-                                        <div class="button">
-                                            <i class="fa fa-heart"></i>
-                                            <span class="count">2</span>
-                                            <i class="strong fa fa-comments"></i>
-                                            <span class="count">3</span>
-                                            <i class="fa fa-reply"></i>
-                                            <span class="count">3</span>
-                                        </div>
-                                    </div>
-                                    <div class="content">
-                                        Lorem ipsum dolor sit amet, consectetur adipisicing edivt. Vedivt omnis animi et iure laudantium
-                                        vitae, praesentium optio, sapiente distinctio illo?
-                                    </div>
-                                </div>
-                                <div class="line-2"></div>
-                            </div>
-                        </div>
                     </div>
                     <div class="line-1"></div>
                 </div>
@@ -101,10 +68,10 @@
                     auto: 0,
                     content: this.control.commentsC
                 });
-                this.control.commentsC='';
+                this.control.commentsC = '';
             },
-            reply(name){
-                this.control.commentsC="@"+name+" "
+            reply(name) {
+                this.control.commentsC = "@" + name + " "
             }
         },
         computed: {
@@ -178,11 +145,6 @@
                             .name {
                                 font-size: 14px;
                                 font-weight: 700;
-                                //作者的颜色
-                                //color: #F44336;
-                                //楼主的颜色
-                                //color:#3F51B5;
-                                //普通颜色
                                 color: #506873;
                             }
                             .tag {
@@ -259,26 +221,6 @@
                         top: 25px;
                         width: 45px;
                         transform: translate(-100%, -50%);
-                    }
-                }
-            }
-            .l2 {
-                .item {
-                    .portrial {
-                        width: 45px;
-                        height: 45px;
-                    }
-                }
-            }
-            .lm {
-                .item {
-                    .line-1 {
-                        top: 25px;
-                        left: -24px;
-                        transform: translateY(-100%);
-                    }
-                    .line-2 {
-                        width: 24px;
                     }
                 }
             }

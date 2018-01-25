@@ -8,7 +8,7 @@ const koaBody = require('koa-body');
 const app = new Koa();
 //跨域请求
 app.use(cors());
-app.use(koaBody());
+app.use(koaBody({ multipart: true }));
 //静态文件请求
 serves.forEach(serve=>{
     app.use(serve);

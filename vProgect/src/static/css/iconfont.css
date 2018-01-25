@@ -38,9 +38,62 @@
 .fa-reply:before {
     content: "\f112";
 }
-
-
-
+.fa-header:before {
+    content: "\f1dc";
+}
+.fa-bold:before {
+    content: "\f032";
+}
+.fa-picture-o:before {
+    content: "\f03e";
+}
+.fa-youtube-play:before {
+    content: "\f16a";
+}
+.fa-undo:before {
+    content: "\f0e2";
+}
+.fa-repeat:before {
+    content: "\f01e";
+}
+.fa-link:before {
+    content: "\f0c1";
+}
+.fa-align-left:before {
+    content: "\f036";
+}
+.fa-align-center:before {
+    content: "\f037";
+}
+.fa-align-right:before {
+    content: "\f038";
+}
+.fa-file-text:before {
+    content: "\f15c";
+}
+.fa-times:before {
+    content: "\f00d";
+}
+.fa-mail-forward:before,
+.fa-share:before {
+    content: "\f064";
+}
+.fa-unlink:before,
+.fa-chain-broken:before {
+    content: "\f127";
+}
+.fa-eraser:before {
+    content: "\f12d";
+}
+.fa-floppy-o:before {
+    content: "\f0c7";
+}
+.fa-chevron-down:before {
+    content: "\f078";
+}
+.fa-chevron-up:before {
+    content: "\f077";
+}
 
 /*阿里的图标*/
 @font-face {
