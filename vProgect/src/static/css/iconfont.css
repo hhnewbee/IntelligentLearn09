@@ -94,6 +94,33 @@
 .fa-chevron-up:before {
     content: "\f077";
 }
+.fa-user:before {
+    content: "\f007";
+}
+.fa-chevron-right:before {
+    content: "\f054";
+}
+.fa-star:before {
+    content: "\f005";
+}
+.fa-paper-plane:before {
+    content: "\f1d8";
+}
+.fa-file-text-o:before {
+    content: "\f0f6";
+}
+.fa-lock:before {
+    content: "\f023";
+}
+.fa-star-o:before {
+    content: "\f006";
+}
+.fa-info-circle:before {
+    content: "\f05a";
+}
+.fa-television:before {
+    content: "\f26c";
+}
 
 /*阿里的图标*/
 @font-face {

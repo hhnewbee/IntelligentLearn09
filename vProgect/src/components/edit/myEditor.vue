@@ -171,7 +171,7 @@
                                 type: 'success',
                                 message: '删除成功!'
                             });
-                            localStorage.clear();
+                            localStorage.removeItem("editContent");
                             this.editarea.innerHTML = `<p><br></p>`;
                         }).catch(() => {
                             this.$message({

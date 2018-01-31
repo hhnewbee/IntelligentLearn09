@@ -5,6 +5,7 @@ import Vue from 'vue';
 import './static/css/index.scss';
 //导入根组件
 import index from './components/index.vue';
+
 //导入element-ui的所有样式
 import 'element-ui/lib/theme-chalk/index.css';
 //全局导入element-ui
@@ -43,7 +44,25 @@ Vue.filter("formatDate",function (value) {
         return Moment(value).format("YYYY-MM-DD");
 });
 
+//路由
+import VueRouter from "vue-router";
+//注测路由
+Vue.use(VueRouter);
+let router=new VueRouter(
+    {
+        linkActiveClass:"mui-active",
+        routes:[
+            {name:"main",path:'/main',component:() => import(/* webpackChunkName: "main.vue" */ './components/main/main.vue'),},
+        ]
+    }
+);
+
+//vuex的配置
+import {store} from '../src/store/store.js';
+
 new Vue({
     el:'#index',
-    render:c=>c(index)
+    store,
+    router,
+    render:c=>c(index),
 });
