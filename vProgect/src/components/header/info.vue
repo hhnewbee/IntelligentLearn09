@@ -115,6 +115,8 @@
         justify-content: center;
         align-items: center;
         .noticeIcon{
+            background-color: inherit;
+            border-color: inherit;
             font-size: 16px;
         }
         img {

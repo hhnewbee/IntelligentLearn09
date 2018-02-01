@@ -9,8 +9,9 @@ import index from './components/index.vue';
 //导入element-ui的所有样式
 import 'element-ui/lib/theme-chalk/index.css';
 //全局导入element-ui
-import ElementUI  from 'element-ui';
-Vue.use(ElementUI );
+import ElementUI from 'element-ui';
+
+Vue.use(ElementUI);
 //导入图标
 import '../src/static/css/iconfont.css';
 
@@ -20,9 +21,9 @@ import Moment from 'moment';
 //导入axios
 import Axios from 'axios';
 //在原型上添加，这样所有的vue对象都可以使用axios
-Vue.prototype.$ajax=Axios;
+Vue.prototype.$ajax = Axios;
 //全局url配置
-Axios.defaults.baseURL='http://localhost:3100/IL09api/';
+Axios.defaults.baseURL = 'http://localhost:3100/IL09api/';
 //axios的拦截器
 let loadingInstance;
 Axios.interceptors.request.use(function (config) {
@@ -40,19 +41,52 @@ Axios.interceptors.response.use(function (config) {
 });
 
 //vue的全局时间拦截器
-Vue.filter("formatDate",function (value) {
-        return Moment(value).format("YYYY-MM-DD");
+Vue.filter("formatDate", function (value) {
+    return Moment(value).format("YYYY-MM-DD");
 });
 
 //路由
 import VueRouter from "vue-router";
 //注测路由
 Vue.use(VueRouter);
-let router=new VueRouter(
+let router = new VueRouter(
     {
-        linkActiveClass:"mui-active",
-        routes:[
-            {name:"main",path:'/main',component:() => import(/* webpackChunkName: "main.vue" */ './components/main/main.vue'),},
+        routes: [
+            {
+                path:'/',
+                redirect:{
+                    name:'ifLogin',
+                }
+            },
+            {
+                name:'ifLogin',
+                path: '/ifLogin',
+                component: () => import(/* webpackChunkName: "ifLogin.vue" */ './components/login/ifLogin.vue'),
+            },
+            {
+                name: "login",
+                path: '/login',
+                component: () => import(/* webpackChunkName: "login.vue" */ './components/login/login.vue'),
+            },
+            {
+                name: "main",
+                path: '/main',
+                component: () => import(/* webpackChunkName: "main.vue" */ './components/main/main.vue'),
+                children: [
+                    {
+                        path: 'recommend',
+                        component:() => import(/* webpackChunkName: "recommend.vue" */ './components/main/recommend.vue'),
+                    },
+                    // {   path: 'recommend/*',
+                    //     component: () => import(/* webpackChunkName: "recommend.vue" */ './components/main/recommend.vue')
+                    // },
+                ]
+            },
+            {
+                name: "course",
+                path: '/course',
+                component: () => import(/* webpackChunkName: "course.vue" */ './components/course/courseMain.vue'),
+            },
         ]
     }
 );
@@ -61,8 +95,8 @@ let router=new VueRouter(
 import {store} from '../src/store/store.js';
 
 new Vue({
-    el:'#index',
+    el: '#index',
     store,
     router,
-    render:c=>c(index),
+    render: c => c(index),
 });

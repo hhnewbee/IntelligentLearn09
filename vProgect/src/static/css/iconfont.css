@@ -121,6 +121,27 @@
 .fa-television:before {
     content: "\f26c";
 }
+.fa-user-o:before {
+    content: "\f2c0";
+}
+.fa-heart-o:before {
+    content: "\f08a";
+}
+.fa-angle-left:before {
+    content: "\f104";
+}
+.fa-bars:before {
+    content: "\f0c9";
+}
+.fa-question-circle-o:before {
+    content: "\f29c";
+}
+.fa-cloud-download:before {
+    content: "\f0ed";
+}
+.fa-play:before {
+    content: "\f04b";
+}
 
 /*阿里的图标*/
 @font-face {
