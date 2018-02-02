@@ -11,14 +11,27 @@
         </div>
         <div class="rightPop">
             <div class="operator">
-                <div class="op chapter light"><em class="fa fa-bars"></em>章节</div>
-                <div class="op discuss"><em class="fa fa-comments-o"></em>讨论</div>
-                <div class="op question"><em class="fa fa-question-circle-o"></em>提问</div>
-                <div class="op down"><em class="fa fa-cloud-download"></em>下载</div>
+                <div class="op chapter" @click="handlerChange(1,$event)">
+                    <em class="fa fa-bars"></em>
+                    章节
+                </div>
+                <div class="op discuss" @click="handlerChange(2,$event)">
+                    <em class="fa fa-comments-o"></em>
+                    讨论
+                </div>
+                <div class="op question" @click="handlerChange(3,$event)">
+                    <em class="fa fa-question-circle-o"></em>
+                    提问
+                </div>
+                <div class="op down" @click="handlerChange(4,$event)">
+                    <em class="fa fa-cloud-download"></em>
+                    下载
+                </div>
             </div>
-            <vue-scrollbar class="my-scrollbar" ref="Scrollbar">
-                <chapter :chapters="chapters"></chapter>
-            </vue-scrollbar>
+            <keep-alive>
+                <component :is="changePop">
+                </component>
+            </keep-alive>
         </div>
     </div>
 </template>
@@ -29,8 +42,8 @@
     import 'video.js/dist/video.min.js'
 
     import chapter from './chapter.vue';
-    import VueScrollbar from 'vue2-scrollbar'
-    import "vue2-scrollbar/dist/style/vue2-scrollbar.css";
+    import discuss from '../communicate/discuss.vue';
+
 
     export default {
         created() {
@@ -42,29 +55,34 @@
         },
         data() {
             return {
-                chapters: {
-                    title: 'vue和webpack下的学习',
-                    intro: '大数据背景下，对我们的系统性能提出了更高的要求，包括我们的数据存储和应用，都提出了性能上的需求，尤其是对IO通信方面，更是成为了大数据通信下的瓶颈，为此，我们对系统进行相关的分布式改造。那么，如何进一步提升我们的系统IO性能呢？这里，就为大家介绍大数据时代构建高可用分布式系统的利器——Netty',
-                    chapter: [
-                        {
-                            t1: ' 第1章 课程介绍 ',
-                            t2: [' 1-1 课程介绍 (06:47)', ' 1-2 课程介绍 (06:47)', ' 1-2 课程介绍 (06:47)']
-                        },
-                        {
-                            t1: ' 第2章 课程介绍 ',
-                            t2: [' 2-1 课程介绍 (06:47)', ' 2-2 课程介绍 (06:47)', ' 2-2 课程介绍 (06:47)']
-                        },
-                        {
-                            t1: ' 第2章 课程介绍 ',
-                            t2: [' 2-1 课程介绍 (06:47)', ' 2-2 课程介绍 (06:47)', ' 2-2 课程介绍 (06:47)']
-                        }
-                    ],
-                }
+                changePop: 'chapter'
             }
         },
         components: {
             chapter,
-            VueScrollbar
+            discuss,
+        },
+        methods: {
+            handlerChange(tar, e) {
+                let t = e.target;
+                t.style.backgroundColor = '#14191e';
+                switch (tar) {
+                    case 1: {
+                        this.changePop = 'chapter';
+                        break;
+                    }
+                    case 2: {
+                        this.changePop = 'discuss';
+                        break;
+                    }
+                }
+                document.querySelectorAll('.op').forEach((el) => {
+                    if (el === t) {
+                    } else {
+                        el.style.backgroundColor = 'rgba(54, 60, 64, 0.67)';
+                    }
+                });
+            }
         }
     }
 </script>
@@ -118,15 +136,6 @@
                         font-size: 15px;
                         width: 50px;
                     }
-                }
-            }
-            .my-scrollbar {
-                background-color: #14191e;
-                max-height: 100%;
-                padding-left:10px;
-                .vue-scrollbar__scrollbar-vertical .scrollbar, .vue-scrollbar__scrollbar-horizontal .scrollbar {
-                    height: 100px;
-                    background: rgba(109, 127, 151, 0.5);
                 }
             }
         }

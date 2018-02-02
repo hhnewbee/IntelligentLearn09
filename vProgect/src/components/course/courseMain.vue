@@ -35,6 +35,7 @@
         display: flex;
         flex-direction: column;
         height: 100%;
+        background-color: #14191e;
         .header{
             padding: 10px 40px;
         }

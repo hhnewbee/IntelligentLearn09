@@ -142,6 +142,10 @@
 .fa-play:before {
     content: "\f04b";
 }
+.fa-users:before {
+    content: "\f0c0";
+}
+
 
 /*阿里的图标*/
 @font-face {
