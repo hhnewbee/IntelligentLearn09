@@ -67,6 +67,7 @@ export default {
             display: flex;
             justify-content: flex-start;
             align-items: center;
+            color: #b5b9bc;
             .fa{
                 font-size: 30px;
                 margin-right: 30px;

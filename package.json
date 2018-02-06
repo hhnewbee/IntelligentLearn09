@@ -23,6 +23,7 @@
     "axios": "^0.17.1",
     "ejs": "^2.5.7",
     "element-ui": "^2.0.11",
+    "highcharts": "^6.0.6",
     "iview": "^2.9.0",
     "koa": "^2.4.1",
     "koa-body": "^2.5.0",
@@ -46,7 +47,8 @@
     "vue-scrollbar": "^1.0.4",
     "vue-ueditor": "^0.1.3",
     "vue2-scrollbar": "0.0.3",
-    "vuex": "^3.0.1"
+    "vuex": "^3.0.1",
+    "ws": "^4.0.0"
   },
   "devDependencies": {
     "autoprefixer-loader": "^3.2.0",

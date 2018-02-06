@@ -145,7 +145,12 @@
 .fa-users:before {
     content: "\f0c0";
 }
-
+.fa-home:before {
+    content: "\f015";
+}
+.fa-file:before {
+    content: "\f15b";
+}
 
 /*阿里的图标*/
 @font-face {

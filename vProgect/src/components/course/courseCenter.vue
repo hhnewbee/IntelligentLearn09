@@ -43,29 +43,31 @@
 
     import chapter from './chapter.vue';
     import discuss from '../communicate/discuss.vue';
-
-
+    import comments from '../comments/comments.vue';
+    import downLoad from '../resources/downLoad.vue'
     export default {
         created() {
             //TODO 获取数据
 //            this.$ajax.get('').then((response)=>{
 //
 //            });
+            //todo 获取discuss的数据，discuss只做展现作用
 
         },
         data() {
             return {
-                changePop: 'chapter'
+                changePop: 'downLoad',
+                discuss:{}
             }
         },
         components: {
             chapter,
             discuss,
+            comments,
+            downLoad
         },
         methods: {
             handlerChange(tar, e) {
-                let t = e.target;
-                t.style.backgroundColor = '#14191e';
                 switch (tar) {
                     case 1: {
                         this.changePop = 'chapter';
@@ -75,9 +77,19 @@
                         this.changePop = 'discuss';
                         break;
                     }
+                    case 3:{
+                        this.changePop = 'comments';
+                        break;
+                    }
+                    case 4:{
+                        this.changePop = 'downLoad';
+                        break;
+                    }
                 }
+                let t = e.currentTarget;
                 document.querySelectorAll('.op').forEach((el) => {
                     if (el === t) {
+                        t.style.backgroundColor = '#14191e';
                     } else {
                         el.style.backgroundColor = 'rgba(54, 60, 64, 0.67)';
                     }
@@ -126,9 +138,6 @@
                     background-color: rgba(54, 60, 64, 0.67);
                     cursor: pointer;
                     margin: 2px 0;
-                    &:hover {
-                        background-color: #14191e;
-                    }
                     em {
                         position: absolute;
                         left: 0;

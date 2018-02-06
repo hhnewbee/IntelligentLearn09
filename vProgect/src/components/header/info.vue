@@ -118,6 +118,7 @@
             background-color: inherit;
             border-color: inherit;
             font-size: 16px;
+            color: inherit;
         }
         img {
             width: 45px;
