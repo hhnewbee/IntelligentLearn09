@@ -60,20 +60,25 @@
                         <div class="fa fa-star-o" style="font-size: 18px"></div>
                         <div style="font-size: 12px">收藏</div>
                     </div>
-                    <div class="item">
+                    <div
+                            @click="handleChoose(2)"
+                            class="item">
                         <div class="fa fa-file-text-o" style="font-size: 18px"></div>
-                        <div style="font-size: 12px">分析</div>
+                        <div style="font-size: 12px">记录</div>
                     </div>
                     <div class="item_">
                         <div class="fa fa-info-circle" style="font-size: 18px"></div>
                         <div style="font-size: 12px">信息</div>
                     </div>
                 </div>
-                <div class="item3" style="margin-top: 10px">
+                <div
+                        @click="handleChoose(5)"
+                        class="item3"
+                        style="margin-top: 10px">
                     <Icon type="android-person" style="font-size: 18px ;margin-right: 5px"></Icon>
                     个人中心
                 </div>
-                <div class="item3" @click="handlerOut">
+                <div class="item3" @click="handleOut">
                     <Icon type="log-out" style="font-size: 18px ;margin-right: 5px" ></Icon>
                     退出登录
                 </div>
@@ -89,14 +94,35 @@
     import { mapMutations } from 'vuex'
 
     export default {
+        created(){
+            //无意义，不能刷新，因为根本就没有加载到该跳转。得放到根节点中才行
+//            this.$router.addRoutes([
+//                {
+//                    name: "userCenter",
+//                    path: '/userCenter',
+//                    component: () => import('../userCenter/userCenter.vue'),
+//                    children: [
+//                        {
+//                            path: 'record',
+//                            component:() => import('../userCenter/record.vue'),
+//                        },
+//                    ]
+//                },
+//            ])
+        },
         methods:{
             ...mapMutations('info',[
                 'setAccount',
             ]),
-            /**
-             * 退出登录
-             */
-            handlerOut(){
+            handleChoose(tar){
+                switch (tar){
+                    case 2:{
+                        this.$router.push({ path: '/userCenter/record#record' });
+                        break;
+                    }
+                }
+            },
+            handleOut(){
                 localStorage.removeItem("ifLogin");
                 this.setAccount('');
                 window.location="http://localhost:3000";
@@ -105,7 +131,7 @@
         components: {
             Option,
             Icon
-        }
+        },
     }
 </script>
 

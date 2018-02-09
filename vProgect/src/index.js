@@ -87,6 +87,17 @@ let router = new VueRouter(
                 path: '/course',
                 component: () => import(/* webpackChunkName: "course.vue" */ './components/course/courseMain.vue'),
             },
+            {
+                name: "userCenter",
+                path: '/userCenter',
+                component: () => import('./components/userCenter/userCenter.vue'),
+                children: [
+                    {
+                        path: 'record',
+                        component:() => import('./components/userCenter/record.vue'),
+                    },
+                ]
+            },
         ]
     }
 );
