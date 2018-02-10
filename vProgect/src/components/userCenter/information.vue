@@ -1,11 +1,12 @@
 <template>
-    <div class="record">
+    <div class="info">
         <el-breadcrumb class="breadcrumb">
-            <el-breadcrumb-item class="el-icon-document"> 我的学习</el-breadcrumb-item>
-            <el-breadcrumb-item>
-                <span @click="handleBackSearch">学习记录</span></el-breadcrumb-item>
             <el-breadcrumb-item
-                    v-if="ifSearch">搜索
+                    class="el-icon-message">
+                <span @click="handleBackSubTitle">&nbsp;我的信息</span>
+            </el-breadcrumb-item>
+            <el-breadcrumb-item
+                    v-if="ifSubTitle">{{subTitle}}
             </el-breadcrumb-item>
         </el-breadcrumb>
         <div class="header">
@@ -37,7 +38,7 @@
                 搜索
             </el-button>
             <el-select
-                    @change="handleChartChange"
+                    @change="handleTypeChange"
                     style="width: 110px;position: absolute;right: 40px"
                     v-model="selectValue"
                     size="small"
@@ -51,7 +52,6 @@
         </div>
         <div class="content">
             <el-table
-                    v-show="ifTable"
                     @select-all="handleSelectAll"
                     @select="handleSelect"
                     :data="tableData"
@@ -65,48 +65,41 @@
                 <el-table-column
                         align='center'
                         prop="date"
-                        label="日期"
+                        label="时间"
                         width="100">
                 </el-table-column>
 
                 <el-table-column
                         align='center'
-                        prop="name"
-                        label="名称"
-                        min-width="120">
+                        prop="position"
+                        label="位置"
+                        :show-overflow-tooltip="true"
+                        width="190">
                 </el-table-column>
 
                 <el-table-column
                         align='center'
-                        label="上传传者"
-                        :show-overflow-tooltip="true"
-                        width="160">
-                    <div slot-scope="scope" style="display: flex;justify-content: center;align-items: center">
-                        <img :src="scope.row.avatar"
-                             style="width: 35px;height: 35px;border-radius: 50%;margin-right: 10px">
-                        <span>{{scope.row.nickName}}</span>
+                        label="类型"
+                        width="220">
+                    <div
+                            slot-scope="scope"
+                            style="display: flex;justify-content: center;align-items: center">
+                        <span>{{scope.row.type1}}&nbsp</span>
+                        <img
+                                :src="scope.row.avatar"
+                                style="width: 20px;height: 20px;border-radius: 50%;">
+                        <span>&nbsp<span style="color:#00abf9;">
+                            {{scope.row.nickName}}</span>&nbsp{{scope.row.type2}}
+                        </span>
                     </div>
                 </el-table-column>
 
                 <el-table-column
                         align='center'
-                        prop="type"
-                        label="类型"
-                        width="50">
-                </el-table-column>
-
-                <el-table-column
-                        align='center'
-                        prop="category"
-                        label="类别"
-                        width="50">
-                </el-table-column>
-
-                <el-table-column
-                        align='center'
-                        prop="newDate"
-                        label="最近访问"
-                        width="100">
+                        prop="content"
+                        label="内容"
+                        :show-overflow-tooltip="true"
+                        min-width="120">
                 </el-table-column>
 
                 <el-table-column
@@ -131,9 +124,6 @@
                     </template>
                 </el-table-column>
             </el-table>
-            <hightChart
-                    v-if="!ifTable"
-                    :chartData="chartData"></hightChart>
         </div>
         <el-pagination
                 style="align-self: center"
@@ -156,68 +146,58 @@
             this.pageData= [
                 {
                     date: '2016-05-03',
-                    name: 'vue与webpack初步1',
-                    type: '课程',
-                    category: '金融',
-                    newDate: '2016-05-03',
+                    position: 'vue与webpack初步1',
+                    type1: '我回答了',
                     avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
                     nickName: 'newbee',
-                    useTime: 100,
-                    accessTimes: 30,
+                    type2: '的问题',
+                    content:'通常情况下，我们用空格键来打出多个空格，而在编写代码时，通过空格键、Tab键以及回车键打出的空格，都会被HTML（超文本标记语言）自动忽略。HTML将这样的键视为空白字符，并显示为单个空白间隔。尽管CSS提供了多种样式的空格和缩进，但是在HTML中也有一些工具可以让你自己定义空格。'
+
+                }, {
+                    date: '2017-05-03',
+                    position: 'vue与webpack初步2',
+                    type1: '我向',
+                    avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
+                    nickName: 'newbee1',
+                    type2: '提问',
+                    content:'插入一个非间断空格。一般来说，无论你按多少次空格键，HTML也只会在单词之间显示一个空白间隔。当你需要插入多个空格时，请输入&nbsp;或&#160;代码。[1] 它们名为“空格占位符”，你输入几个，就能在页面中显示几个空格。\n' +
+                    '之所以称之为非间断空格，是因为这样不会产生换行符。如果你滥用这种空格，浏览器可能无法以整齐易读的方式插入换行符'
+                }, {
+                    date: '2018-05-03',
+                    position: 'vue与webpack初步3',
+                    type1: '',
+                    avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
+                    nickName: 'newbee2',
+                    type2: '回答了我的问题',
+                    content:'插入一个非间断空格。一般来说，无论你按多少次空格键，HTML也只会在单词之间显示一个空白间隔。当你需要插入多个空格时，请输入&nbsp;或&#160;代码。[1] 它们名为“空格占位符”，你输入几个，就能在页面中显示几个空格。\n' +
+                    '之所以称之为非间断空格，是因为这样不会产生换行符。如果你滥用这种空格，浏览器可能无法以整齐易读的方式插入换行符'
                 }, {
                     date: '2016-05-03',
-                    name: 'vue与webpack初步2',
-                    type: '课程',
-                    category: '金融',
-                    newDate: '2017-05-03',
+                    position: 'vue与webpack初步4',
                     avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
-                    nickName: 'newbee',
-                    useTime: 130,
-                    accessTimes: 20,
+                    nickName: 'newbee3',
+                    type1: '',
+                    type2: '向我提问',
+                    content:'插入一个非间断空格。一般来说，无论你按多少次空格键，HTML也只会在单词之间显示一个空白间隔。当你需要插入多个空格时，请输入&nbsp;或&#160;代码。[1] 它们名为“空格占位符”，你输入几个，就能在页面中显示几个空格。\n' +
+                    '之所以称之为非间断空格，是因为这样不会产生换行符。如果你滥用这种空格，浏览器可能无法以整齐易读的方式插入换行符'
                 }, {
-                    date: '2016-05-03',
-                    name: 'vue与webpack初步3',
-                    type: '课程',
-                    category: '金融',
-                    newDate: '2017-05-09',
+                    date: '2016-09-03',
+                    position: 'vue与webpack初步5',
                     avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
-                    nickName: 'newbee',
-                    useTime: 90,
-                    accessTimes: 10,
+                    nickName: '系统信息',
+                    content:'插入一个非间断空格。一般来说，无论你按多少次空格键，HTML也只会在单词之间显示一个空白间隔。当你需要插入多个空格时，请输入&nbsp;或&#160;代码。[1] 它们名为“空格占位符”，你输入几个，就能在页面中显示几个空格。\n' +
+                    '之所以称之为非间断空格，是因为这样不会产生换行符。如果你滥用这种空格，浏览器可能无法以整齐易读的方式插入换行符'
                 }, {
-                    date: '2016-05-03',
-                    name: 'vue与webpack初步4',
-                    type: '课程',
-                    category: '金融',
-                    newDate: '2018-05-03',
+                    date: '2016-09-03',
+                    position: 'vue与webpack初步6',
                     avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
-                    nickName: 'newbee',
-                    useTime: 30,
-                    accessTimes: 20,
-                }, {
-                    date: '2016-05-03',
-                    name: 'vue与webpack初步5',
-                    type: '课程',
-                    category: '金融',
-                    newDate: '2018-05-03',
-                    avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
-                    nickName: 'newbee',
-                    useTime: 10,
-                    accessTimes: 20,
-                }, {
-                    date: '2016-05-03',
-                    name: 'vue与webpack初步6',
-                    type: '课程',
-                    category: '金融',
-                    newDate: '2018-05-03',
-                    avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
-                    nickName: 'newbee',
-                    useTime: 40,
-                    accessTimes: 20,
+                    nickName: '通知信息',
+                    content:'插入一个非间断空格。一般来说，无论你按多少次空格键，HTML也只会在单词之间显示一个空白间隔。当你需要插入多个空格时，请输入&nbsp;或&#160;代码。[1] 它们名为“空格占位符”，你输入几个，就能在页面中显示几个空格。\n' +
+                    '之所以称之为非间断空格，是因为这样不会产生换行符。如果你滥用这种空格，浏览器可能无法以整齐易读的方式插入换行符'
                 }
-            ],
-            //初始化时的表格数据
-            this.tableData = this.pageData;
+            ];
+                //初始化时的表格数据
+                this.tableData = this.pageData;
         },
         data() {
             return {
@@ -232,17 +212,24 @@
                 //是否删除当前列表的所有数据
                 ifSelecttALl: false,
                 //显示搜索状态
-                ifSearch: false,
+                ifSubTitle: false,
                 //搜索的字段
                 searchInput: '',
                 //类型选项的值
-                selectValue: '学习记录',
+                selectValue: '所有信息',
                 //图表类型切换
-                options: [{value: '学习记录'}, {value: '课程详情'}],
-                //图表与表格的切换
-                ifTable: true,
-                //图表的数据
-                chartData:[[],[],[]]
+                options: [
+                    {value: '所有信息'},
+                    {value: '我的问题'},
+                    {value: '我的回答'},
+                    {value: '我的解答'},
+                    {value: '向我提问'},
+                    {value: '给我点赞'},
+                    {value: '系统信息'},
+                    {value: '通知信息'}
+                ],
+                //副标题
+                subTitle:''
             }
         },
 
@@ -337,13 +324,6 @@
                 this.tableData=this.pageData;
             },
             /**
-             * 判断是展示图表还是表格
-             * @param value
-             */
-            handleChartChange(value) {
-                this.ifTable = value !== '课程详情';
-            },
-            /**
              * 搜索数据
              */
             handleSearch() {
@@ -369,13 +349,14 @@
                     accessTimes: 20,
                 },];
                 //展示搜索的数据
-                this.ifSearch = true;
+                this.subTitle='搜索';
+                this.ifSubTitle = true;
             },
             /**
              * 搜索返回
              */
-            handleBackSearch() {
-                this.ifSearch = false;
+            handleBackSubTitle() {
+                this.ifSubTitle = false;
                 this.tableData = this.pageData;
             },
             /**
@@ -385,39 +366,35 @@
             handleSee(row) {
                 console.log(row);
             },
-            /**
-             * 设置图表数据
-             * @param datas
-             */
-            setChartData(){
-                //清空之前的数据
-                this.chartData=[[],[],[]];
-                this.tableData.forEach((data) => {
-                    this.chartData[0].push(data.name);
-                    this.chartData[1].push(data.useTime);
-                    this.chartData[2].push(data.accessTimes);
-                })
+            handleTypeChange(value){
+                switch (value){
+                    case '所有信息':{
+                        this.tableData = this.pageData;
+                        break;
+                    }
+                    case '我的问题':{
+                        this.tableData =[];
+                        this.subTitle='我的问题';
+                        break;
+                    }
+                }
+                //标签的转换
+                this.ifSubTitle = value !== '所有信息';
             }
         },
         watch:{
-            //监听数据变化以更新视图
-            tableData(){
-                //更新图表
-                this.setChartData();
-            },
-            //监听是否有删除的数据以显示删除按钮
+            /**
+             * 监听是否有删除的数据以显示删除按钮
+             */
             delectRows(){
                 this.ifDelect = this.delectRows.length === 0;
             }
         },
-        components: {
-            hightChart:()=>import( './hightChart.vue')
-        }
     }
 </script>
 
 <style scoped lang="scss">
-    .record {
+    .info {
         display: flex;
         flex-direction: column;
         .header {

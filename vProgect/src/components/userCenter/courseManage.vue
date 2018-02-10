@@ -216,8 +216,8 @@
                     accessTimes: 20,
                 }
             ],
-            //初始化时的表格数据
-            this.tableData = this.pageData;
+                //初始化时的表格数据
+                this.tableData = this.pageData;
         },
         data() {
             return {

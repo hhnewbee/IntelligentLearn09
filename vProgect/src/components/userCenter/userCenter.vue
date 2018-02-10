@@ -7,6 +7,7 @@
         <div class="content">
             <div class="sidebar">
                 <el-menu
+                        @select="handleChange"
                         ref="menu"
                         class="menu"
                         default-active="1">
@@ -15,24 +16,24 @@
                         <span slot="title">个人信息</span>
                     </el-menu-item>
                     <el-submenu
-                            index="2">
+                            index="study">
                         <template slot="title">
                             <i class="el-icon-document"></i>
                             <span>我的学习</span>
                         </template>
                         <el-menu-item-group>
                             <el-menu-item
-                                    index="2-1">
+                                    index="record">
                                 学习记录
                             </el-menu-item>
-                            <el-menu-item index="2-2">学习状态</el-menu-item>
+                            <el-menu-item index="status">学习状态</el-menu-item>
                         </el-menu-item-group>
                     </el-submenu>
-                    <el-menu-item index="3">
+                    <el-menu-item index="collection">
                         <i class="el-icon-star-off"></i>
                         <span slot="title">我的收藏</span>
                     </el-menu-item>
-                    <el-menu-item index="4">
+                    <el-menu-item index="information">
                         <i class="el-icon-message"></i>
                         <span slot="title">我的信息</span>
                     </el-menu-item>
@@ -61,10 +62,25 @@
         mounted(){
             //路由到达时判断模拟点击的选择（用hash）
             let target=this.$route.hash;
+            //打开选项的item
             switch (target){
                 case '#record':{
-                    this.$refs.menu.open('2');
-                    this.$refs.menu.activeIndex="2-1"
+                    this.$refs.menu.open('study');
+                    this.$refs.menu.activeIndex="record";
+                    break;
+                }
+                case '#status':{
+                    this.$refs.menu.open('study');
+                    this.$refs.menu.activeIndex="status";
+                    break;
+                }
+                case '#collection':{
+                    this.$refs.menu.activeIndex="collection";
+                    break;
+                }
+                case '#information':{
+                    this.$refs.menu.activeIndex="information";
+                    break;
                 }
             }
 
@@ -76,7 +92,19 @@
             handleChange(tar){
                 switch (tar){
                     case "record":{
-
+                        this.$router.push({path:'/userCenter/record/#record'});
+                        break;
+                    }
+                    case "status":{
+                        this.$router.push({path:'/userCenter/status/#status'});
+                        break;
+                    }
+                    case "collection":{
+                        this.$router.push({path:'/userCenter/collection/#collection'});
+                        break;
+                    }
+                    case "information":{
+                        this.$router.push({path:'/userCenter/information/#information'});
                         break;
                     }
                 }

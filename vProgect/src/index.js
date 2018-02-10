@@ -96,6 +96,18 @@ let router = new VueRouter(
                         path: 'record',
                         component:() => import('./components/userCenter/record.vue'),
                     },
+                    {
+                        path: 'status',
+                        component:() => import('./components/userCenter/status.vue'),
+                    },
+                    {
+                        path: 'collection',
+                        component:() => import('./components/userCenter/collection.vue'),
+                    },
+                    {
+                        path: 'information',
+                        component:() => import('./components/userCenter/information.vue'),
+                    }
                 ]
             },
         ]

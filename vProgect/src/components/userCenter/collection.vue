@@ -1,9 +1,9 @@
 <template>
-    <div class="record">
+    <div class="collection">
         <el-breadcrumb class="breadcrumb">
-            <el-breadcrumb-item class="el-icon-document"> 我的学习</el-breadcrumb-item>
-            <el-breadcrumb-item>
-                <span @click="handleBackSearch">学习记录</span></el-breadcrumb-item>
+            <el-breadcrumb-item class="el-icon-star-off">
+                <span @click="handleBackSearch"> 我的收藏</span>
+            </el-breadcrumb-item>
             <el-breadcrumb-item
                     v-if="ifSearch">搜索
             </el-breadcrumb-item>
@@ -216,8 +216,8 @@
                     accessTimes: 20,
                 }
             ],
-            //初始化时的表格数据
-            this.tableData = this.pageData;
+                //初始化时的表格数据
+                this.tableData = this.pageData;
         },
         data() {
             return {
@@ -417,7 +417,7 @@
 </script>
 
 <style scoped lang="scss">
-    .record {
+    .collection {
         display: flex;
         flex-direction: column;
         .header {
