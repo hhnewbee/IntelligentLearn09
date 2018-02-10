@@ -78,12 +78,13 @@
                 </el-table-column>
 
                 <el-table-column
-                        align='center'
+                        align='left'
                         label="类型"
+                        header-align="center"
                         width="220">
                     <div
                             slot-scope="scope"
-                            style="display: flex;justify-content: center;align-items: center">
+                            style="display: flex;align-items: center">
                         <span>{{scope.row.type1}}&nbsp</span>
                         <img
                                 :src="scope.row.avatar"

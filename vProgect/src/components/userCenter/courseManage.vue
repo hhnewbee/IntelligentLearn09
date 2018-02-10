@@ -1,9 +1,14 @@
 <template>
     <div class="record">
         <el-breadcrumb class="breadcrumb">
-            <el-breadcrumb-item class="el-icon-document"> 我的学习</el-breadcrumb-item>
+            <el-breadcrumb-item class="el-icon-setting">
+                &nbsp;后台管理
+            </el-breadcrumb-item>
             <el-breadcrumb-item>
-                <span @click="handleBackSearch">学习记录</span></el-breadcrumb-item>
+                <span @click="handleBackSearch">
+                    课程管理
+                </span>
+            </el-breadcrumb-item>
             <el-breadcrumb-item
                     v-if="ifSearch">搜索
             </el-breadcrumb-item>
@@ -48,6 +53,12 @@
                         :value="item.value">
                 </el-option>
             </el-select>
+            <el-button
+                    type="success"
+                    style="margin-left: 10px"
+                    size="medium">
+                上传课程
+            </el-button>
         </div>
         <div class="content">
             <el-table
@@ -65,8 +76,8 @@
                 <el-table-column
                         align='center'
                         prop="date"
-                        label="日期"
-                        width="100">
+                        label="上传时间"
+                        width="150">
                 </el-table-column>
 
                 <el-table-column
@@ -78,35 +89,32 @@
 
                 <el-table-column
                         align='center'
-                        label="上传传者"
-                        :show-overflow-tooltip="true"
-                        width="160">
-                    <div slot-scope="scope" style="display: flex;justify-content: center;align-items: center">
-                        <img :src="scope.row.avatar"
-                             style="width: 35px;height: 35px;border-radius: 50%;margin-right: 10px">
-                        <span>{{scope.row.nickName}}</span>
-                    </div>
-                </el-table-column>
-
-                <el-table-column
-                        align='center'
                         prop="type"
                         label="类型"
-                        width="50">
+                        width="60">
                 </el-table-column>
 
                 <el-table-column
                         align='center'
                         prop="category"
                         label="类别"
-                        width="50">
+                        width="60">
                 </el-table-column>
 
                 <el-table-column
                         align='center'
-                        prop="newDate"
-                        label="最近访问"
-                        width="100">
+                        label="课程状态"
+                        width="200">
+                    <div slot-scope="scope">
+                        <el-switch
+                                v-model="scope.row.status"
+                                active-text="可以观看"
+                                inactive-text="不可观看"
+                                active-color="#13ce66"
+                                inactive-color="#ff4949">
+                        </el-switch>
+
+                    </div>
                 </el-table-column>
 
                 <el-table-column
@@ -159,21 +167,19 @@
                     name: 'vue与webpack初步1',
                     type: '课程',
                     category: '金融',
-                    newDate: '2016-05-03',
-                    avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
-                    nickName: 'newbee',
-                    useTime: 100,
-                    accessTimes: 30,
+                    status:true,
+                    chartData:{
+                        accessTimes:'30',
+                        likes:'22',
+                        collection:'20',
+                        question:'11'
+                    }
                 }, {
                     date: '2016-05-03',
                     name: 'vue与webpack初步2',
                     type: '课程',
                     category: '金融',
-                    newDate: '2017-05-03',
-                    avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
-                    nickName: 'newbee',
-                    useTime: 130,
-                    accessTimes: 20,
+                    status:true
                 }, {
                     date: '2016-05-03',
                     name: 'vue与webpack初步3',

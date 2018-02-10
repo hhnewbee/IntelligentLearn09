@@ -37,13 +37,15 @@
                         <i class="el-icon-message"></i>
                         <span slot="title">我的信息</span>
                     </el-menu-item>
-                    <el-submenu index="5">
+                    <el-submenu index="backManage">
                         <template slot="title">
                             <i class="el-icon-setting"></i>
                             <span>后台管理</span>
                         </template>
                         <el-menu-item-group>
-                            <el-menu-item index="5-1">课程管理</el-menu-item>
+                            <el-menu-item index="courseManage">
+                                课程管理
+                            </el-menu-item>
                             <el-menu-item index="5-2">文章管理</el-menu-item>
                             <el-menu-item index="5-3">用户管理</el-menu-item>
                         </el-menu-item-group>
@@ -60,7 +62,7 @@
 <script>
     export default {
         mounted(){
-            //路由到达时判断模拟点击的选择（用hash）
+            //路由到达时判断模拟点击的选择（用hash）的选项
             let target=this.$route.hash;
             //打开选项的item
             switch (target){
@@ -80,6 +82,11 @@
                 }
                 case '#information':{
                     this.$refs.menu.activeIndex="information";
+                    break;
+                }
+                case '#courseManage':{
+                    this.$refs.menu.open('backManage');
+                    this.$refs.menu.activeIndex="courseManage";
                     break;
                 }
             }
@@ -105,6 +112,10 @@
                     }
                     case "information":{
                         this.$router.push({path:'/userCenter/information/#information'});
+                        break;
+                    }
+                    case "courseManage":{
+                        this.$router.push({path:'/userCenter/courseManage/#courseManage'});
                         break;
                     }
                 }

@@ -107,6 +107,10 @@ let router = new VueRouter(
                     {
                         path: 'information',
                         component:() => import('./components/userCenter/information.vue'),
+                    },
+                    {
+                        path: 'courseManage',
+                        component:() => import('./components/userCenter/courseManage.vue'),
                     }
                 ]
             },
