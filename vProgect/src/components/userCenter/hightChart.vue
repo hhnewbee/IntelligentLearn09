@@ -9,8 +9,7 @@
     import Highcharts from 'highcharts/highcharts';
 
     export default {
-        props: ["chartData","chartOptions"],
-        name: 'highcharts',
+        props: ["chartData"],
         data() {
             return {
                 chart: null,

@@ -42,13 +42,23 @@
                             <i class="el-icon-setting"></i>
                             <span>后台管理</span>
                         </template>
+
                         <el-menu-item-group>
+
                             <el-menu-item index="courseManage">
                                 课程管理
                             </el-menu-item>
-                            <el-menu-item index="5-2">文章管理</el-menu-item>
-                            <el-menu-item index="5-3">用户管理</el-menu-item>
+
+                            <el-menu-item index="articleManage">
+                                文章管理
+                            </el-menu-item>
+
+                            <el-menu-item index="userManage">
+                                用户管理
+                            </el-menu-item>
+
                         </el-menu-item-group>
+
                     </el-submenu>
                 </el-menu>
             </div>
@@ -61,32 +71,42 @@
 
 <script>
     export default {
-        mounted(){
+        mounted() {
             //路由到达时判断模拟点击的选择（用hash）的选项
-            let target=this.$route.hash;
+            let target = this.$route.hash;
             //打开选项的item
-            switch (target){
-                case '#record':{
+            switch (target) {
+                case '#record': {
                     this.$refs.menu.open('study');
-                    this.$refs.menu.activeIndex="record";
+                    this.$refs.menu.activeIndex = "record";
                     break;
                 }
-                case '#status':{
+                case '#status': {
                     this.$refs.menu.open('study');
-                    this.$refs.menu.activeIndex="status";
+                    this.$refs.menu.activeIndex = "status";
                     break;
                 }
-                case '#collection':{
-                    this.$refs.menu.activeIndex="collection";
+                case '#collection': {
+                    this.$refs.menu.activeIndex = "collection";
                     break;
                 }
-                case '#information':{
-                    this.$refs.menu.activeIndex="information";
+                case '#information': {
+                    this.$refs.menu.activeIndex = "information";
                     break;
                 }
-                case '#courseManage':{
+                case '#articleManage': {
                     this.$refs.menu.open('backManage');
-                    this.$refs.menu.activeIndex="courseManage";
+                    this.$refs.menu.activeIndex = "articleManage";
+                    break;
+                }
+                case '#courseManage': {
+                    this.$refs.menu.open('backManage');
+                    this.$refs.menu.activeIndex = "courseManage";
+                    break;
+                }
+                case '#userManage': {
+                    this.$refs.menu.open('backManage');
+                    this.$refs.menu.activeIndex = "userManage";
                     break;
                 }
             }
@@ -95,27 +115,35 @@
         data() {
             return {}
         },
-        methods:{
-            handleChange(tar){
-                switch (tar){
-                    case "record":{
-                        this.$router.push({path:'/userCenter/record/#record'});
+        methods: {
+            handleChange(tar) {
+                switch (tar) {
+                    case "record": {
+                        this.$router.push({path: '/userCenter/record/#record'});
                         break;
                     }
-                    case "status":{
-                        this.$router.push({path:'/userCenter/status/#status'});
+                    case "status": {
+                        this.$router.push({path: '/userCenter/status/#status'});
                         break;
                     }
-                    case "collection":{
-                        this.$router.push({path:'/userCenter/collection/#collection'});
+                    case "collection": {
+                        this.$router.push({path: '/userCenter/collection/#collection'});
                         break;
                     }
-                    case "information":{
-                        this.$router.push({path:'/userCenter/information/#information'});
+                    case "information": {
+                        this.$router.push({path: '/userCenter/information/#information'});
                         break;
                     }
-                    case "courseManage":{
-                        this.$router.push({path:'/userCenter/courseManage/#courseManage'});
+                    case "courseManage": {
+                        this.$router.push({path: '/userCenter/courseManage/#courseManage'});
+                        break;
+                    }
+                    case "articleManage": {
+                        this.$router.push({path: '/userCenter/articleManage/#articleManage'});
+                        break;
+                    }
+                    case "userManage": {
+                        this.$router.push({path: '/userCenter/userManage/#userManage'});
                         break;
                     }
                 }

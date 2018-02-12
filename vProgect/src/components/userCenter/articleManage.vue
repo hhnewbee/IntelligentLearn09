@@ -6,7 +6,7 @@
             </el-breadcrumb-item>
             <el-breadcrumb-item>
                 <span @click="handleBackSearch">
-                    课程管理
+                    文章管理
                 </span>
             </el-breadcrumb-item>
             <el-breadcrumb-item
@@ -55,7 +55,7 @@
             </el-select>
             <el-button
                     type="success"
-                    style="margin-left: 10px"
+                    style="margin-left: 10px;width:80px;padding: 10px 10px"
                     size="medium">
                 上传课程
             </el-button>

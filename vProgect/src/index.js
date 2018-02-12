@@ -111,6 +111,14 @@ let router = new VueRouter(
                     {
                         path: 'courseManage',
                         component:() => import('./components/userCenter/courseManage.vue'),
+                    },
+                    {
+                        path: 'articleManage',
+                        component:() => import('./components/userCenter/articleManage.vue'),
+                    },
+                    {
+                        path: 'userManage',
+                        component:() => import('./components/userCenter/userManage.vue'),
                     }
                 ]
             },
