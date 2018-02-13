@@ -75,7 +75,15 @@ let router = new VueRouter(
                 children: [
                     {
                         path: 'recommend',
-                        component:() => import(/* webpackChunkName: "recommend.vue" */ './components/main/recommend.vue'),
+                        component:() => import('./components/main/recommend.vue'),
+                    },
+                    {
+                        path: 'articlesPage',
+                        component:() => import('./components/main/articlesPage.vue'),
+                    },
+                    {
+                        path: 'coursesPage',
+                        component:() => import('./components/main/coursesPage.vue'),
                     },
                     // {   path: 'recommend/*',
                     //     component: () => import(/* webpackChunkName: "recommend.vue" */ './components/main/recommend.vue')
@@ -92,6 +100,10 @@ let router = new VueRouter(
                 path: '/userCenter',
                 component: () => import('./components/userCenter/userCenter.vue'),
                 children: [
+                    {
+                        path: 'userInfo',
+                        component:() => import('./components/userCenter/userInfo.vue'),
+                    },
                     {
                         path: 'record',
                         component:() => import('./components/userCenter/record.vue'),

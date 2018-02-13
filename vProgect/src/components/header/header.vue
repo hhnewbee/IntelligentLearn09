@@ -1,15 +1,21 @@
 <template>
     <div class="header_">
-        <el-menu default-active="1"
-                 class="el-menu-demo"
-                 mode="horizontal"
-                 @select="menuSelect">
+        <el-menu
+                :defaultActive="$route.path"
+                ref="menus"
+                class="el-menu-demo"
+                mode="horizontal"
+                :router='true'
+                @select="menuSelect">
             <div class="img" style="float:left;margin-right:100px;margin-left: 35px">
                 <img src="../../static/imgs/avatar.jpg">
             </div>
-            <el-menu-item index="1">首页</el-menu-item>
-            <el-menu-item index="2">课程</el-menu-item>
-            <el-menu-item index="3">社区</el-menu-item>
+            <el-menu-item index="/main/recommend">首页</el-menu-item>
+            <el-menu-item index="/main/coursesPage">课程</el-menu-item>
+            <el-menu-item
+                    index="/main/articlesPage">
+                社区
+            </el-menu-item>
             <auto-complete
                     v-model="search.value"
                     icon="ios-search"
@@ -36,10 +42,10 @@
                 </Option>
                 <Col class="demo-spin-col"
                      v-if="search.longding">
-                    <Spin fix>
-                        <Icon type="load-c" size=18       class="demo-spin-icon-load">
-                        </Icon>
-                    </Spin>
+                <Spin fix>
+                    <Icon type="load-c" size=18             class="demo-spin-icon-load">
+                    </Icon>
+                </Spin>
                 </Col>
             </auto-complete>
             <div class="img"

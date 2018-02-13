@@ -10,8 +10,8 @@
                         @select="handleChange"
                         ref="menu"
                         class="menu"
-                        default-active="1">
-                    <el-menu-item index="1">
+                        default-active="userInfo">
+                    <el-menu-item index="userInfo">
                         <i class="el-icon-edit-outline"></i>
                         <span slot="title">个人信息</span>
                     </el-menu-item>
@@ -76,6 +76,10 @@
             let target = this.$route.hash;
             //打开选项的item
             switch (target) {
+                case '#userInfo': {
+                    this.$refs.menu.activeIndex = "userInfo";
+                    break;
+                }
                 case '#record': {
                     this.$refs.menu.open('study');
                     this.$refs.menu.activeIndex = "record";
@@ -118,6 +122,10 @@
         methods: {
             handleChange(tar) {
                 switch (tar) {
+                    case "userInfo": {
+                        this.$router.push({path: '/userCenter/userInfo/#userInfo'});
+                        break;
+                    }
                     case "record": {
                         this.$router.push({path: '/userCenter/record/#record'});
                         break;

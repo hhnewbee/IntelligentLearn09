@@ -1,10 +1,12 @@
 <template>
-    <el-container>
-        <header_></header_>
-        <el-main class="elmain">
+    <div class="main">
+        <header_ class="header_"></header_>
+        <!--占据空间使用-->
+        <div class="freeContent"></div>
+        <div class="elmain">
             <router-view></router-view>
-        </el-main>
-    </el-container>
+        </div>
+    </div>
 </template>
 
 <script>
@@ -17,8 +19,17 @@ export default {
 </script>
 
 <style scoped lang="scss">
-    .elmain{
-        margin-top: 70px
+    .main{
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        .freeContent{
+            height: 70px;
+        }
+        .elmain{
+            height: 1%;
+            flex-grow: 1;
+        }
     }
 </style>
 

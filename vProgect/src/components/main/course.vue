@@ -19,7 +19,7 @@
 
 <style scoped lang="scss">
     .course{
-        margin: 10px 0;
+        margin: 20px 0;
         display: flex;
         flex-direction: column;
         width: 200px;

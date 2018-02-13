@@ -11,13 +11,14 @@
 
 <style scoped lang="scss">
     .footer{
-        height: 50px;
+        height: 80px;
         cursor: default;
-        background-color: #14191e;
+        background-color: #2E3340;
         display: flex;
         justify-content: center;
         align-items: center;
         .text{
+            color: #b0bcd0;
         }
     }
 </style>

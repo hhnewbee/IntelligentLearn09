@@ -24,7 +24,6 @@
             <div class="likes fa fa-heart ic"> 22</div>
             <div class="comments fa fa-comments ic"> 22</div>
             <div class="collection fa fa-star ic"> 22</div>
-            <div class="share fa fa-paper-plane ic"> 22</div>
         </div>
     </div>
 </template>
@@ -35,7 +34,7 @@
 
 <style scoped lang="scss">
     .article{
-        box-shadow: 4px 4px 10px rgba(136, 136, 136, 0.51);
+        box-shadow: 2px 2px 10px rgba(136, 136, 136, 0.51);
         margin-top: 20px;
         padding: 10px;
         .name{
