@@ -1,11 +1,13 @@
 <template>
     <div class="comments">
-        <!--问题-->
+        <!--问题items-->
         <vue-scrollbar
                 class="my-scrollbar"
                 v-show="!ifList">
             <div class="commentsContent">
-                <div class="item" v-for="(comment,index) in commentItems" :key="index">
+                <div
+                        class="item"
+                        v-for="(comment,index) in commentItems" :key="index">
                     <div class="head">
                         <img :src="comment.avatar">
                         <div class="name">
@@ -42,7 +44,7 @@
                 </div>
             </div>
         </vue-scrollbar>
-        <!--对话列表-->
+        <!--对话列表items-->
         <div
                 v-for="area in commentArea"
                 v-show="area.show"

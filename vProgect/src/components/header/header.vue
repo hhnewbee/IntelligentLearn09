@@ -3,7 +3,7 @@
         <el-menu
                 :defaultActive="$route.path"
                 ref="menus"
-                class="el-menu-demo"
+                class="elMenu"
                 mode="horizontal"
                 :router='true'
                 @select="menuSelect">
@@ -14,7 +14,11 @@
             <el-menu-item index="/main/coursesPage">课程</el-menu-item>
             <el-menu-item
                     index="/main/articlesPage">
-                社区
+                文章
+            </el-menu-item>
+            <el-menu-item
+                    index="/main/questionPage">
+                问答
             </el-menu-item>
             <auto-complete
                     v-model="search.value"
@@ -131,6 +135,11 @@
         top: 0;
         width: 100%;
         z-index: 100;
+        .elMenu{
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: nowrap;
+        }
         .img {
             display: flex;
             justify-content: center;

@@ -11,14 +11,16 @@
 
 <style scoped lang="scss">
     .footer{
-        height: 80px;
-        cursor: default;
-        background-color: #2E3340;
         display: flex;
         justify-content: center;
         align-items: center;
+        background-color: #2E3340;
+        cursor: pointer;
         .text{
             color: #b0bcd0;
+            &:hover{
+                color: #d7e6fe;
+            }
         }
     }
 </style>

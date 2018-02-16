@@ -1,34 +1,34 @@
 <template>
     <div class="main">
         <header_ class="header_"></header_>
-        <!--占据空间使用-->
+        <!--用来占据空间的-->
         <div class="freeContent"></div>
-        <div class="elmain">
-            <router-view></router-view>
-        </div>
+        <!--主体内容-->
+        <router-view></router-view>
+        <footer_ class="footer"></footer_>
     </div>
 </template>
 
 <script>
-import header_ from '../header/header.vue';
-export default {
-    components:{
-        header_
+    import header_ from '../header/header.vue';
+    import footer_ from '../footer/footer.vue';
+
+    export default {
+        components: {
+            header_,
+            footer_
+        }
     }
-}
 </script>
 
 <style scoped lang="scss">
-    .main{
-        display: flex;
-        flex-direction: column;
+    .main {
         height: 100%;
-        .freeContent{
-            height: 70px;
+        .freeContent {
+            height: 62px;
         }
-        .elmain{
-            height: 1%;
-            flex-grow: 1;
+        .footer {
+            height: 80px;
         }
     }
 </style>

@@ -85,6 +85,10 @@ let router = new VueRouter(
                         path: 'coursesPage',
                         component:() => import('./components/main/coursesPage.vue'),
                     },
+                    {
+                        path: 'questionPage',
+                        component:() => import('./components/main/questionPage.vue'),
+                    },
                     // {   path: 'recommend/*',
                     //     component: () => import(/* webpackChunkName: "recommend.vue" */ './components/main/recommend.vue')
                     // },

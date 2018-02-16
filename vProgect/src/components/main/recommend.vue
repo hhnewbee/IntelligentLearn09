@@ -33,7 +33,7 @@
 
 <script>
 import course from '../main/course.vue';
-import article_ from '../main/article.vue';
+import article_ from './articleItem.vue';
 export default {
     methods:{
         handlerCourse(){

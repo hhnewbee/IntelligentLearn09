@@ -11,7 +11,7 @@
 
 <script>
     import page from './page.vue';
-    import article_ from './article.vue'
+    import article_ from './articleItem.vue'
     export default {
         components: {
             page,

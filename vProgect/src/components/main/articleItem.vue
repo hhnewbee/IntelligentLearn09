@@ -34,9 +34,9 @@
 
 <style scoped lang="scss">
     .article{
-        box-shadow: 2px 2px 10px rgba(136, 136, 136, 0.51);
-        margin-top: 20px;
         padding: 10px;
+        margin-top: 20px;
+        box-shadow: 2px 2px 10px rgba(136, 136, 136, 0.51);
         .name{
             font-size: 19px;
             font-weight: bold;

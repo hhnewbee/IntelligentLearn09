@@ -31,12 +31,10 @@
             </div>
             <div class="foooter"></div>
         </div>
-        <footer_></footer_>
     </div>
 </template>
 
 <script>
-    import footer_ from '../footer/footer.vue';
     export default {
         data() {
             return {
@@ -89,9 +87,6 @@
                 })
             }
         },
-        components:{
-            footer_
-        }
     }
 </script>
 
