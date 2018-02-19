@@ -1,0 +1,57 @@
+<template>
+    <div class="rightItem">
+        <div class="itemName">
+            {{option.title}}
+        </div>
+        <div v-if="contents.length===0" style="text-align: center;color: #9b9b9b">暂无</div>
+        <div
+                class="content"
+                v-for="content in contents">
+            <div class="contentText">{{content.content}}</div>
+            <div class="el-icon-time">&nbsp;{{content.time}}</div>
+        </div>
+    </div>
+</template>
+
+<script>
+export default {
+    props:['option','contents']
+}
+</script>
+
+<style scoped lang="scss">
+    .rightItem {
+        margin-top: 20px;
+        .itemName {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 300px;
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ebebeb;
+            font-size: 18px;
+            font-weight: bold;
+            color: #8fdf09;
+        }
+        .content {
+            margin-bottom: 15px;
+            color: #022856;
+            .contentText {
+                max-width: 300px;
+                margin-right: 10px;
+                margin-bottom: 5px;
+                font-size: 15px;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                overflow: hidden;
+                cursor: pointer;
+                &:hover {
+                    color: #0457bb;
+                }
+
+            }
+        }
+    }
+</style>
+

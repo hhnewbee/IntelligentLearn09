@@ -53,13 +53,13 @@ let router = new VueRouter(
     {
         routes: [
             {
-                path:'/',
-                redirect:{
-                    name:'ifLogin',
+                path: '/',
+                redirect: {
+                    name: 'ifLogin',
                 }
             },
             {
-                name:'ifLogin',
+                name: 'ifLogin',
                 path: '/ifLogin',
                 component: () => import(/* webpackChunkName: "ifLogin.vue" */ './components/login/ifLogin.vue'),
             },
@@ -75,19 +75,27 @@ let router = new VueRouter(
                 children: [
                     {
                         path: 'recommend',
-                        component:() => import('./components/main/recommend.vue'),
+                        component: () => import('./components/main/recommend.vue'),
                     },
                     {
                         path: 'articlesPage',
-                        component:() => import('./components/main/articlesPage.vue'),
+                        component: () => import('./components/main/articlesPage.vue'),
                     },
                     {
                         path: 'coursesPage',
-                        component:() => import('./components/main/coursesPage.vue'),
+                        component: () => import('./components/main/coursesPage.vue'),
                     },
                     {
                         path: 'questionPage',
-                        component:() => import('./components/main/questionPage.vue'),
+                        component: () => import('./components/main/questionPage.vue'),
+                    },
+                    {
+                        path: 'questionPage/question',
+                        component: () => import('./components/question/question.vue'),
+                    },
+                    {
+                        path: 'articlePage/article',
+                        component: () => import('./components/article/article.vue'),
                     },
                     // {   path: 'recommend/*',
                     //     component: () => import(/* webpackChunkName: "recommend.vue" */ './components/main/recommend.vue')
@@ -106,35 +114,35 @@ let router = new VueRouter(
                 children: [
                     {
                         path: 'userInfo',
-                        component:() => import('./components/userCenter/userInfo.vue'),
+                        component: () => import('./components/userCenter/userInfo.vue'),
                     },
                     {
                         path: 'record',
-                        component:() => import('./components/userCenter/record.vue'),
+                        component: () => import('./components/userCenter/record.vue'),
                     },
                     {
                         path: 'status',
-                        component:() => import('./components/userCenter/status.vue'),
+                        component: () => import('./components/userCenter/status.vue'),
                     },
                     {
                         path: 'collection',
-                        component:() => import('./components/userCenter/collection.vue'),
+                        component: () => import('./components/userCenter/collection.vue'),
                     },
                     {
                         path: 'information',
-                        component:() => import('./components/userCenter/information.vue'),
+                        component: () => import('./components/userCenter/information.vue'),
                     },
                     {
                         path: 'courseManage',
-                        component:() => import('./components/userCenter/courseManage.vue'),
+                        component: () => import('./components/userCenter/courseManage.vue'),
                     },
                     {
                         path: 'articleManage',
-                        component:() => import('./components/userCenter/articleManage.vue'),
+                        component: () => import('./components/userCenter/articleManage.vue'),
                     },
                     {
                         path: 'userManage',
-                        component:() => import('./components/userCenter/userManage.vue'),
+                        component: () => import('./components/userCenter/userManage.vue'),
                     }
                 ]
             },

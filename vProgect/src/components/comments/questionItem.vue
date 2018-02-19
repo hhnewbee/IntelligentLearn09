@@ -12,7 +12,9 @@
                     v-if="itemContent.pic"
                     :src="itemContent.pic"
                     class="media">
-            <span class="text">{{itemContent.content}}</span>
+            <span
+                    @click="handleIn"
+                    class="text">{{itemContent.content}}</span>
         </div>
         <div class="info">
             <div class="likes fa fa-heart ic">&nbsp;{{itemContent.likes}}人喜欢</div>
@@ -24,7 +26,12 @@
 
 <script>
 export default{
-    props:['itemContent']
+    props:['itemContent'],
+    methods:{
+        handleIn(id){
+            window.open("http://localhost:3000/#/main/questionPage/question");
+        }
+    }
 }
 </script>
 
@@ -70,22 +77,17 @@ export default{
                 border-radius: 5px
             }
             .text{
-                max-height: 105px;
                 width: 1%;
+                max-height: 105px;
                 flex-grow: 1;
                 font-size: 15px;
                 font-weight:400;
                 line-height:1.67;
                 color: #000000;
                 overflow:hidden;
-                .more{
-                    padding-right: 8px;
-                    cursor: pointer;
-                    text-align: center;
-                    color: #175199;
-                    &:hover{
-                        color: #00abf9;
-                    }
+                cursor: pointer;
+                &:hover{
+                    color: #6a6a6a
                 }
             }
         }
@@ -95,9 +97,13 @@ export default{
             justify-content: flex-start;
             align-items: center;
             font-size: 13px;
+            cursor: pointer;
             .ic{
                 font-size: 14px;
                 margin-right:20px;
+                &:hover{
+                    color: rgba(17, 18, 22, 0.61);
+                }
             }
         }
     }

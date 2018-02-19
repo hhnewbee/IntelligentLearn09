@@ -5,7 +5,6 @@
         <div class="freeContent"></div>
         <!--主体内容-->
         <router-view></router-view>
-        <footer_ class="footer"></footer_>
     </div>
 </template>
 

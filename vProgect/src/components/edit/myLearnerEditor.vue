@@ -1,10 +1,6 @@
 <template>
     <div id="myEditor09IL">
         <div class="richEdit">
-            <input class="head" v-model="theme">
-            <transition name="el-fade-in">
-                <div class="savetip" v-show="ifsave">已保存</div>
-            </transition>
             <div class="command">
                 <div v-for="(item,index) in muneData"
                      class="fa mune"
@@ -13,7 +9,10 @@
                      :key="index"
                      :title="item[2]">
                 </div>
-                <div class="fa fa-mail-forward mune"  @click="form.dialogFormVisible = true">
+                <div
+                        style="width: 80px"
+                        class="fa fa-mail-forward mune"
+                        @click="form.dialogFormVisible = true">
                     <span class="publish"></span>
                     发布
                 </div>
@@ -61,16 +60,9 @@
 </template>
 
 <script>
-    import tipPop from '../edit/tipPop.vue';
-
     export default {
-        mounted() {
-            this.editarea = this.$refs.editarea;
-            //如果上次的还没有提交，则保存下来
-            if (localStorage.editContent) {
-                this.editarea.innerHTML = localStorage.editContent;
-            }
-            this.contentChange();
+        mounted(){
+          this.initDom();
         },
         data() {
             return {
@@ -83,12 +75,8 @@
                     ["unlink", ["fa-chain-broken"],"取消链接"],
                     ['removeFormat', ["fa-eraser"],"去除格式"],
                     ["img", ["fa-picture-o"],"添加图片"],
-                    ["video", ["fa-youtube-play"],"添加视频"],
-                    ["file", ["fa-file-text"],"添加资料"],
                     ["back", ["fa-undo"],"回退"],
                     ["cancel", ["fa-times fontSize"],"取消全部编辑"],
-                    ["save", ["fa-floppy-o"],"保存"],
-                    ["more", ["fa-chevron-down"],"跟多选项"]
                 ],
                 //鼠标选择的区域
                 editorSelec: {},
@@ -99,8 +87,6 @@
                 uploadUrl: '',
                 uploadType: '',
                 uploadFinish: 0,
-                ifsave: false,
-                theme:'请输入标题',
                 category: '',
                 form: {
                     dialogFormVisible:false,
@@ -119,17 +105,23 @@
                 }
                 switch (type) {
                     case "title": {
-                        let h2 = document.createElement('h2');
-                        let p = document.createElement('p');
-                        p.innerHTML = '<br>';
                         let newRange = this.createRange(this.range);
                         let content = this.range.cloneContents();
-                        h2.appendChild(content);
+                        let p = document.createElement('p');
+                        p.innerHTML = '<br>';
                         //删除该区块的全部内容
                         newRange.deleteContents();
-                        //添加p便签。防止内容格式变化
-                        newRange.insertNode(p);
-                        newRange.insertNode(h2);
+                        //是取消标题还是加上标题
+                        if(content.nodeName==='h2'){
+                            p.innerText=content.innerText;
+                            newRange.insertNode(p);
+                        }else{
+                            let h2 = document.createElement('h2');
+                            h2.appendChild(content);
+                            //添加p便签。防止内容格式变化
+                            newRange.insertNode(p);
+                            newRange.insertNode(h2);
+                        }
                         break;
                     }
                     case "bold": {
@@ -163,7 +155,12 @@
                         break;
                     }
                     case "removeFormat": {
+                        //命令式的消除格式有些不起作用
                         document.execCommand('removeFormat');
+                        break;
+                    }
+                    case "back":{
+                        document.execCommand('undo');
                         break;
                     }
                     case "cancel": {
@@ -176,7 +173,6 @@
                                 type: 'success',
                                 message: '删除成功!'
                             });
-                            localStorage.removeItem("editContent");
                             this.editarea.innerHTML = `<p><br></p>`;
                         }).catch(() => {
                             this.$message({
@@ -184,22 +180,6 @@
                                 message: '已取消删除'
                             });
                         });
-                        break;
-                    }
-                    case "save": {
-                        localStorage.editContent = this.editarea.innerHTML;
-                        this.ifsave = true;
-                        setTimeout(() => {
-                            this.ifsave = false;
-                        }, 2000);
-                        break;
-                    }
-                    case "more": {
-                        if(this.muneData[12][1][0]==='fa-chevron-up'){
-                            this.muneData[12].splice(1,1,['fa-chevron-down']);
-                        }else{
-                            this.muneData[12].splice(1,1,['fa-chevron-up']);
-                        }
                         break;
                     }
                 }
@@ -231,35 +211,6 @@
                 //返回并且保存可编辑区域
                 this.range = this.editorSelec.getRangeAt(0);
             },
-
-            /**
-             * 监听内容变化
-             */
-            contentChange() {
-                let timeOut;
-                let target = this.editarea;
-
-                // 创建观察者对象
-                let observer = new MutationObserver(() => {
-                    /**
-                     * 消抖
-                     */
-                    clearTimeout(timeOut);
-                    timeOut = setTimeout(() => {
-                        localStorage.editContent = this.editarea.innerHTML;
-                        this.ifsave = true;
-                        setTimeout(() => {
-                            this.ifsave = false;
-                        }, 2000);
-                    }, 3000);
-                });
-
-                // 配置观察选项:
-                let config = {childList: true, subtree: true, characterData: true};
-                // 传入目标节点和观察选项
-                observer.observe(target, config);
-            },
-
             /**
              * 文件上传前
              * @param file
@@ -450,7 +401,6 @@
 
             publish(){
                 this.$ajax.post("posts",{
-                    theme:this.theme,
                     author:"name",
                     category:this.category,
                     content:this.editarea.innerHTML,
@@ -469,6 +419,12 @@
                 this.form.buttonDisabled=true;
                 this.form.dialogFormVisible=false;
             },
+            /**
+             * 初始化编辑器dom
+             */
+            initDom(){
+                this.editarea = this.$refs.editarea;
+            }
         },
 
         watch:{
@@ -490,17 +446,6 @@
             height: 100%;
             display: flex;
             flex-direction: column;
-            .savetip {
-                position: absolute;
-                top: 23px;
-                transform: translateY(-50%);
-                right: 100px;
-                padding: 5px 10px;
-                border-radius: 4px;
-                color: #efefef;
-                font-size: 10px;
-                background: rgba(3, 3, 3, 0.61);
-            }
             .head {
                 width: 100%;
                 height: 8%;
@@ -518,7 +463,7 @@
                 display: flex;
                 justify-content: center;
                 background-color: #efefef;
-                height: 5.5%;
+                height: 37px;
                 .mune {
                     transition: all 250ms;
                     position: relative;
@@ -621,9 +566,6 @@
                     text-decoration: none;
                     border: 1px solid #00a0e9;
                     color: rgb(63, 135, 166);
-                }
-                p {
-                    margin: 5px;
                 }
             }
         }
