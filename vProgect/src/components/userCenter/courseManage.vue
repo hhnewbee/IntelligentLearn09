@@ -54,6 +54,7 @@
                 </el-option>
             </el-select>
             <el-button
+                    @click="handleUpload"
                     type="success"
                     style="margin-left: 10px"
                     size="medium">
@@ -248,7 +249,7 @@
                 //图表与表格的切换
                 ifTable: true,
                 //图表的数据
-                chartData:[[],[],[]]
+                chartData:[[],[],[]],
             }
         },
 
@@ -403,6 +404,12 @@
                     this.chartData[1].push(data.useTime);
                     this.chartData[2].push(data.accessTimes);
                 })
+            },
+            /**
+             * 上传课程
+             */
+            handleUpload(){
+                this.$router.push({path:'/userCenter/courseManage/coursesUpload/#articleManage'});
             }
         },
         watch:{
@@ -417,7 +424,7 @@
             }
         },
         components: {
-            courseChart:()=>import( './courseChart.vue')
+            courseChart:()=>import( './courseChart.vue'),
         }
     }
 </script>

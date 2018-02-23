@@ -61,7 +61,8 @@
             </div>
             <div class="listContent">
                 {{area.content}}
-                <span class="cheart fa fa-heart"> 34</span>
+                <span class="cheart el-icon-time" style="color:#b5b9bc;left: 10px;bottom: 5px">&nbsp;2015-1-1 10:10</span>
+                <span class="cheart fa fa-heart">&nbsp;34</span>
             </div>
             <div class="listItem">
                 <vue-scrollbar class="my-scrollbar">
@@ -287,78 +288,81 @@
         display: flex;
         flex-direction: column;
         .my-scrollbar {
-            height: 1%;
-            flex-grow: 1;
-            max-height: 100%;
-            .vue-scrollbar__scrollbar-vertical .scrollbar, .vue-scrollbar__scrollbar-horizontal .scrollbar {
-                background: rgb(32, 40, 48);
-            }
-        }
-        .commentsContent {
-            width: 100%;
             height: 100%;
-            display: flex;
-            box-sizing: border-box;
-            flex-direction: column;
-            padding: 10px;
-            color: #000000;
-            .item {
-                width: 265px;
-                margin-right: 8px;
-                box-shadow: 0 0 1px rgba(136, 136, 136, 0.51);
-                padding: 10px 10px;
-                .head {
-                    display: flex;
-                    align-items: center;
-                    position: relative;
-                    border-radius: 4px 4px 0 0;
-                    img {
-                        width: 30px;
-                        height: 30px;
-                        border-radius: 50%;
-                        z-index: 2;
+            flex-grow: 1;
+            //问题的列表
+            .commentsContent {
+                width: 100%;
+                height: 100%;
+                display: flex;
+                box-sizing: border-box;
+                flex-direction: column;
+                padding: 10px;
+                color: #000000;
+                /*问题的item*/
+                .item {
+                    width: 265px;
+                    margin-right: 8px;
+                    box-shadow: 0 1px 1px rgba(136, 136, 136, 0.51);
+                    padding: 10px 10px;
+                    .head {
+                        display: flex;
+                        align-items: center;
+                        position: relative;
+                        border-radius: 4px 4px 0 0;
+                        img {
+                            width: 30px;
+                            height: 30px;
+                            border-radius: 50%;
+                            z-index: 2;
+                        }
+                        .name {
+                            margin-left: 8px;
+                            font-size: 14px;
+                            font-weight: 700;
+                        }
+                        .tag {
+                            padding:0 2px;
+                            margin-left: 10px;
+                            background: #409eff;
+                            font-size: 12px;
+                            font-weight: bold;
+                            color: #ffffff;
+                            border-radius: 3px;
+                        }
+                        .time {
+                            font-size: 12px;
+                            color: #9E9E9E;
+                            margin-left: 10px;
+                        }
                     }
-                    .name {
-                        margin-left: 8px;
-                        font-size: 14px;
-                        font-weight: 700;
+                    .content {
+                        font-size: 15px;
+                        /*强制英文断词*/
+                        word-break: break-all;
+                        padding-top: 5px;
+                        padding-bottom: 10px;
                     }
-                    .tag {
-                        padding:0 2px;
-                        margin-left: 10px;
-                        background: #409eff;
-                        font-size: 12px;
-                        font-weight: bold;
-                        color: #ebebeb;
-                        border-radius: 3px;
-                    }
-                    .time {
-                        font-size: 13px;
-                        margin-left: 10px;
-                    }
-                }
-                .content {
-                    font-size: 15px;
-                    /*强制英文断词*/
-                    word-break: break-all;
-                    padding-top: 5px;
-                    padding-bottom: 10px;
-                }
-                .footer {
-                    display: flex;
-                    align-items: center;
-                    cursor: pointer;
-                    span {
-                        color: #9E9E9E;
-                        font-size: 12px;
-                        &:hover {
-                            color: #b5b5b5;
+                    .footer {
+                        display: flex;
+                        align-items: center;
+                        cursor: pointer;
+                        span {
+                            color: #9E9E9E;
+                            font-size: 12px;
+                            &:hover {
+                                color: #b5b5b5;
+                            }
                         }
                     }
                 }
             }
+
+            .vue-scrollbar__scrollbar-vertical .scrollbar, .vue-scrollbar__scrollbar-horizontal .scrollbar {
+                background: rgb(32, 40, 48);
+            }
         }
-        /*回答列表*/
+        /*回答的列表*/
         .commentList {
             height: 1%;
             flex-grow: 1;
@@ -370,7 +374,7 @@
                 display: flex;
                 align-items: center;
                 justify-content: flex-start;
-                border-bottom: 1px solid #0e1114;
+                border-bottom: 1px solid #ddd5d5;
                 padding: 5px;
                 .home {
                     margin-left: 20px;
@@ -398,12 +402,15 @@
                 margin: 10px 15px;
                 padding: 5px 10px;
                 position: relative;
+                font-size: 15px;
+                color: black;
                 .cheart{
                     cursor: pointer;
                     position: absolute;
                     right: 10px;
                     bottom: 5px;
                     color: #495a6c;
+                    font-size: 12px;
                     &:hover{
                         color:#b5b5b5;
                     }
@@ -415,16 +422,16 @@
                 .itemList{
                     height: 100%;
                     .item {
-                        margin: 10px 15px;
-                        border-top: 1px solid #1d242b;
+                        margin: 5px 15px;
+                        border-top: 1px solid #ddd5d5;
                         .header {
                             display: flex;
                             justify-content: flex-start;
                             align-items: center;
                             padding-top: 10px;
                             img {
-                                width: 35px;
-                                height: 35px;
+                                width: 30px;
+                                height: 30px;
                                 border-radius: 50%;
                             }
                             .name {
@@ -435,14 +442,13 @@
                             }
                         }
                         .content {
-                            margin: 10px 0;
+                            padding: 5px 0;
                             font-size: 15px;
                         }
                         .footer {
                             display: flex;
                             align-items: center;
                             cursor: pointer;
-                            margin: 10px 0;
                             span {
                                 color: #9E9E9E;
                                 font-size: 12px;
@@ -459,6 +465,7 @@
             display: flex;
             align-items: center;
             padding: 15px 10px;
+            padding-bottom: 20px;
             margin-bottom: 62px;
             border-top: 1px solid #ddd5d5;
         }

@@ -54,10 +54,11 @@
                 </el-option>
             </el-select>
             <el-button
+                    @click="pushArticle"
                     type="success"
                     style="margin-left: 10px;width:80px;padding: 10px 10px"
                     size="medium">
-                上传课程
+                文章发布
             </el-button>
         </div>
         <div class="content">
@@ -403,8 +404,15 @@
                     this.chartData[1].push(data.useTime);
                     this.chartData[2].push(data.accessTimes);
                 })
+            },
+            /**
+             *文章发布
+             */
+            pushArticle(){
+                this.$router.push({path:'/userCenter/articleManage/articleEdit/#articleManage'});
             }
         },
+
         watch:{
             //监听数据变化以更新视图
             tableData(){

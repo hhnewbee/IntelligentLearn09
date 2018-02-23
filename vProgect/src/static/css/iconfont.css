@@ -151,28 +151,9 @@
 .fa-file:before {
     content: "\f15b";
 }
-
-/*阿里的图标*/
-@font-face {
-    font-family: "iconfont";
-    src: url('./fonts/iconfont.ttf') format('truetype');
+.fa-quote-left:before {
+    content: "\f10d";
 }
-
-.iconfont {
-    font-family:"iconfont" !important;
-    font-size: inherit;
-    font-style:normal;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+.fa-sign-out:before {
+    content: "\f08b";
 }
-
-.icon-pinglun:before {
-    content: "\e603";
-}
-.icon-liaotian:before {
-    content: "\e624";
-}
-.icon-pinglun1:before {
-    content: "\e62c";
-}
-

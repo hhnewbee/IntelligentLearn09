@@ -21,7 +21,7 @@ export default {
 
 <style scoped lang="scss">
     .rightItem {
-        margin-top: 20px;
+        margin-top: 40px;
         .itemName {
             display: flex;
             justify-content: center;
@@ -37,8 +37,9 @@ export default {
         .content {
             margin-bottom: 15px;
             color: #022856;
+            max-width: 300px;
+            padding: 0 15px;
             .contentText {
-                max-width: 300px;
                 margin-right: 10px;
                 margin-bottom: 5px;
                 font-size: 15px;

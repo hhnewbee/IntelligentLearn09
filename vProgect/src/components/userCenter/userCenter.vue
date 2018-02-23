@@ -21,10 +21,8 @@
                             <i class="el-icon-document"></i>
                             <span>我的学习</span>
                         </template>
-                        <el-menu-item-group>
-                            <el-menu-item
-                                    index="record">
-                                学习记录
+                        <el-menu-item-group class="children">
+                            <el-menu-item index="record">学习记录
                             </el-menu-item>
                             <el-menu-item index="status">学习状态</el-menu-item>
                         </el-menu-item-group>
@@ -43,7 +41,7 @@
                             <span>后台管理</span>
                         </template>
 
-                        <el-menu-item-group>
+                        <el-menu-item-group class="children">
 
                             <el-menu-item index="courseManage">
                                 课程管理
@@ -120,36 +118,47 @@
             return {}
         },
         methods: {
+            /**
+             * 侧边菜单的选择
+             * @param tar
+             */
             handleChange(tar) {
                 switch (tar) {
                     case "userInfo": {
                         this.$router.push({path: '/userCenter/userInfo/#userInfo'});
                         break;
                     }
+
                     case "record": {
                         this.$router.push({path: '/userCenter/record/#record'});
                         break;
                     }
+
                     case "status": {
                         this.$router.push({path: '/userCenter/status/#status'});
                         break;
                     }
+
                     case "collection": {
                         this.$router.push({path: '/userCenter/collection/#collection'});
                         break;
                     }
+
                     case "information": {
                         this.$router.push({path: '/userCenter/information/#information'});
                         break;
                     }
+
                     case "courseManage": {
                         this.$router.push({path: '/userCenter/courseManage/#courseManage'});
                         break;
                     }
+
                     case "articleManage": {
                         this.$router.push({path: '/userCenter/articleManage/#articleManage'});
                         break;
                     }
+
                     case "userManage": {
                         this.$router.push({path: '/userCenter/userManage/#userManage'});
                         break;
@@ -190,6 +199,9 @@
                 height: 100%;
                 .menu {
                     height: 100%;
+                    .children{
+                        background-color: rgba(249, 249, 250, 0.65);
+                    }
                 }
             }
             .chart {

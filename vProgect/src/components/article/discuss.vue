@@ -11,9 +11,7 @@
                             v-for="user in usersList"
                             class="item"
                             @mousedown="handleChatChange(user,true)">
-                        <div class="avatar">
-                            <img :src="user.avatarUrl"/>
-                        </div>
+                        <img class="avatar" :src="user.avatarUrl"/>
                         <div class="name">
                             {{user.nickName}}
                         </div>
@@ -161,7 +159,7 @@
                 //当前讨论区的items
                 messageItemsNow: {},
                 //发送的数据
-                sendData:''
+                sendData: ''
             }
         },
         methods: {
@@ -258,42 +256,45 @@
         height: 100%;
         display: flex;
         flex-direction: column;
+        /*头部*/
         .header {
             display: flex;
             justify-content: flex-start;
             align-items: center;
             border-bottom: 1px solid #e8e3e3;
+            /*用户列表*/
             .userList {
                 z-index: 100;
-                top: 38px;
-                left: 10px;
+                top: 100px;
+                left: 0;
                 position: absolute;
-                background-color: #14191e;
+                background-color: #ffffff;
                 border-radius: 5px;
-                box-shadow: 1px 1px 15px 2px #040506;
+                box-shadow: 1px 1px 4px #040506;
                 color: #b5b9bc;
                 max-height: 80%;
+                /*用户列表的item*/
                 .item {
-                    padding: 10px;
+                    padding: 5px 10px;
                     width: 200px;
                     display: flex;
                     justify-content: flex-start;
                     align-items: center;
                     cursor: pointer;
+                    border-bottom: 1px solid #f6f6f6;
                     .avatar {
-                        img {
-                            height: 50px;
-                            width: 50px;
-                            border-radius: 50%;
-                        }
+                        height: 30px;
+                        width: 30px;
+                        border-radius: 50%;
                     }
                     .name {
                         margin-left: 10px;
-                        font-size: 15px;
+                        font-size: 13px;
                         font-weight: bold;
                     }
                     &:hover {
-                        background-color: #20282f;
+                        color: #3c3c3c;
+                        background-color: #f6f6f6;
                     }
                 }
             }

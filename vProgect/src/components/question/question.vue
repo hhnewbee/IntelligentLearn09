@@ -248,6 +248,7 @@
             display: flex;
             flex-direction: column;
             margin-right: 60px;
+            align-self: start;
             .autorDetail {
                 display: flex;
                 justify-content: flex-start;

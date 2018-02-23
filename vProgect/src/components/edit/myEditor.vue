@@ -1,76 +1,88 @@
 <template>
     <div id="myEditor09IL">
-        <div class="richEdit">
-            <input class="head" v-model="theme">
-            <transition name="el-fade-in">
-                <div class="savetip" v-show="ifsave">已保存</div>
-            </transition>
-            <div class="command">
-                <div v-for="(item,index) in muneData"
-                     class="fa mune"
-                     :class="item[1]"
-                     @mousedown="editCommand(item[0])"
-                     :key="index"
-                     :title="item[2]">
+        <el-breadcrumb class="breadcrumb">
+            <el-breadcrumb-item class="el-icon-setting">
+                &nbsp;后台管理
+            </el-breadcrumb-item>
+            <el-breadcrumb-item>
+                <span @click="handleBackManage">
+                    文章管理
+                </span>
+            </el-breadcrumb-item>
+            <el-breadcrumb-item>
+                文章编辑
+            </el-breadcrumb-item>
+        </el-breadcrumb>
+        <div class="content">
+            <div class="richEdit">
+                <div style="position: relative">
+                    <input class="head" v-model="theme">
+                    <transition name="el-fade-in">
+                        <div class="savetip" v-show="ifsave">已保存</div>
+                    </transition>
                 </div>
-                <div class="fa fa-mail-forward mune"  @click="form.dialogFormVisible = true">
-                    <span class="publish"></span>
-                    发布
+                <div class="command">
+                    <div v-for="(item,index) in muneData"
+                         class="fa mune"
+                         :class="item[1]"
+                         @mousedown="editCommand(item[0])"
+                         :key="index"
+                         :title="item[2]">
+                    </div>
+                    <div
+                            style="display: flex;justify-content: center;align-items: center"
+                            class="fa fa-mail-forward mune"
+                            @click="form.dialogFormVisible = true">
+                        <div class="publish"> 发布</div>
+                    </div>
+                </div>
+                <div
+                        spellcheck="false"
+                        class="editarea"
+                        contenteditable="true"
+                        @click="getSelection"
+                        ref="editarea">
                 </div>
             </div>
-            <div
-                    spellcheck="false"
-                    class="editarea"
-                    contenteditable="true"
-                    @click="getSelection"
-                    ref="editarea">
+            <div class="uploadList" ref="uploadList">
+                <el-upload
+                        :action='uploadUrl'
+                        :before-remove="beforeRemove"
+                        :before-upload='beforeUpload'
+                        :on-success='upScuccess'
+                        multiple
+                        ref="upload">
+                    <el-button
+                            id="uploadButton"
+                            size="small"
+                            type="primary"
+                            style="display: none">
+                    </el-button>
+                    <div slot="tip" class="el-upload__tip">文件上传中</div>
+                </el-upload>
             </div>
+            <el-dialog title="提交" :visible.sync="form.dialogFormVisible">
+                <el-form :model="form">
+                    <el-form-item label-width="80px">
+                        <el-select v-model="category" placeholder="请选择类别">
+                            <el-option label="前端" value="前端"></el-option>
+                            <el-option label="后端" value="后端"></el-option>
+                        </el-select>
+                    </el-form-item>
+                </el-form>
+                <div slot="footer" class="dialog-footer">
+                    <el-button @click="form.dialogFormVisible = false">取 消</el-button>
+                    <el-button type="primary" @click="publish" :disabled="form.buttonDisabled">确 定</el-button>
+                </div>
+            </el-dialog>
         </div>
-        <div class="uploadList" ref="uploadList">
-            <el-upload
-                    :action='uploadUrl'
-                    :before-remove="beforeRemove"
-                    :before-upload='beforeUpload'
-                    :on-success='upScuccess'
-                    multiple
-                    ref="upload">
-                <el-button
-                        id="uploadButton"
-                        size="small"
-                        type="primary"
-                        style="display: none">
-                </el-button>
-                <div slot="tip" class="el-upload__tip">文件上传中</div>
-            </el-upload>
-        </div>
-        <el-dialog title="提交" :visible.sync="form.dialogFormVisible">
-            <el-form :model="form">
-                <el-form-item label-width="80px">
-                    <el-select v-model="category" placeholder="请选择类别">
-                        <el-option label="前端" value="前端"></el-option>
-                        <el-option label="后端" value="后端"></el-option>
-                    </el-select>
-                </el-form-item>
-            </el-form>
-            <div slot="footer" class="dialog-footer">
-                <el-button @click="form.dialogFormVisible = false">取 消</el-button>
-                <el-button type="primary" @click="publish" :disabled="form.buttonDisabled">确 定</el-button>
-            </div>
-        </el-dialog>
     </div>
 </template>
 
 <script>
-    import tipPop from '../edit/tipPop.vue';
-
     export default {
         mounted() {
-            this.editarea = this.$refs.editarea;
-            //如果上次的还没有提交，则保存下来
-            if (localStorage.editContent) {
-                this.editarea.innerHTML = localStorage.editContent;
-            }
-            this.contentChange();
+            this.initMountedData();
         },
         data() {
             return {
@@ -79,6 +91,7 @@
                     ["title", ["fa-header"],"标题"],
                     ["bold", ["fa-bold"],"加粗"],
                     ["line", ["fa-minus"],"分割线"],
+                    ["block", ["fa-quote-left"],"引用块"],
                     ["link", ["fa-link"],"链接"],
                     ["unlink", ["fa-chain-broken"],"取消链接"],
                     ['removeFormat', ["fa-eraser"],"去除格式"],
@@ -88,7 +101,6 @@
                     ["back", ["fa-undo"],"回退"],
                     ["cancel", ["fa-times fontSize"],"取消全部编辑"],
                     ["save", ["fa-floppy-o"],"保存"],
-                    ["more", ["fa-chevron-down"],"跟多选项"]
                 ],
                 //鼠标选择的区域
                 editorSelec: {},
@@ -106,105 +118,12 @@
                     dialogFormVisible:false,
                     buttonDisabled:true,
                 },
+                //本文章的id
+                articleId:''
             }
         },
 
         methods: {
-            editCommand(type) {
-                if (type === 'img' | type === 'video' | type === 'file') {
-                    this.uploadType = type;
-                    this.uploadUrl = `http://localhost:3100/upload/${type}`;//设置上传地址
-                    document.querySelector('#uploadButton').click();
-                    return;
-                }
-                switch (type) {
-                    case "title": {
-                        let h2 = document.createElement('h2');
-                        let p = document.createElement('p');
-                        p.innerHTML = '<br>';
-                        let newRange = this.createRange(this.range);
-                        let content = this.range.cloneContents();
-                        h2.appendChild(content);
-                        //删除该区块的全部内容
-                        newRange.deleteContents();
-                        //添加p便签。防止内容格式变化
-                        newRange.insertNode(p);
-                        newRange.insertNode(h2);
-                        break;
-                    }
-                    case "bold": {
-                        document.execCommand('bold', false, 0);
-                        break;
-                    }
-                    case "line": {
-                        document.execCommand('insertHTML', false, '<hr><p><br></p>');
-                        break;
-                    }
-                    case 'link': {
-                        this.$prompt('请输入URL', {
-                            confirmButtonText: '确定',
-                            cancelButtonText: '取消',
-                        }).then(({value}) => {
-                            let a = document.createElement('a');
-                            a.href = value;
-                            let newRange = this.createRange(this.range);
-                            let content = document.createTextNode('新建链接');
-                            if (!newRange.collapsed) {
-                                content = newRange.cloneContents();
-                            }
-                            a.appendChild(content);
-                            newRange.insertNode(a);
-                            newRange.collapse(false);
-                        });
-                        break;
-                    }
-                    case "unlink": {
-                        document.execCommand('unlink');
-                        break;
-                    }
-                    case "removeFormat": {
-                        document.execCommand('removeFormat');
-                        break;
-                    }
-                    case "cancel": {
-                        this.$confirm('永久删除编辑内容, 是否继续?', '提示', {
-                            confirmButtonText: '确定',
-                            cancelButtonText: '取消',
-                            type: 'warning'
-                        }).then(() => {
-                            this.$message({
-                                type: 'success',
-                                message: '删除成功!'
-                            });
-                            localStorage.removeItem("editContent");
-                            this.editarea.innerHTML = `<p><br></p>`;
-                        }).catch(() => {
-                            this.$message({
-                                type: 'info',
-                                message: '已取消删除'
-                            });
-                        });
-                        break;
-                    }
-                    case "save": {
-                        localStorage.editContent = this.editarea.innerHTML;
-                        this.ifsave = true;
-                        setTimeout(() => {
-                            this.ifsave = false;
-                        }, 2000);
-                        break;
-                    }
-                    case "more": {
-                        if(this.muneData[12][1][0]==='fa-chevron-up'){
-                            this.muneData[12].splice(1,1,['fa-chevron-down']);
-                        }else{
-                            this.muneData[12].splice(1,1,['fa-chevron-up']);
-                        }
-                        break;
-                    }
-                }
-            },
-
             /**
              * 创建并返回新的位置，之所以要创建新的，是因为当的位置是处于选项位置的
              * @param range
@@ -248,6 +167,7 @@
                     timeOut = setTimeout(() => {
                         localStorage.editContent = this.editarea.innerHTML;
                         this.ifsave = true;
+                        //保存提示还要等两秒后才消失
                         setTimeout(() => {
                             this.ifsave = false;
                         }, 2000);
@@ -274,8 +194,10 @@
                         }
                     }
                 }, 2000);
+                //创建文件占位字段
                 let newNode = document.createElement("span");
                 newNode.style.color = '#3f87a6';
+                //判断要创建占位字段的文件类型
                 let tmp;
                 if (this.uploadType === 'img') {
                     tmp = 'fa-picture-o'
@@ -289,23 +211,8 @@
                 let newRange = this.createRange(this.range);
                 newRange.insertNode(newNode);
                 this.addRange = newRange.cloneRange();//复制范围保存供下次使用
-            },
-
-            createVideo(target, response) {
-                //展示时可以用video.js
-                let tem = ` <video
-                            class="video-js vjs-big-play-centered"
-                            controls
-                            preload="auto"
-                            data-setup='{"playbackRates": [0.7, 1, 1.5, 1.7, 2],"techOrder": ["html5","flash"]}'>
-                                <source src="${response.url}">
-                            </video>`;
-                target.innerHTML = tem;
-            },
-
-            createImg(target, response) {
-                let tem = `<img src="${response.url}">`;
-                target.innerHTML = tem;
+                //更改文件名称加上id
+//                file.name+=this.articleId;
             },
 
             /**
@@ -376,6 +283,7 @@
              */
             upScuccess(response, file, fileList) {
                 let target;
+                //是创建视频和图片展示还是文件展示
                 if (this.uploadType === 'img' || this.uploadType === 'video') {
                     let div = document.createElement("div");//增加已建立好的链接
                     let divC = document.createElement("div");
@@ -400,19 +308,20 @@
                     } else {
                         this.createVideo(div, response);
                     }
-
+                    //展示框
                     divC.appendChild(divCl);
                     divC.appendChild(divCc);
                     divC.appendChild(divCr);
+
                     div.appendChild(divC);
                     div.appendChild(divO);
                     div.appendChild(divR);
 
+                    //添加事件注册
                     this.resize([div, divC, divO, divR, divCl, divCc, divCr]);
                     target = div;
                 } else {
                     let a = document.createElement("a");
-                    a.contentEditable = false;
                     a.style.color = '#3f87a6';
                     a.href = response.url;
                     a.innerHTML = ` <i class='fa fa-file-text'></i> : ${file.name} `;
@@ -424,6 +333,7 @@
                  * @type {*|Range}
                  */
                 this.addRange.deleteContents();//删除占位文本
+                //创建新的区块
                 let newRange = this.createRange(this.addRange);
                 newRange.insertNode(target);
                 newRange.collapse(false); //叠该Range
@@ -448,8 +358,12 @@
                 return this.$confirm(`确定移除 ${ file.name }？`);
             },
 
+            /**
+             * 文章发布
+             */
             publish(){
                 this.$ajax.post("posts",{
+                    id:this.articleId,
                     theme:this.theme,
                     author:"name",
                     category:this.category,
@@ -460,6 +374,10 @@
                         type: 'success',
                         message: '发表成功'
                     });
+                    //清空编辑区和内存
+                    this.editarea.innerHTML ='';
+                    localStorage.removeItem('editContent');
+                    localStorage.removeItem('editContentId');
                 }).catch(()=>{
                     this.$message({
                         type: 'error',
@@ -469,9 +387,168 @@
                 this.form.buttonDisabled=true;
                 this.form.dialogFormVisible=false;
             },
+
+            /**
+             * 返回文章管理
+             */
+            handleBackManage(){
+                this.$router.push({path: '/userCenter/articleManage/#articleManage'});
+            },
+            /**
+             * 生成video展示
+             * @param target - 插入的位置
+             * @param response - 上传后返回的链接
+             */
+            createVideo(target, response) {
+                //展示时可以用video.js
+                let tem = ` <video
+                            class="video-js vjs-big-play-centered"
+                            controls
+                            preload="auto"
+                            data-setup='{"playbackRates": [0.7, 1, 1.5, 1.7, 2],"techOrder": ["html5","flash"]}'>
+                                <source src="${response.url}">
+                            </video>`;
+                target.innerHTML = tem;
+            },
+            /**
+             * 生成img展示
+             * @param target
+             * @param response
+             */
+            createImg(target, response) {
+                let tem = `<img src="${response.url}">`;
+                target.innerHTML = tem;
+            },
+            /**
+             * 初始化dom生成时的数据
+             */
+            initMountedData(){
+                this.editarea = this.$refs.editarea;
+                //如果上次的还没有提交，则保存下来
+                if (localStorage.editContent) {
+                    this.editarea.innerHTML = localStorage.editContent;
+                    this.articleId=localStorage.editContentId;
+                }else{
+                    //新的文章id,一开始就注册是为了视频和图片上传的标识
+                    let editContentId=Date.now();
+                    this.articleId=editContentId;
+                    localStorage.editContentId=editContentId;
+                }
+                //开始监听内容变化1
+                this.contentChange();
+            },
+
+            /**
+             * 所有的编辑命令
+             * @param type
+             */
+            editCommand(type) {
+                if (type === 'img' | type === 'video' | type === 'file') {
+                    this.uploadType = type;
+                    this.uploadUrl = `http://localhost:3100/upload/${type}`;//设置上传地址
+                    //模拟点击上传组件的文件选择按钮
+                    document.querySelector('#uploadButton').click();
+                    return;
+                }
+                switch (type) {
+                    case "title": {
+                        //获取创建的代表当前的新区块
+                        let newRange = this.createRange(this.range);
+                        //获取dom来判断是否h2
+                        if(newRange.startContainer.parentElement.nodeName==='H2'){
+                            document.execCommand('formatBlock', false, '<div>');
+                        }else{
+                            document.execCommand('formatBlock', false, '<h2>');
+                        }
+                        break;
+                    }
+                    case "bold": {
+                        document.execCommand('bold', false, 0);
+                        break;
+                    }
+                    case "line": {
+                        document.execCommand('insertHTML', false, '<hr><p><br></p>');
+                        break;
+                    }
+                    case "block": {
+                        let newRange = this.createRange(this.range);
+                        if(newRange.startContainer.parentElement.nodeName==='PRE'){
+                            document.execCommand('formatBlock', false, '<DIV>');
+                        }else{
+                            document.execCommand('formatBlock', false, '<PRE>');
+                        }
+                        break;
+                    }
+                    case 'link': {
+                        this.$prompt('请输入URL', {
+                            confirmButtonText: '确定',
+                            cancelButtonText: '取消',
+                        }).then(({value}) => {
+                            let a = document.createElement('a');
+                            a.href = value;
+                            a.title=value;
+                            let newRange = this.createRange(this.range);
+                            let content ='新建链接';
+                            //如果有选择到内容，则用选择的内容作为连接
+                            if (!newRange.collapsed) {
+                                content = newRange.cloneContents().textContent;
+                            }
+                            a.innerHTML='&nbsp;'+content+'&nbsp';
+                            newRange.insertNode(a);
+                            newRange.collapse(false);
+                        });
+                        break;
+                    }
+                    case "unlink": {
+                        document.execCommand('unlink');
+                        break;
+                    }
+                    case "removeFormat": {
+                        document.execCommand('removeFormat');
+                        break;
+                    }
+                    case "back":{
+                        document.execCommand('undo');
+                        break;
+                    }
+                    case "cancel": {
+                        this.$confirm('永久删除编辑内容, 是否继续?', '提示', {
+                            confirmButtonText: '确定',
+                            cancelButtonText: '取消',
+                            type: 'warning'
+                        }).then(() => {
+                            this.$message({
+                                type: 'success',
+                                message: '删除成功!'
+                            });
+                            //清空内存
+                            localStorage.removeItem("editContent");
+                            localStorage.removeItem('editContentId');
+                            //清空编辑区
+                            this.editarea.innerHTML ='<div><br></div>';
+                        }).catch(() => {
+                            this.$message({
+                                type: 'info',
+                                message: '已取消删除'
+                            });
+                        });
+                        break;
+                    }
+                    case "save": {
+                        localStorage.editContent = this.editarea.innerHTML;
+                        this.ifsave = true;
+                        setTimeout(() => {
+                            this.ifsave = false;
+                        }, 2000);
+                        break;
+                    }
+                }
+            },
+
         },
 
         watch:{
+            //监听类别是否选择，才可以激活上传按钮
             category(){
                 this.form.buttonDisabled=false;
             }
@@ -481,8 +558,15 @@
 
 <style lang="scss">
     #myEditor09IL {
-        height: 100%;
         display: flex;
+        flex-direction: column;
+        height: 100%;
+        .content{
+            display: flex;
+            height: 1%;
+            flex-grow: 1;
+            margin-top: 10px;
+        }
         .richEdit {
             position: relative;
             width: 75%;
@@ -492,23 +576,23 @@
             flex-direction: column;
             .savetip {
                 position: absolute;
-                top: 23px;
+                top: 50%;
+                right: 50px;
                 transform: translateY(-50%);
-                right: 100px;
-                padding: 5px 10px;
+                padding: 5px 15px;
                 border-radius: 4px;
-                color: #efefef;
-                font-size: 10px;
-                background: rgba(3, 3, 3, 0.61);
+                color: #ffffff;
+                font-size: 13px;
+                background-color: rgba(0, 0, 0, 0.51);
             }
             .head {
                 width: 100%;
-                height: 8%;
-                padding: 10px 30px 10px 40px;
-                font-size: 25px;
+                padding: 10px 20px;
+                font-size: 20px;
+                color:#607D8B;
                 overflow: hidden;
-                text-overflow: ellipsis;
                 white-space: nowrap;
+                text-overflow: ellipsis;
                 border: none;
                 outline: none;
                 box-sizing: border-box;
@@ -517,16 +601,19 @@
             .command {
                 display: flex;
                 justify-content: center;
+                align-items: center;
                 background-color: #efefef;
-                height: 5.5%;
+                overflow: hidden;
                 .mune {
                     transition: all 250ms;
                     position: relative;
                     padding: 10px 14px;
-                    line-height: 17px;
+                    font-size: 16px;
                     color: #63656b;
                     cursor: pointer;
                     .publish {
+                        width: 26px;
+                        height: 13px;
                         margin-left: 5px;
                         font-size: 13px;
                     }
@@ -538,14 +625,16 @@
                     font-size: 18px;
                 }
             }
+            /*编辑区*/
             .editarea {
-                height: 65%;
+                height: 1%;
                 flex-grow: 1;
                 padding: 10px 20px;
                 outline: none;
                 overflow: auto;
                 line-height: 1.6;
                 font-size: 16px;
+                text-align: justify;
                 .resizeDiv {
                     padding: 10px;
                     height: 200px;
@@ -612,21 +701,40 @@
                         border: 1px solid rgb(153, 153, 153);
                     }
                 }
+                h2{
+                    font-weight: normal;
+                    border-bottom: 1px solid #ddd;
+                    padding-bottom: 10px;
+                    margin: 10px 0;
+                }
                 hr {
-                    margin: 20px 20px;
+                    margin: 20px 30px;
                     border: 0;
                     border-top: 1px solid #d9d9d9 !important
                 }
                 a {
+                    padding: 2px 0;
+                    margin: 0 5px;
                     text-decoration: none;
                     border: 1px solid #00a0e9;
+                    border-radius: 4px;
                     color: rgb(63, 135, 166);
+                    cursor: text;
                 }
-                p {
-                    margin: 5px;
+                pre{
+                    padding: 20px;
+                    background-color: #f2f2f2;
+                    border-left: 6px solid #b3b3b3;
+                    word-break: break-all;
+                    font-family: "Coda", "Helvetica Neue", "Helvetica", Arial, sans-serif;
+                    font-size: 16px;
+                    font-weight: 400;
+                    line-height: 30px;
+                    margin: 0 0 20px;
                 }
             }
         }
+        /*上传列表*/
         .uploadList {
             display: none;
             width: 25%;

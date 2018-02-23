@@ -25,9 +25,20 @@ router.post("/IL09api/addComments/:theme", async (ctx, next) => {
     await apiGet.addAll(ctx, next, "comments", body);
 });
 
+/**
+ * 添加文章
+ */
 router.post("/IL09api/posts", async (ctx, next) => {
     let body = Object.assign(ctx.request.body, {replys: '0'}, {likes: '0'});
     await apiGet.addAll(ctx, next, "posts", body);
+});
+
+/**
+ * 获取文章
+ */
+router.get("/IL09api/posts/:articleId", async (ctx, next) => {
+    //根据文章id查询文章
+    await apiGet.getAll(ctx, next, "posts",{where: {id:ctx.params.articleId}});
 });
 
 
@@ -48,10 +59,14 @@ router.get("/IL09api/search/:value", (ctx) => {
     if (ctx.params.value === "newbee") {
         ctx.response.body = [
             {
-                type: '课程', items: [{value: 'webpack学习', url: '#'}, {value: 'vue学习', url: '#'}]
+                type: '课程',
+                items: [
+                    {value: 'webpack学习', url: '#1'},
+                    {value: 'vue学习', url: '#2'}
+                ]
             },
             {
-                type: '社区', items: [{value: 'webpack学习', url: '#'}, {value: 'vue学习', url: '#'}],
+                type: '社区', items: [{value: 'webpack学习', url: '#3'}, {value: 'vue学习', url: '#4'}],
             }
         ];
     } else {

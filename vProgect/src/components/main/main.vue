@@ -4,7 +4,7 @@
         <!--用来占据空间的-->
         <div class="freeContent"></div>
         <!--主体内容-->
-        <router-view></router-view>
+        <router-view class="content"></router-view>
     </div>
 </template>
 
@@ -23,11 +23,15 @@
 <style scoped lang="scss">
     .main {
         height: 100%;
+        display: flex;
+        flex-direction: column;
         .freeContent {
             height: 62px;
         }
-        .footer {
-            height: 80px;
+        .content{
+            height: 1%;
+            flex-grow: 1;
+            overflow: auto;
         }
     }
 </style>

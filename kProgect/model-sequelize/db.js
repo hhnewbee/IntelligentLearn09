@@ -90,6 +90,7 @@ function defineModel(name, attributes) {
                 let now = Date.now();
                 if (obj.isNewRecord) {
                     console.log('will create entity...' + obj);
+                    //如果没有id则自动生成id
                     if (!obj.id) {
                         obj.id = generateId();
                     }

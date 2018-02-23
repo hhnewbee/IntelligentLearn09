@@ -94,7 +94,7 @@ let router = new VueRouter(
                         component: () => import('./components/question/question.vue'),
                     },
                     {
-                        path: 'articlePage/article',
+                        path: 'articlePage/article/:articleId',
                         component: () => import('./components/article/article.vue'),
                     },
                     // {   path: 'recommend/*',
@@ -105,7 +105,7 @@ let router = new VueRouter(
             {
                 name: "course",
                 path: '/course',
-                component: () => import(/* webpackChunkName: "course.vue" */ './components/course/courseMain.vue'),
+                component: () => import(/* webpackChunkName: "courseItem.vue" */ './components/course/courseMain.vue'),
             },
             {
                 name: "userCenter",
@@ -143,6 +143,14 @@ let router = new VueRouter(
                     {
                         path: 'userManage',
                         component: () => import('./components/userCenter/userManage.vue'),
+                    },
+                    {
+                        path: 'articleManage/articleEdit',
+                        component: () => import('./components/edit/myEditor.vue'),
+                    },
+                    {
+                        path: 'courseManage/coursesUpload',
+                        component: () => import('./components/userCenter/coursesUpload.vue'),
                     }
                 ]
             },
