@@ -44,6 +44,7 @@
              * @param query - 当前输入值
              */
             remoteMethod(query) {
+
                 //判断输入的是否为空
                 if (query !== '') {
                     this.loading = true;
