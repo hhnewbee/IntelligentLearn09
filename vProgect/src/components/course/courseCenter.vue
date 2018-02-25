@@ -42,7 +42,7 @@
     import 'video.js/dist/video.min.js'
 
     import chapter from './chapter.vue';
-    import discuss from '../communicate/discuss.vue';
+    import discuss from '../article/discuss.vue';
     import comments from '../comments/comments.vue';
     import downLoad from '../resources/downLoad.vue'
     export default {
@@ -67,6 +67,7 @@
             downLoad
         },
         methods: {
+            //侧边选项的切换
             handlerChange(tar, e) {
                 switch (tar) {
                     case 1: {
@@ -94,6 +95,9 @@
                         el.style.backgroundColor = 'rgba(54, 60, 64, 0.67)';
                     }
                 });
+            },
+            initDom(){
+
             }
         }
     }

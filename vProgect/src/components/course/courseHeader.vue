@@ -1,31 +1,37 @@
 <template>
     <div class="courseHeader">
         <div class="title">
-            <div class="fa fa-angle-left"></div>
-            <div class="title1 tl" title="vue与webpack的学习">
+            <span title="vue与webpack的学习">
                 vue与webpack的学习
-            </div>
-            <div class="title2 tl" title="第一节：vue的介绍">
+            </span>
+            <span title="第一节：vue的介绍">
                 第一节：vue的介绍
-            </div>
+            </span>
         </div>
         <div class="detail">
-            <i class="fa fa-heart like"></i>
-            <span class="text">
-                 {{info.likes}}
+            <span class="fa fa-user-o">
+                 &nbsp;{{learns}}已学习
             </span>
-            <i class="fa fa-user-o"></i>
-            <span class="text">
-                 有{{info.learns}}人学习本课程
-            </span>
-            <i class="fa fa-television"></i>
-            <span class="text">
-                {{info.online}}人正在观看
+            <span class="fa fa-television">
+                 &nbsp;{{online}}在观看
             </span>
         </div>
-        <div class="info">
-            <info></info>
-        </div>
+        <el-checkbox-group
+                v-model="checkboxGroup"
+                size="small">
+            <el-checkbox-button
+                    label="likes"
+                    key="likes">
+                23&nbsp;喜欢
+            </el-checkbox-button>
+            <el-checkbox-button
+                    label="collections"
+                    key="collections">
+                22&nbsp;收藏
+            </el-checkbox-button>
+        </el-checkbox-group>
+
+        <info style="float: right;right: 100px"></info>
     </div>
 </template>
 
@@ -44,11 +50,10 @@ export default {
     ],
     data(){
         return{
-            info:{
-                likes:122,
-                learns:122,
-                online:12
-            }
+            learns:122,
+            online:12,
+            //喜欢和收藏的选择
+            checkboxGroup:[]
         }
     },
     components:{
@@ -60,51 +65,33 @@ export default {
 <style scoped lang="scss">
     .courseHeader{
         display: flex;
-        justify-content: space-between;
+        justify-content: flex-start;
         align-items: center;
-        background-color: #14191e;
+        background-color: #2b3540;
         .title{
-            display: flex;
-            justify-content: flex-start;
-            align-items: center;
             color: #b5b9bc;
-            .fa{
-                font-size: 30px;
-                margin-right: 30px;
-            }
-            .tl{
+            margin-left: 80px;
+            span{
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
-                max-width: 170px;
+                max-width: 180px;
             }
-            .title1{
-                font-size: 16px;
+            span:nth-child(1){
+                font-size: 18px;
                 font-weight: bold;
-                margin-right: 10px;
+                margin-right: 15px;
             }
-            .title2{
+            span:nth-child(2){
                 font-size: 13px;
-                margin-right: 10px;
+                margin-right: 25px;
             }
         }
         .detail{
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            color: #b5b9bc;
-            .like{
-                cursor: pointer;
-                &:hover{
-                    color: rgba(203, 20, 25, 0.87);
-                }
-            }
-            .fa{
+            color: #7f8286;
+            font-size: 13px;
+            span{
                 margin-left: 15px;
-                font-size: 16px;
-            }
-            .text{
-                margin-left:3px;
             }
         }
     }

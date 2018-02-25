@@ -221,7 +221,7 @@
                         answers: '22',
                     }
                 ];
-                this.dialogVisible=true;
+                this.chatListVisible=true;
             },
             /**
              * 打开回答editor

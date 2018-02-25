@@ -4,13 +4,18 @@
             <div class="title">
                 {{chapters.title}}
             </div>
+            <div class="info">
+                <img src="http://localhost:3100/img/avatar/avatar.jpg">
+                <span>newbee</span>
+                <span>时间：2015-12-21</span>
+            </div>
             <div class="intro">
                 简介:{{chapters.intro}}
             </div>
-            <div class="t1" v-for="(item1,index1) in chapters.chapter" :key="index1">
-                <div class="t11">{{item1.t1}}</div>
-                <div class="t2 fa fa-play" v-for="(item2,index2) in item1.t2" :key="index2">
-                    {{item2}}
+            <div class="catalog" v-for="(item1,index1) in chapters.chapter" :key="index1">
+                <div>{{item1.t1}}</div>
+                <div class="fa fa-play" v-for="(item2,index2) in item1.t2" :key="index2">
+                    &nbsp;{{item2}}
                 </div>
             </div>
         </div>
@@ -56,30 +61,51 @@
         max-height: 100%;
         height: 100%;
         padding-left: 10px;
-        margin-right: 10px;
         .title {
-            padding: 10px;
+            padding: 20px 10px;
             color: #b5b9bc;
             font-size: 18px;
             font-weight: bold;
         }
+        .info{
+            margin-left: 10px;
+            display: flex;
+            align-items: center;
+            color: #3f4d5b;
+            img{
+                width: 20px;
+                height: 20px;
+                border-radius: 50%;
+            }
+            span{
+                margin-left: 10px;
+            }
+            span:nth-child(2){
+                font-size: 14px;
+            }
+            span:nth-child(3){
+                font-size: 12px;
+            }
+        }
         .intro {
-            padding: 0 10px;
+            text-align: justify;
+            padding: 20px 30px 10px;
             font-size: 14px;
         }
-        .t1 {
+        .catalog {
             padding: 10px;
-            .t11 {
+            div:nth-child(1) {
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
                 font-size: 16px;
+                margin: 20px 0;
             }
-            .t2 {
+            div[class*="fa"] {
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
-                font-size: 15px;
+                font-size: 13px;
                 cursor: pointer;
                 margin-left: 25px;
                 margin-top: 15px;
@@ -87,9 +113,6 @@
                     color: rgba(0, 171, 249, 0.87);
                 }
             }
-        }
-        .vue-scrollbar__scrollbar-vertical .scrollbar, .vue-scrollbar__scrollbar-horizontal .scrollbar {
-            background: rgb(32, 40, 48);
         }
     }
 </style>

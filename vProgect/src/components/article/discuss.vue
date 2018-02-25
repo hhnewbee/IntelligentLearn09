@@ -427,9 +427,6 @@
                     }
                 }
             }
-            .vue-scrollbar__scrollbar-vertical .scrollbar, .vue-scrollbar__scrollbar-horizontal .scrollbar {
-                background: rgb(32, 40, 48);
-            }
         }
         .control {
             display: flex;

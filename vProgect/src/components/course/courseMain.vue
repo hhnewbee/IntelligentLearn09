@@ -2,14 +2,12 @@
     <div class="courseMain">
         <courseheader class="header"></courseheader>
         <course-center class="center"></course-center>
-        <footer_></footer_>
     </div>
 </template>
 
 <script>
     import courseheader from './courseHeader.vue';
     import courseCenter from './courseCenter.vue';
-    import footer_ from '../footer/footer.vue';
     export default {
         created(){
             //TODO 获取数据
@@ -25,7 +23,6 @@
         components:{
             courseheader,
             courseCenter,
-            footer_
         }
     }
 </script>
@@ -38,7 +35,7 @@
         background-color: #14191e;
         color: #b5b9bc;
         .header{
-            padding: 10px 40px;
+            padding: 20px 0;
         }
         .center{
             flex-grow: 1;

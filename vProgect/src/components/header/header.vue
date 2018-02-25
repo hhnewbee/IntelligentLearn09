@@ -6,7 +6,7 @@
                 class="elMenu"
                 mode="horizontal"
                 :router='true'>
-            <div class="img" style="float:left;margin-right:100px;margin-left: 35px">
+            <div class="img" style="border-bottom: 2px solid transparent;">
                 <img src="../../static/imgs/avatar.jpg">
             </div>
             <el-menu-item index="/main/recommend">首页</el-menu-item>
@@ -14,8 +14,7 @@
             <el-menu-item index="/main/articlesPage">文章</el-menu-item>
             <el-menu-item index="/main/questionPage">问答</el-menu-item>
             <searchItem style="align-self: center;width: 300px;cursor: text;"> </searchItem>
-            <div class="img"
-                 style="float:right;margin-right: 35px;">
+            <div class="img">
                 <avatarInfo></avatarInfo>
             </div>
         </el-menu>
@@ -52,8 +51,8 @@
             height: 61px;
             box-sizing: border-box;
             padding: 0 20px;
-            border-bottom: 2px solid transparent;
             outline: none;
+            border-color: #b0b0b0;
             img {
                 width: 45px;
                 height: 45px;

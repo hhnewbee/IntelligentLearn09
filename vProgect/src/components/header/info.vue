@@ -4,31 +4,19 @@
         <el-popover
                 ref="popover2"
                 placement="bottom"
-                title="标题"
-                width="200"
+                width="360"
                 trigger="click">
+            <el-dialog
+                    title="通知"
+                    :modal='false'
+                    :visible.sync="dialogNotificationVisible">
+                {{notiContent}}
+            </el-dialog>
             <div id="noticeInfoIL09">
-                <div class="item">
-                    <div class="typeAsk">
-                        <div class="type"></div>
-                        <div class="content">
-                            <div class="who"></div>
-                            <div class="what"></div>
-                        </div>
-                    </div>
-                    <div class="typeComment">
-                        <div class="type"></div>
-                        <div class="content">
-                            <div class="who">
-                            </div>
-                            <div class="where"></div>
-                            <div class="what"></div>
-                        </div>
-                    </div>
-                    <div class="typeInfo">
-                        <div class="type"></div>
-                        <div class="content"></div>
-                    </div>
+                <div v-for="item in notifications" @click="handleNotification(item)" >
+                    <p v-if="item.answer!==undefined" style="color: #14c1e9">{{item.user}}：{{item.answer}}</p>
+                    <p v-else style="color: red">{{item.user}}：</p>
+                    <p>{{item.content}}</p>
                 </div>
             </div>
         </el-popover>
@@ -72,10 +60,10 @@
                     </div>
                 </div>
                 <div class="line3">
-                    <div v-if="contents.length===0" style="text-align: center;color: #9b9b9b">暂无</div>
+                    <div v-if="records.length===0" style="text-align: center;color: #9b9b9b">暂无</div>
                     <div
                             class="content"
-                            v-for="content in contents">
+                            v-for="content in records">
                         <div class="contentText">{{content.content}}</div>
                         <div class="el-icon-time">&nbsp;{{content.time}}</div>
                     </div>
@@ -105,20 +93,32 @@
     import { mapMutations } from 'vuex'
 
     export default {
+        created(){
+            this.initData();
+        },
         data(){
           return{
-              //todo 模拟记录的数据
-              contents:[
-                  {content: '我的回答内容我的回答内容1我的回答内容我的回答内容1', time: '2013-11-11 22:33'},
-                  {content: '我的回答内容我的回答内容1我的回答内容我的回答内容1', time: '2013-13-23 22:33'},
-                  {content: '答内容我的回答内容1', time: '2013-12-3 22:33'},
-              ]
+              //记录的数据
+              records:[],
+              //通知的数据
+              notifications:[],
+              //通知信息的弹出框
+              dialogNotificationVisible:false,
+              //当前打开的通知的内容
+              notiContent:'',
           }
         },
         methods:{
+            /**
+             * 设置用户信息
+             */
             ...mapMutations('info',[
                 'setAccount',
             ]),
+            /**
+             * 快捷选项跳转
+             * @param tar
+             */
             handleChoose(tar){
                 switch (tar){
                     case 2:{
@@ -127,10 +127,35 @@
                     }
                 }
             },
+            /**
+             * 退出登录
+             */
             handleOut(){
                 localStorage.removeItem("ifLogin");
                 this.setAccount('');
                 window.location="http://localhost:3000";
+            },
+            /**
+             * 初始化数据
+             */
+            initData(){
+                //todo 模拟记录的数据
+                this.records=[
+                    {content: '我的回答内容我的回答内容1我的回答内容我的回答内容1', time: '2013-11-11 22:33'},
+                    {content: '我的回答内容我的回答内容1我的回答内容我的回答内容1', time: '2013-13-23 22:33'},
+                    {content: '答内容我的回答内容1', time: '2013-12-3 22:33'},
+                ];
+                //todo 模拟通知的数据
+                this.notifications=[
+                    {user:'李敏',answer:'回答了你的问题',content:'泰国神级广告导演Thanonchai Sornsriwichai亲自操刀，马云大佬buff加持，然而不能改变我对这则广告很弱智的看法。难道我们现在对一个人的认识，不是注重个人对人接物的态度和自身良好的素养品德了吗？这则广告，在我看来就是在传达这么一个意思，有车有房才能结婚。广告的最后，才让人恍然醒悟，原来是滴滴出行，然而有啥关联吗？'},
+                    {user:'通知',content:'请开始学习"比特的原理"该文章'}
+                ];
+            },
+            handleNotification(item){
+                if(item.answer===undefined){
+                    this.dialogNotificationVisible=true;
+                    this.notiContent=item.content;
+                }
             }
         },
     }
@@ -141,6 +166,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
+        border-color: inherit;
         .noticeIcon{
             background-color: inherit;
             border-color: inherit;
@@ -155,7 +181,28 @@
             cursor: pointer
         }
     }
+    #noticeInfoIL09{
+        div{
+            padding: 10px 10px 5px;
+            border-bottom: 1px solid #eeeeee;
+            border-radius: 4px;
+            cursor: pointer;
+            p{
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            p:nth-child(1){
 
+            }
+            p:nth-child(2){
+                margin-left: 20px;
+            }
+            &:hover{
+                background-color: #eeeeee;
+            }
+        }
+    }
     #avatarInfOpopper {
         .line1 {
             display: flex;
