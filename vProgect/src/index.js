@@ -141,8 +141,8 @@ let router = new VueRouter(
                         component: () => import('./components/userCenter/articleManage.vue'),
                     },
                     {
-                        path: 'userManage',
-                        component: () => import('./components/userCenter/userManage.vue'),
+                        path: 'usersManage',
+                        component: () => import('./components/userCenter/usersManage.vue'),
                     },
                     {
                         path: 'articleManage/articleEdit',

@@ -275,15 +275,22 @@
         }
         .right {
             height: 100%;
+            width: 300px;
             position: fixed;
+            right: 0;
+            top: 0;
             padding-top: 20px;
             margin-right: 60px;
             background-color: #ffffff;
-            right: 0;
-            width: 300px;
             display: flex;
             flex-direction: column;
             align-items: center;
+            /*百分百是相对于html的，要减去头部的高度*/
+            &::before{
+                content: '';
+                height: 62px;
+                width: 100%;
+            }
             .sideBarContent {
                 height: 1%;
                 flex-grow: 1;

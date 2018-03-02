@@ -1,46 +1,46 @@
 <template>
-    <div class="record">
+    <div class="headerControl">
         <el-breadcrumb class="breadcrumb">
             <el-breadcrumb-item class="el-icon-setting">
-                &nbsp;后台管理
+                &nbsp;{{tableOptions.title1}}
             </el-breadcrumb-item>
             <el-breadcrumb-item>
                 <span @click="handleBackSearch">
-                    账号管理
+                    {{tableOptions.title2}}
                 </span>
             </el-breadcrumb-item>
+            <!--todo 添加的标题-->
             <el-breadcrumb-item
                     v-if="ifSearch">搜索
             </el-breadcrumb-item>
         </el-breadcrumb>
         <div class="header">
-            <el-button
-                    :disabled="ifDelect"
-                    @click="handleDelectRows"
-                    type="primary"
-                    icon="el-icon-delete"
-                    style="width: 100px;padding: 10px 10px">
-                批量删除
-            </el-button>
-            <el-button
-                    @click="handleDelectAll"
-                    type="danger"
-                    icon="el-icon-delete"
-                    style="width: 100px;padding: 10px 10px">
-                全部删除
-            </el-button>
-            <input
-                    class="searchInput"
+            <el-input
+                    style="width: 300px;"
+                    size="small"
                     v-model="searchInput"
-                    placeholder="请输入内容"/>
+                    placeholder="请输入内容">
+                <span slot="suffix"
+                      @click="handleSearch"
+                      class="el-icon-search searchIcon"></span>
+            </el-input>
+
+            <!--todo 添加的功能-->
             <el-button
-                    @click="handleSearch"
-                    type="primary"
-                    size="medium"
-                    style="margin-left: 5px;width:80px;padding: 10px 10px"
-                    icon="el-icon-search">
-                搜索
+                    v-if="tableOptions.tableType==='usersManage'"
+                    type="success"
+                    style="margin-left: 10px"
+                    size="small">
+                添加管理员
             </el-button>
+
+            <el-button type="primary"
+                       size="small"
+                       @click="handleShowMore"
+                       style="margin-left: 10px"
+                       icon="el-icon-menu">
+            </el-button>
+
             <!--用户类型切换-->
             <el-select
                     @change="handleUserTypeChange"
@@ -67,123 +67,54 @@
                         :value="item.value">
                 </el-option>
             </el-select>
-
+        </div>
+        <div class="moreFun"
+             v-if='ifMoreFun'>
             <el-button
-                    type="success"
-                    style="margin-left: 10px;width: 80px;padding: 10px 10px"
-                    size="medium">
-                添加用户
+                    :disabled="ifDelect"
+                    @click="handleDelectRows"
+                    type="primary"
+                    size="small"
+                    icon="el-icon-delete">
+                批量删除
             </el-button>
-
+            <el-button
+                    @click="handleDelectAll"
+                    type="danger"
+                    size="small"
+                    icon="el-icon-delete">
+                全部删除
+            </el-button>
             <el-button
                     type="success"
-                    style="margin-left: 10px;width: 90px;padding: 10px 10px"
-                    size="medium">
-                添加管理员
+                    style="margin-left: 10px"
+                    size="small">
+                全局信息
+            </el-button>
+            <el-button
+                    type="success"
+                    style="margin-left: 10px"
+                    size="small">
+                批量信息
             </el-button>
         </div>
         <div class="content">
-            <el-table
-                    v-show="ifTable"
-                    @select-all="handleSelectAll"
-                    @select="handleSelect"
-                    :data="tableData"
-                    max-height="100%"
-                    border>
-                <el-table-column
-                        fixed
-                        align='center'
-                        type="selection"
-                        width="45">
-                </el-table-column>
-                <el-table-column
-                        align='center'
-                        prop="date"
-                        label="开通时间"
-                        width="100">
-                </el-table-column>
-
-                <el-table-column
-                        align='center'
-                        prop="account"
-                        label="账号"
-                        width="130">
-                </el-table-column>
-
-                <el-table-column
-                        align='center'
-                        prop="name"
-                        label="姓名"
-                        min-width="150">
-                </el-table-column>
-
-                <el-table-column
-                        align='center'
-                        prop="sex"
-                        label="性别"
-                        width="60">
-                </el-table-column>
-
-                <el-table-column
-                        align='center'
-                        label="职位"
-                        width="150">
-                    <div
-                            slot-scope="scope"
-                            style="display: flex;align-items: center;justify-content: center">
-                        <div
-                                style="margin-right: 3px"
-                                :ref="scope.row.account">
-                            {{scope.row.position}}
-                        </div>
-                        <el-button
-                                :ref="scope.row.account+'button'"
-                                @click="handlSetPosition(scope)"
-                                type="text"
-                                size="small">
-                            修改
-                        </el-button>
-                    </div>
-                </el-table-column>
-
-                <el-table-column
-                        align='center'
-                        label="用户状态"
-                        width="150">
-                    <div slot-scope="scope">
-                        <el-switch
-                                v-model="scope.row.status"
-                                active-text="开通"
-                                inactive-text="关闭"
-                                active-color="#13ce66"
-                                inactive-color="#ff4949">
-                        </el-switch>
-
-                    </div>
-                </el-table-column>
-
-                <el-table-column
-                        align='center'
-                        fixed="right"
-                        label="操作"
-                        width="110">
-                    <template slot-scope="scope">
-                        <el-button
-                                @click="handleSee(scope)"
-                                type="text"
-                                size="small">
-                            查看
-                        </el-button>
-                        <el-button
-                                @click="handleDeleteRow(scope.$index)"
-                                type="text"
-                                style="color: red;"
-                                size="small">
-                            删除
-                        </el-button>
-                    </template>
-                </el-table-column>
-            </el-table>
+            <!--<usersManage :ifTable='ifTable'-->
+                         <!--:tableOptions.sync='tableOptions'-->
+                         <!--:tableData.sync='tableData'-->
+                         <!--@rowSee="handleSee"-->
+                         <!--@rowDelete="handleDeleteRow"-->
+                         <!--@selectBatch="handleSelectBatch"-->
+                         <!--@selectAll="handleSelectAll">-->
+            <!--</usersManage>-->
+            <router-view :ifTable='ifTable'
+                         :tableOptions.sync='tableOptions'
+                         :tableData.sync='tableData'
+                         @rowSee="handleSee"
+                         @rowDelete="handleDeleteRow"
+                         @selectBatch="handleSelectBatch"
+                         @selectAll="handleSelectAll">
+            </router-view>
             <hightChart
                     v-if="!ifTable"
                     :chartData="chartData"></hightChart>
@@ -199,83 +130,28 @@
 </template>
 
 <script>
+    import usersManage from './usersManage.vue';
+
     export default {
         created() {
-            //todo 初始化时ajax请求数据
-//            this.$ajax.get('').then((response)=>{
-//                this.pageData=response.data;
-//            });
-            //todo 模拟初始化请求数据
-            this.pageData= [
-                {
-                    date: '2016-05-03',
-                    account:'154091333',
-                    name: 'newbee',
-                    sex: '男',
-                    position: 'CEO',
-                    status:true,
-                    accessTimes:40,
-                    useTime:200,
-                },  {
-                    date: '2016-05-03',
-                    account:'154091334',
-                    name: 'newbee',
-                    sex: '男',
-                    position: 'CEO',
-                    status:true,
-                    accessTimes:30,
-                    useTime:150,
-                },  {
-                    date: '2016-05-03',
-                    account:'154091335',
-                    name: 'newbee',
-                    sex: '男',
-                    position: 'CEO',
-                    status:true,
-                    accessTimes:20,
-                    useTime:120,
-                },  {
-                    date: '2016-05-03',
-                    account:'154091336',
-                    name: 'newbee',
-                    sex: '男',
-                    position: 'CEO',
-                    status:true,
-                    accessTimes:20,
-                    useTime:101,
-                },  {
-                    date: '2016-05-03',
-                    account:'154091337',
-                    name: 'newbee',
-                    sex: '男',
-                    position: 'CEO',
-                    status:false,
-                    accessTimes:10,
-                    useTime:101,
-                },  {
-                    date: '2016-05-03',
-                    account:'154091338',
-                    name: 'newbee',
-                    sex: '男',
-                    position: 'CEO',
-                    status:true,
-                    accessTimes:90,
-                    useTime:181,
-                }
-            ];
-                //初始化时的表格数据
-                this.tableData = this.pageData;
+            this.initData();
         },
+        mounted() {
+
+        },
+        props: ['routerPath'],
         data() {
             return {
+                //表格的配置
+                tableOptions: {},
                 //要删除的行
                 delectRows: [],
                 //批量删除按钮是否可用
-                ifDelect:true,
+                ifDelect: true,
                 //当前列表要显示的数据
                 tableData: [],
                 //正常分页时显示的数据,
-                pageData:[],
+                pageData: [],
                 //是否删除当前列表的所有数据
                 ifSelecttALl: false,
                 //显示搜索状态
@@ -289,25 +165,29 @@
                 //图表与表格的切换
                 ifTable: true,
                 //用户类型选项值
-                userSelectV:'普通用户',
+                userSelectV: '普通用户',
                 //图表类型切换
-                userTypes: [{value:'管理员'}, {value:'普通用户'}],
+                userTypes: [{value: '管理员'}, {value: '普通用户'}],
                 //用户类型切花
-                ifManager:false,
+                ifManager: false,
                 //图表的数据
-                chartData:[[],[],[]],
+                chartData: [[], [], []],
+                //显示更多功能
+                ifMoreFun: false,
+                //标题数组
+                titleArray: [],
+                //按钮数组
+                buttonArray: [],
             }
         },
-
         methods: {
             /**
-             *选择的数据
+             *批量选择
              * @param selction
-             * @param row
              */
-            handleSelect(selction, row) {
+            handleSelectBatch(selction) {
                 //把要删除的数据进行集合
-                this.delectRows=selction;
+                this.delectRows = selction;
             },
             /**
              * 删除选择的数据
@@ -315,9 +195,10 @@
             handleDelectRows() {
                 //如果全部选择
                 if (this.ifSelecttALl) {
+                    //清空数据
                     this.tableData = [];
-                    //删除按钮不可用
-                    this.ifDelect=true;
+                    //删除按钮禁用
+                    this.ifDelect = true;
                     return;
                 }
                 //遍历出相同元素所处的位置并且删除
@@ -329,17 +210,17 @@
                     }
                 }
                 //清空数据防止重复遍历
-                this.delectRows=[];
+                this.delectRows = [];
             },
             /**
              * 选择所有时
              */
             handleSelectAll() {
-                this.ifDelect=!this.ifDelect;
+                this.ifDelect = !this.ifDelect;
                 this.ifSelecttALl = true;
             },
             /**
-             * 单个删除
+             * 单行删除
              * @param index
              */
             handleDeleteRow(index) {
@@ -387,7 +268,7 @@
                     accessTimes: 10,
                 }];
                 //先存入分页数据然后在赋予当前所展示的数据
-                this.tableData=this.pageData;
+                this.tableData = this.pageData;
             },
             /**
              * 判断是展示图表还是表格
@@ -400,7 +281,7 @@
              * 搜索数据
              */
             handleSearch() {
-                this.tableData = [ {
+                this.tableData = [{
                     date: '2016-05-03',
                     name: 'vue与webpack初步1',
                     type: '课程',
@@ -440,11 +321,10 @@
             },
             /**
              * 设置图表数据
-             * @param datas
              */
-            setChartData(){
+            setChartData() {
                 //清空之前的数据
-                this.chartData=[[],[],[]];
+                this.chartData = [[], [], []];
                 this.tableData.forEach((data) => {
                     this.chartData[0].push(data.name);
                     this.chartData[1].push(data.useTime);
@@ -455,70 +335,90 @@
              * 用户类型切换
              * @param value
              */
-            handleUserTypeChange(value){
-                this.ifManager=value==='管理员';
+            handleUserTypeChange(value) {
+                this.ifManager = value === '管理员';
             },
             /**
              * 编辑职位
              * @param scope
              */
-            handlSetPosition(scope){
+            handlSetPosition(scope) {
                 //获取职位和按钮的dom
-                let editor=this.$refs[scope.row.account];
-                let button=this.$refs[scope.row.account+'button'];
-                let tar=button.$el.innerText;
+                let editor = this.$refs[scope.row.account];
+                let button = this.$refs[scope.row.account + 'button'];
+                let tar = button.$el.innerText;
                 //判断是否是确定按钮
-                if(tar==='确定'){
+                if (tar === '确定') {
                     //职位变成不可编辑状态
-                    editor.contentEditable=false;
-                    button.$el.innerText='修改';
-                }else{
+                    editor.contentEditable = false;
+                    button.$el.innerText = '修改';
+                } else {
                     //职位变成可编辑状态
-                    editor.contentEditable=true;
+                    editor.contentEditable = true;
                     //自动获取焦点
                     editor.focus();
                     //编辑按钮变成确定
-                    button.$el.innerText='确定';
+                    button.$el.innerText = '确定';
                 }
-            }
+            },
+            /**
+             * 显示更多功能
+             */
+            handleShowMore() {
+                this.ifMoreFun = !this.ifMoreFun;
+            },
+            /**
+             * 数据初始化
+             */
+            initData() {
+                this.pageData = this.tableData;
+            },
         },
-        watch:{
+        watch: {
             //监听数据变化以更新视图
-            tableData(){
+            tableData() {
                 //更新图表
                 this.setChartData();
             },
             //监听是否有删除的数据以显示删除按钮
-            delectRows(){
+            delectRows() {
                 this.ifDelect = this.delectRows.length === 0;
+            },
+            //监听路由变化
+            routerPath() {
+                this.$router.push(this.routerPath);
             }
         },
         components: {
-            hightChart:()=>import( './hightChart.vue')
+            hightChart: () => import( './hightChart.vue'),
+            usersManage
         }
     }
 </script>
 
 <style scoped lang="scss">
-    .record {
+    $primaryColor: #409EFF;
+    .headerControl {
         display: flex;
         flex-direction: column;
         .header {
             display: flex;
             align-items: center;
-            padding-left: 40px;
-            padding-right: 40px;
+            padding: 0 40px;
             margin-top: 20px;
             position: relative;
-            .searchInput {
-                height: 36px;
-                width: 200px;
-                padding: 10px;
-                border-radius: 5px;
-                margin-left: 20px;
-                border: 1px solid #e0e2e8;
-                outline: none;
+            .searchIcon {
+                margin-right: 5px;
+                line-height: 32px;
+                cursor: pointer;
+                &:hover {
+                    color: $primaryColor;
+                }
             }
+        }
+        .moreFun {
+            padding: 0 40px;
+            margin-top: 10px;
         }
         .content {
             flex-grow: 1;

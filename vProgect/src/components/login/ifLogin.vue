@@ -1,28 +1,24 @@
 <template></template>
 <script>
-    import {mapState} from 'vuex'
+    /*
+    * 如果是登录过了，服务器返回对应账号生成的字符序列，作为下次不用登录的依据
+    * */
     import {mapMutations} from 'vuex'
 export default {
     created() {
         //判断用户是否登录
-        let account = localStorage["ifLogin"];
-        if (account) {
-            this.setAccount(account);
+        let accountHashMap = localStorage["ifLogin"];
+        if (accountHashMap) {
+            this.setAccountHashMap(accountHashMap);
             //跳转到主页
             this.$router.push({path:'/main/recommend' });
         }else{
             this.$router.push({name:'login' });
         }
     },
-    computed: {
-        //判断是否进入登录界面
-        ...mapState('info', [
-            'account'
-        ]),
-    },
     methods: {
         ...mapMutations('info', [
-            'setAccount',
+            'setAccountHashMap',
         ]),
     },
 }

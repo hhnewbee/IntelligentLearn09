@@ -283,13 +283,18 @@
 </script>
 
 <style scoped lang="scss">
+    $primaryColor:#409EFF;
     .comments {
         height: 100%;
+        width: 300px;
         display: flex;
         flex-direction: column;
+        border: 1px solid #eeeeee;
+        background-color: #eeeeee;
         .my-scrollbar {
             height: 100%;
             flex-grow: 1;
+            background-color: #eeeeee;
             //问题的列表
             .commentsContent {
                 width: 100%;
@@ -303,8 +308,10 @@
                 .item {
                     width: 265px;
                     margin-right: 8px;
-                    box-shadow: 0 1px 1px rgba(136, 136, 136, 0.51);
                     padding: 10px 10px;
+                    margin-bottom: 20px;
+                    background-color: white;
+                    box-shadow: 1px 1px 5px 1px #b3b3b3;
                     .head {
                         display: flex;
                         align-items: center;
@@ -318,11 +325,12 @@
                         }
                         .name {
                             margin-left: 8px;
-                            font-size: 14px;
+                            font-size: 15px;
                             font-weight: 700;
+                            color:$primaryColor;
                         }
                         .tag {
-                            padding:0 2px;
+                            padding:2px 4px;
                             margin-left: 10px;
                             background: #409eff;
                             font-size: 12px;
@@ -356,10 +364,6 @@
                         }
                     }
                 }
-            }
-
-            .vue-scrollbar__scrollbar-vertical .scrollbar, .vue-scrollbar__scrollbar-horizontal .scrollbar {
-                background: rgb(32, 40, 48);
             }
         }
         /*回答的列表*/
@@ -461,13 +465,14 @@
                 }
             }
         }
+
         .control {
             display: flex;
             align-items: center;
             padding: 15px 10px;
             padding-bottom: 20px;
-            margin-bottom: 62px;
             border-top: 1px solid #ddd5d5;
+
         }
     }
 </style>

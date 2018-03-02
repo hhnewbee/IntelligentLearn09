@@ -8,7 +8,7 @@
                 <div>
                     <!--不能用click，因为blur事件-->
                     <div
-                            v-for="user in usersList"
+                            v-for="user in usersOnlineList"
                             class="item"
                             @mousedown="handleChatChange(user,true)">
                         <img class="avatar" :src="user.avatarUrl"/>
@@ -25,32 +25,32 @@
                     @blur="handleShowList"
                     @click="handleShowList"></div>
             <!--大厅的信息-->
-            <div class="group" v-show="!priChat">
+            <div class="onlines" v-show="!priChat">
                 <div class="small fa fa-television">
-                    12人在线
+                    &nbsp;{{usersOnlineList.length}}在线
                 </div>
             </div>
-            <!--用户信息-->
+            <!--个体用户信息-->
             <div class="user" v-show="priChat">
-                <div class="name">{{userInfo.nickName}}</div>
+                <div class="name">{{areaInfo.nickName}}</div>
             </div>
             <!--切回大厅-->
             <div
-                    class="home fa fa-home"
-                    @click="handleChatChange(home,false)"
+                    class="backHome fa fa-home"
+                    @click="handleChatChange(homeAreaInfo,false)"
                     v-show="priChat">
             </div>
         </div>
         <vue-scrollbar
                 class="my-scrollbar"
-                v-for="item in chats"
-                :key="item.nickName"
-                :ref="item.nickName"
-                v-show="item.show">
+                v-for="area in chatAreas"
+                :key="area.nickName"
+                :ref="area.nickName"
+                v-show="area.show">
             <div class="message">
                 <div
                         class="item item-left"
-                        v-for="messageItem in item.messageItems"
+                        v-for="messageItem in area.messageItems"
                         v-if="messageItem.type==='left'">
                     <div class="info">
                         <div class="avatar">
@@ -65,7 +65,7 @@
                     </div>
                 </div>
                 <div
-                        v-for="messageItem in item.messageItems"
+                        v-for="messageItem in area.messageItems"
                         v-if="messageItem.type==='right'"
                         class="item item-right">
                     <div class="info">
@@ -105,37 +105,11 @@
 
 <script>
     import VueScrollbar from 'vue2-scrollbar'
-    import "vue2-scrollbar/dist/style/vue2-scrollbar.css";
     import uuidv1 from 'uuid/v1';
 
     export default {
         created() {
-            //防止用户名和房间名重复，所以用uuid做为房间名
-            this.home = {nickName: uuidv1(), avatarUrl: ''};
-            this.chats = [{
-                nickName: this.home.nickName, show: true, messageItems: [
-                    {
-                        nickName: 'newbee1',
-                        avatarUrl: 'http://localhost:3100/img/avatar/avatar.jpg',
-                        type: 'left',
-                        content: '你好dewdwededawdawdewadeawdeawdaw'
-                    },
-                    {
-                        nickName: 'newbee2',
-                        avatarUrl: 'http://localhost:3100/img/avatar/avatar.jpg',
-                        type: 'left',
-                        content: '你好dewdwededawdawdewadeawdeawdaw'
-                    },
-                    {
-                        nickName: 'newbee3',
-                        avatarUrl: 'http://localhost:3100/img/avatar/avatar.jpg',
-                        type: 'right',
-                        content: '你好dewdwededawdawdewadeawdeawdaw'
-                    },
-                ]
-            }];
-            this.userInfo = this.home;
-            this.messageItemsNow = this.chats[0].messageItems;
+            this.initData();
         },
         data() {
             return {
@@ -143,23 +117,23 @@
                 wss: {},
                 //是否打开用户列表
                 showUserList: false,
-                //用户列表
-                usersList: [
+                //当前在线用户列表
+                usersOnlineList: [
                     {nickName: 'newbee1', avatarUrl: 'http://localhost:3100/img/avatar/avatar.jpg'},
                     {nickName: 'newbee2', avatarUrl: 'http://localhost:3100/img/avatar/avatar.jpg'}
                 ],
                 //是否私聊
                 priChat: false,
-                //主聊天区信息
-                home: {},
-                //不同聊天的内容区
-                chats: [],
-                //当前讨论用户信息
-                userInfo: {},
+                //主聊天区的信息
+                homeAreaInfo: {},
+                //和不同用户聊天的内容区
+                chatAreas: [],
+                //当前讨论区的信息，用于区分和切换聊天区
+                areaInfo: {},
                 //当前讨论区的items
-                messageItemsNow: {},
+                messageItemsNow: [],
                 //发送的数据
-                sendData: ''
+                sendData: '',
             }
         },
         methods: {
@@ -170,61 +144,85 @@
             handleShowList(e) {
                 let ts = e.target.style;
                 if (!this.showUserList) {
-                    ts.color = "#748eab";
+                    ts.color = "#495a6c";
                 } else {
-                    ts.color = '#495a6c';
+                    ts.color = '#748eab';
                 }
                 this.showUserList = !this.showUserList;
             },
             /**
              * 切户讨论区
-             * @param user
+             * @param info
              * @param ifPri
              */
-            handleChatChange(user, ifPri) {
+            handleChatChange(info, ifPri) {
                 //header切换到单个用户聊天模式
                 this.priChat = ifPri;
                 //确定当前用户信息
-                this.userInfo = user;
+                this.areaInfo = info;
                 //聊天框的切换,判断当前聊天框是否打开过，如果已打开，复用，否则新添加
                 let ifExit = false;
-                this.chats.forEach((item) => {
+                this.chatAreas.forEach((item) => {
                     if (item.show = item.nickName === user.nickName) {
                         this.messageItemsNow = item.messageItems;
                         ifExit = true;
                     }
                 });
+                //如果当前讨论区没好有存在，则加入
                 if (!ifExit) {
-                    let newItem = {nickName: user.nickName, show: true, messageItems: []};
-                    this.messageItemsNow = newItem.messageItems;
-                    this.chats.push(newItem);
+                    let newArea = {nickName: user.nickName, show: true, messageItems: []};
+                    this.messageItemsNow = newArea.messageItems;
+                    this.chatAreas.push(newArea);
                 }
 
             },
+
             /**
              * 发送消息
              */
             handleSend() {
-                //本地信息的更新
-                this.messageItemsNow.push({
+                //发送信息
+                this.wss.send(JSON.stringify({
+                    //发送者的昵称
+                    nickName:"newbee",
+                    //消息的类型
+                    type: "groupChat",
+                    //头像
+                    avatarUrl: 'http://localhost:3100/img/avatar/avatar.jpg',
+                    //内容
+                    content:this.sendData
+                }));
+                //本地信息处理
+                this.messageLocalSet({
                     nickName: 'newbee1',
                     avatarUrl: 'http://localhost:3100/img/avatar/avatar.jpg',
                     type: 'right',
-                    content: '你好dewdwededawdawdewadeawdeawdaw'
-                });
-
-                //下拉到最底部
-                this.messageScrollTo(this.$refs[this.userInfo.nickName][0]);
+                    content: this.sendData
+                })
             },
+
             /**
              * webSocket链接
              */
             webso() {
-                this.wss = new WebSocket("wss://localhost:3100");
+                this.wss = new WebSocket("ws://localhost:3200/"+JSON.stringify({nickName:'newbee',avatarUrl:'http://localhost:3100/img/avatar/avatar.jpg'}));
+                //链接成功后回调
                 this.wss.onopen = (event) => {
+
                 };
+                //收到服务器数据后回调
                 this.wss.onmessage = (event) => {
+                    //如果是加入的数据，就是在数组中追加一个用户
+                    if(event.data.type==='join'){
+                        this.usersOnlineList.push();
+                        //否则就是加入信息
+                    }else{
+                        //todo 如果已经队列存在，加入队列，如果队列不是当前队列，则显示信息数
+                        //todo 如果队列不存在，则创建新的队列，并且显示信息数
+                        this.messageLocalSet(JSON.parse(event.data));
+                    }
                 };
+                //断开链接后回调
                 this.wss.onclose = (event) => {
                 };
             },
@@ -237,6 +235,53 @@
                 setTimeout(() => {
                     target.scrollToY(target.$el.children[0].clientHeight);
                 }, 100);
+            },
+            /**
+             * 初始化数据
+             */
+            initData(){
+                //防止用户名和房间名重复，所以用uuid做为房间名,主要是用做讨论区切换时的标识
+                this.homeAreaInfo = {nickName: uuidv1()};
+                //初始化大厅讨论区
+                this.chatAreas = [{
+                    nickName: this.homeAreaInfo.nickName, show: true, messageItems: [
+                        {
+                            nickName: 'newbee1',
+                            avatarUrl: 'http://localhost:3100/img/avatar/avatar.jpg',
+                            type: 'left',
+                            content: '你好dewdwededawdawdewadeawdeawdaw'
+                        },
+                        {
+                            nickName: 'newbee2',
+                            avatarUrl: 'http://localhost:3100/img/avatar/avatar.jpg',
+                            type: 'left',
+                            content: '你好dewdwededawdawdewadeawdeawdaw'
+                        },
+                        {
+                            nickName: 'newbee3',
+                            avatarUrl: 'http://localhost:3100/img/avatar/avatar.jpg',
+                            type: 'right',
+                            content: '你好dewdwededawdawdewadeawdeawdaw'
+                        },
+                    ]
+                }];
+                //初始化当前讨论区的信息，如头部等信息
+                this.areaInfo = this.homeAreaInfo;
+                //将讨论区的信息items赋给当前信息items
+                this.messageItemsNow = this.chatAreas[0].messageItems;
+                //链接websock
+                this.webso();
+            },
+            /**
+             * 本地信息处理
+             * @param message
+             */
+            messageLocalSet(message){
+                //本地信息的更新
+                this.messageItemsNow.push(message);
+
+                //下拉到最底部
+                this.messageScrollTo(this.$refs[this.areaInfo.nickName][0]);
             }
         },
         components: {
@@ -256,23 +301,26 @@
         height: 100%;
         display: flex;
         flex-direction: column;
+        background-color: #f0f4f7;
+        border: 1px solid #e8e3e3;
         /*头部*/
         .header {
             display: flex;
             justify-content: flex-start;
             align-items: center;
+            position: relative;
             border-bottom: 1px solid #e8e3e3;
             /*用户列表*/
             .userList {
                 z-index: 100;
-                top: 100px;
-                left: 0;
+                top: 39px;
+                left: 0px;
                 position: absolute;
                 background-color: #ffffff;
                 border-radius: 5px;
                 box-shadow: 1px 1px 4px #040506;
                 color: #b5b9bc;
-                max-height: 80%;
+                max-height: 300px;
                 /*用户列表的item*/
                 .item {
                     padding: 5px 10px;
@@ -298,19 +346,20 @@
                     }
                 }
             }
+            /*用户列表切换*/
             .users {
                 font-size: 18px;
-                color: #495a6c;
+                color: #748eab;
                 margin-left: 20px;
                 padding: 10px 5px;
                 cursor: pointer;
                 user-select: none;
                 outline: none;
                 &:hover {
-                    color: #748eab;
+                    color: #495a6c;
                 }
             }
-            .home {
+            .backHome {
                 font-size: 18px;
                 color: #495a6c;
                 margin-right: 20px;
@@ -321,7 +370,7 @@
                     color: #748eab;
                 }
             }
-            .group {
+            .onlines {
                 @include center;
                 margin-left: 10px;
                 user-select: none;
@@ -341,27 +390,18 @@
                     font-weight: bold;
                     margin-right: 10px;
                 }
-                img {
-                    border-radius: 50%;
-                    width: 35px;
-                    height: 35px;
-                    margin: 8px 10px;
-                    margin-right: 20px;
-                    border: 1px solid #323c47;
-                }
             }
         }
         .my-scrollbar {
             height: 1%;
             flex-grow: 1;
-            max-height: 100%;
+            background-color: #f0f4f7;
             .message {
                 //避免overfloat时会拉伸影响其他布局
                 height: 100%;
-                box-sizing: border-box;
+                width: 100%;
                 padding: 15px;
                 padding-right: 20px;
-                width: 100%;
                 .item {
                     .info {
                         display: flex;
@@ -382,7 +422,8 @@
                         }
                     }
                     .content {
-                        padding: 6px;
+                        min-width: 50px;
+                        padding: 10px;
                         margin-bottom: 16px;
                         background-color: #409EFF;
                         border-radius: 7px;
@@ -391,7 +432,7 @@
                         color: #ffffff;
                         &::before {
                             bottom: 100%;
-                            left: 4%;
+                            left: 8px;
                             content: " ";
                             position: absolute;
                             pointer-events: none;
@@ -421,7 +462,7 @@
                         background-color: #67c23a;
                         &::before {
                             left: auto;
-                            right: 4%;
+                            right: 8px;
                             border-bottom-color: #67c23a;
                         }
                     }
@@ -433,7 +474,6 @@
             align-items: center;
             width: 100%;
             padding: 15px 10px;
-            margin-bottom: 62px;
             border-top: 1px solid #ddd5d5;
             box-sizing: border-box;
         }

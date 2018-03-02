@@ -47,6 +47,7 @@ function addImgs() {
  * 添加评论
  */
 function addComments() {
+    //获取模型对象的实例
     let news = model.comments;
     [
         {

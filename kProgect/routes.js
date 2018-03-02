@@ -41,20 +41,30 @@ router.get("/IL09api/posts/:articleId", async (ctx, next) => {
     await apiGet.getAll(ctx, next, "posts",{where: {id:ctx.params.articleId}});
 });
 
-
+/**
+ * 上传图片
+ */
 router.post("/upload/img", (ctx) => {
     upload.upload(ctx, "img");
 });
 
+/**
+ * 上传视频
+ */
 router.post("/upload/video", (ctx) => {
     upload.upload(ctx, "video");
 });
 
-
+/**
+ * 上传文件
+ */
 router.post("/upload/file", (ctx) => {
     upload.upload(ctx, "file");
 });
 
+/**
+ * 搜索
+ */
 router.get("/IL09api/search/:value", (ctx) => {
     if (ctx.params.value === "newbee") {
         ctx.response.body = [
@@ -74,12 +84,18 @@ router.get("/IL09api/search/:value", (ctx) => {
     }
 });
 
-router.post("/IL09api/login", (ctx) => {
-    if (ctx.request.body.account==="131") {
-        ctx.response.body =131;
-    } else {
-        ctx.response.body = 0;
-    }
+/**
+ * 登录
+ */
+router.post("/IL09api/login", async (ctx) => {
+    await apiGet.setLoginData(ctx, "users", ctx.request.body);
+});
+
+/**
+ *注册
+ */
+router.post("/IL09api/sign", async (ctx) => {
+    await apiGet.setSignData(ctx,"users",ctx.request.body);
 });
 
 module.exports = router;

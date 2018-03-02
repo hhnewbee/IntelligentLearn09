@@ -90,7 +90,8 @@
 </template>
 
 <script>
-    import { mapMutations } from 'vuex'
+    import { mapMutations } from 'vuex';
+    import {mapState} from 'vuex';
 
     export default {
         created(){
@@ -108,12 +109,18 @@
               notiContent:'',
           }
         },
+        computed:{
+            ...mapState('info',[
+                'accountHashMap'
+            ])
+        },
         methods:{
             /**
              * 设置用户信息
              */
             ...mapMutations('info',[
-                'setAccount',
+                'setAccountHashMap',
+                'setAvatar'
             ]),
             /**
              * 快捷选项跳转
@@ -132,7 +139,7 @@
              */
             handleOut(){
                 localStorage.removeItem("ifLogin");
-                this.setAccount('');
+                this.setAccountHashMap('');
                 window.location="http://localhost:3000";
             },
             /**
@@ -150,6 +157,10 @@
                     {user:'李敏',answer:'回答了你的问题',content:'泰国神级广告导演Thanonchai Sornsriwichai亲自操刀，马云大佬buff加持，然而不能改变我对这则广告很弱智的看法。难道我们现在对一个人的认识，不是注重个人对人接物的态度和自身良好的素养品德了吗？这则广告，在我看来就是在传达这么一个意思，有车有房才能结婚。广告的最后，才让人恍然醒悟，原来是滴滴出行，然而有啥关联吗？'},
                     {user:'通知',content:'请开始学习"比特的原理"该文章'}
                 ];
+                //todo 加载用户信息
+//                this.setAvatar=
+                //todo 加载推荐课程
+                //todo 加载推荐文章
             },
             handleNotification(item){
                 if(item.answer===undefined){

@@ -51,7 +51,7 @@
                                 文章管理
                             </el-menu-item>
 
-                            <el-menu-item index="userManage">
+                            <el-menu-item index="usersManage">
                                 用户管理
                             </el-menu-item>
 
@@ -60,14 +60,16 @@
                     </el-submenu>
                 </el-menu>
             </div>
-            <keep-alive>
-                <router-view class="chart"></router-view>
-            </keep-alive>
+            <headerControl class="chart" :routerPath="routerPath"></headerControl>
+            <!--<keep-alive>-->
+                <!--<router-view class="chart"></router-view>-->
+            <!--</keep-alive>-->
         </div>
     </div>
 </template>
 
 <script>
+    import headerControl from './headerControl.vue'
     export default {
         mounted() {
             //路由到达时判断模拟点击的选择（用hash）的选项
@@ -106,16 +108,18 @@
                     this.$refs.menu.activeIndex = "courseManage";
                     break;
                 }
-                case '#userManage': {
+                case '#usersManage': {
                     this.$refs.menu.open('backManage');
-                    this.$refs.menu.activeIndex = "userManage";
+                    this.$refs.menu.activeIndex = "usersManage";
                     break;
                 }
             }
 
         },
         data() {
-            return {}
+            return {
+                routerPath:{}
+            }
         },
         methods: {
             /**
@@ -125,46 +129,64 @@
             handleChange(tar) {
                 switch (tar) {
                     case "userInfo": {
-                        this.$router.push({path: '/userCenter/userInfo/#userInfo'});
+                        this.routerPath={path: '/userCenter/userInfo/#userInfo'};
+//                        this.$router.push({path: '/userCenter/userInfo/#userInfo'});
                         break;
                     }
 
                     case "record": {
-                        this.$router.push({path: '/userCenter/record/#record'});
+                        this.routerPath={path: '/userCenter/record/#record'};
+
+//                        this.$router.push({path: '/userCenter/record/#record'});
                         break;
                     }
 
                     case "status": {
-                        this.$router.push({path: '/userCenter/status/#status'});
+                        this.routerPath={path: '/userCenter/status/#status'};
+
+//                        this.$router.push({path: '/userCenter/status/#status'});
                         break;
                     }
 
                     case "collection": {
-                        this.$router.push({path: '/userCenter/collection/#collection'});
+                        this.routerPath={path: '/userCenter/collection/#collection'};
+
+//                        this.$router.push({path: '/userCenter/collection/#collection'});
                         break;
                     }
 
                     case "information": {
-                        this.$router.push({path: '/userCenter/information/#information'});
+                        this.routerPath={path: '/userCenter/information/#information'};
+
+//                        this.$router.push({path: '/userCenter/information/#information'});
                         break;
                     }
 
                     case "courseManage": {
-                        this.$router.push({path: '/userCenter/courseManage/#courseManage'});
+                        this.routerPath={path: '/userCenter/courseManage/#courseManage'};
+
+//                        this.$router.push({path: '/userCenter/courseManage/#courseManage'});
                         break;
                     }
 
                     case "articleManage": {
+                        this.routerPath={path: '/userCenter/articleManage/#articleManage'};
+
                         this.$router.push({path: '/userCenter/articleManage/#articleManage'});
                         break;
                     }
 
-                    case "userManage": {
-                        this.$router.push({path: '/userCenter/userManage/#userManage'});
+                    case "usersManage": {
+                        this.routerPath={path: '/userCenter/usersManage/#usersManage'};
+
+//                        this.$router.push({path: '/userCenter/usersManage/#usersManage'});
                         break;
                     }
                 }
             }
+        },
+        components:{
+            headerControl
         }
     }
 </script>
