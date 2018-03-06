@@ -34,68 +34,8 @@ let tableBasicMixin = {
             this.$emit('rowDelete',index);
         },
         initData(){
-            //todo 模拟初始化请求数据
-            this.pageData = [
-                {
-                    date: '2016-05-03',
-                    account: '154091333',
-                    name: 'newbee',
-                    sex: '男',
-                    areaFocus: '金融',
-                    status: true,
-                    accessTimes: 40,
-                    useTime: 200,
-                }, {
-                    date: '2016-05-03',
-                    account: '154091334',
-                    name: 'newbee',
-                    sex: '男',
-                    areaFocus: '汽车',
-                    status: true,
-                    accessTimes: 30,
-                    useTime: 150,
-                }, {
-                    date: '2016-05-03',
-                    account: '154091335',
-                    name: 'newbee',
-                    sex: '男',
-                    areaFocus: '互联网',
-                    status: true,
-                    accessTimes: 20,
-                    useTime: 120,
-                }, {
-                    date: '2016-05-03',
-                    account: '154091336',
-                    name: 'newbee',
-                    sex: '男',
-                    areaFocus: '产品',
-                    status: true,
-                    accessTimes: 20,
-                    useTime: 101,
-                }, {
-                    date: '2016-05-03',
-                    account: '154091337',
-                    name: 'newbee',
-                    sex: '男',
-                    areaFocus: '设计',
-                    status: false,
-                    accessTimes: 10,
-                    useTime: 101,
-                }, {
-                    date: '2016-05-03',
-                    account: '154091338',
-                    name: 'newbee',
-                    sex: '男',
-                    areaFocus: '教育',
-                    status: true,
-                    accessTimes: 90,
-                    useTime: 181,
-                }
-            ];
-            //初始化时当前的表格数据
-            this.$emit('update:tableData', this.pageData);
+            //初始化时当前的表格格式
             this.$emit('update:tableOptions', this.tableOptions_);
-
         }
     }
 };

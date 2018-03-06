@@ -98,4 +98,15 @@ router.post("/IL09api/sign", async (ctx) => {
     await apiGet.setSignData(ctx,"users",ctx.request.body);
 });
 
+/**
+ *获取用户名
+ */
+router.get("/IL09api/getAccount/:accountHashMap", async (ctx, next) => {
+    await apiGet.getAll(ctx, next, "users", {
+            attributes: ["account"],
+            where: {accountHashMap: ctx.params.accountHashMap}
+        },
+    );
+});
+
 module.exports = router;

@@ -16,22 +16,24 @@
                  &nbsp;{{online}}在观看
             </span>
         </div>
-        <el-checkbox-group
-                v-model="checkboxGroup"
-                size="small">
-            <el-checkbox-button
-                    label="likes"
-                    key="likes">
-                23&nbsp;喜欢
-            </el-checkbox-button>
-            <el-checkbox-button
-                    label="collections"
-                    key="collections">
-                22&nbsp;收藏
-            </el-checkbox-button>
-        </el-checkbox-group>
-
-        <info style="float: right;right: 100px"></info>
+        <div style="display: flex;align-items: center;margin-right: 20px">
+            <el-checkbox-group
+                    style="margin-right: 40px"
+                    v-model="checkboxGroup"
+                    size="small">
+                <el-checkbox-button
+                        label="likes"
+                        key="likes">
+                    23&nbsp;喜欢
+                </el-checkbox-button>
+                <el-checkbox-button
+                        label="collections"
+                        key="collections">
+                    22&nbsp;收藏
+                </el-checkbox-button>
+            </el-checkbox-group>
+            <info style="float: right;right: 10px"></info>
+        </div>
     </div>
 </template>
 
@@ -65,7 +67,7 @@ export default {
 <style scoped lang="scss">
     .courseHeader{
         display: flex;
-        justify-content: flex-start;
+        justify-content: space-between;
         align-items: center;
         background-color: #2b3540;
         .title{

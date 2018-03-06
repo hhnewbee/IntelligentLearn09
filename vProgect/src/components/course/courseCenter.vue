@@ -41,10 +41,6 @@
     import 'videojs-flash/dist/videojs-flash.min.js'
     import 'video.js/dist/video.min.js'
 
-    import chapter from './chapter.vue';
-    import discuss from '../article/discuss.vue';
-    import comments from '../comments/comments.vue';
-    import downLoad from '../resources/downLoad.vue'
     export default {
         created() {
             //TODO 获取数据
@@ -54,17 +50,21 @@
             //todo 获取discuss的数据，discuss只做展现作用
 
         },
+        mounted(){
+//            this.initDom();
+        },
         data() {
             return {
                 changePop: 'downLoad',
+                reload:false,
                 discuss:{}
             }
         },
         components: {
-            chapter,
-            discuss,
-            comments,
-            downLoad
+            chapter:()=>import('./chapter.vue'),
+            discuss:()=>import('../article/discuss.vue'),
+            comments:()=>import('../article/questions.vue'),
+            downLoad:()=>import('../resources/downLoad.vue')
         },
         methods: {
             //侧边选项的切换
@@ -97,7 +97,9 @@
                 });
             },
             initDom(){
-
+                if(!this.reload) {
+                    this.reload=true;
+                }
             }
         }
     }

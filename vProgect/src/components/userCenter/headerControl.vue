@@ -1,7 +1,7 @@
 <template>
     <div class="headerControl">
         <el-breadcrumb class="breadcrumb">
-            <el-breadcrumb-item class="el-icon-setting">
+            <el-breadcrumb-item :class="tableOptions.itemIcon">
                 &nbsp;{{tableOptions.title1}}
             </el-breadcrumb-item>
             <el-breadcrumb-item>
@@ -25,13 +25,22 @@
                       class="el-icon-search searchIcon"></span>
             </el-input>
 
-            <!--todo 添加的功能-->
+            <!--添加用户-->
+            <el-button v-if="tableOptions.dataType==='usersManage'"
+                       type="success"
+                       style="margin-left: 10px"
+                       size="small">
+                添加管理员
+            </el-button>
+
+            <!--文章发布-->
             <el-button
-                    v-if="tableOptions.tableType==='usersManage'"
+                    v-if="tableOptions.dataType==='articlesManage'"
+                    @click="pushArticle"
                     type="success"
                     style="margin-left: 10px"
                     size="small">
-                添加管理员
+                文章发布
             </el-button>
 
             <el-button type="primary"
@@ -43,6 +52,7 @@
 
             <!--用户类型切换-->
             <el-select
+                    v-if="tableOptions.dataType==='usersManage'"
                     @change="handleUserTypeChange"
                     style="width: 110px;position: absolute;right: 160px"
                     v-model="userSelectV"
@@ -54,7 +64,8 @@
                         :value="item.value">
                 </el-option>
             </el-select>
-            <!--图标类型切换-->
+
+            <!--图表类型切换-->
             <el-select
                     @change="handleChartChange"
                     style="width: 110px;position: absolute;right: 40px"
@@ -62,7 +73,7 @@
                     size="small"
                     placeholder="请选择">
                 <el-option
-                        v-for="item in options"
+                        v-for="item in tableOptions.selectOptions"
                         :key="item.value"
                         :value="item.value">
                 </el-option>
@@ -86,12 +97,14 @@
                 全部删除
             </el-button>
             <el-button
+                    v-if="tableOptions.dataType==='usersManage'"
                     type="success"
                     style="margin-left: 10px"
                     size="small">
                 全局信息
             </el-button>
             <el-button
+                    v-if="tableOptions.dataType==='usersManage'"
                     type="success"
                     style="margin-left: 10px"
                     size="small">
@@ -99,14 +112,6 @@
             </el-button>
         </div>
         <div class="content">
-            <!--<usersManage :ifTable='ifTable'-->
-                         <!--:tableOptions.sync='tableOptions'-->
-                         <!--:tableData.sync='tableData'-->
-                         <!--@rowSee="handleSee"-->
-                         <!--@rowDelete="handleDeleteRow"-->
-                         <!--@selectBatch="handleSelectBatch"-->
-                         <!--@selectAll="handleSelectAll">-->
-            <!--</usersManage>-->
             <router-view :ifTable='ifTable'
                          :tableOptions.sync='tableOptions'
                          :tableData.sync='tableData'
@@ -130,15 +135,9 @@
 </template>
 
 <script>
-    import usersManage from './usersManage.vue';
+    import usersManage from './usersTable.vue';
 
     export default {
-        created() {
-            this.initData();
-        },
-        mounted() {
-
-        },
         props: ['routerPath'],
         data() {
             return {
@@ -160,8 +159,6 @@
                 searchInput: '',
                 //图表类型选项的值
                 selectValue: '学习记录',
-                //图表类型切换
-                options: [{value: '学习记录'}, {value: '学习详情'}],
                 //图表与表格的切换
                 ifTable: true,
                 //用户类型选项值
@@ -281,27 +278,28 @@
              * 搜索数据
              */
             handleSearch() {
-                this.tableData = [{
-                    date: '2016-05-03',
-                    name: 'vue与webpack初步1',
-                    type: '课程',
-                    category: '金融',
-                    newDate: '2016-05-03',
-                    avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
-                    nickName: 'newbee',
-                    useTime: 100,
-                    accessTimes: 30,
-                }, {
-                    date: '2016-05-03',
-                    name: 'vue与webpack初步2',
-                    type: '课程',
-                    category: '金融',
-                    newDate: '2017-05-03',
-                    avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
-                    nickName: 'newbee',
-                    useTime: 130,
-                    accessTimes: 20,
-                },];
+                this.tableData = [
+                    {
+                        date: '2016-05-03',
+                        name: 'vue与webpack初步1',
+                        type: '课程',
+                        category: '金融',
+                        newDate: '2016-05-03',
+                        avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
+                        nickName: 'newbee',
+                        useTime: 100,
+                        accessTimes: 30,
+                    }, {
+                        date: '2016-05-03',
+                        name: 'vue与webpack初步2',
+                        type: '课程',
+                        category: '金融',
+                        newDate: '2017-05-03',
+                        avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
+                        nickName: 'newbee',
+                        useTime: 130,
+                        accessTimes: 20,
+                    },];
                 //展示搜索的数据
                 this.ifSearch = true;
             },
@@ -368,11 +366,140 @@
                 this.ifMoreFun = !this.ifMoreFun;
             },
             /**
-             * 数据初始化
+             * 表格数据初始化
              */
-            initData() {
-                this.pageData = this.tableData;
+            setTableData() {
+                //todo 模拟初始化请求数据
+                //
+                if (this.tableOptions.dataType==='usersManage'){
+                    this.pageData = [
+                        {
+                            date: '2016-05-03',
+                            account: '154091333',
+                            name: 'newbee',
+                            sex: '男',
+                            areaFocus: '金融',
+                            status: true,
+                            accessTimes: 40,
+                            useTime: 200,
+                        }, {
+                            date: '2016-05-03',
+                            account: '154091334',
+                            name: 'newbee',
+                            sex: '男',
+                            areaFocus: '汽车',
+                            status: true,
+                            accessTimes: 30,
+                            useTime: 150,
+                        }, {
+                            date: '2016-05-03',
+                            account: '154091335',
+                            name: 'newbee',
+                            sex: '男',
+                            areaFocus: '互联网',
+                            status: true,
+                            accessTimes: 20,
+                            useTime: 120,
+                        }, {
+                            date: '2016-05-03',
+                            account: '154091336',
+                            name: 'newbee',
+                            sex: '男',
+                            areaFocus: '产品',
+                            status: true,
+                            accessTimes: 20,
+                            useTime: 101,
+                        }, {
+                            date: '2016-05-03',
+                            account: '154091337',
+                            name: 'newbee',
+                            sex: '男',
+                            areaFocus: '设计',
+                            status: false,
+                            accessTimes: 10,
+                            useTime: 101,
+                        }, {
+                            date: '2016-05-03',
+                            account: '154091338',
+                            name: 'newbee',
+                            sex: '男',
+                            areaFocus: '教育',
+                            status: true,
+                            accessTimes: 90,
+                            useTime: 181,
+                        }
+                    ];
+                }else if(this.tableOptions.dataType==='articlesManage'){
+                    this.pageData= [
+                        {
+                            date: '2016-05-03',
+                            name: 'vue与webpack初步1',
+                            type: '课程',
+                            category: '金融',
+                            status:true,
+                            chartData:{
+                                accessTimes:'30',
+                                likes:'22',
+                                collection:'20',
+                                question:'11'
+                            }
+                        }, {
+                            date: '2016-05-03',
+                            name: 'vue与webpack初步2',
+                            type: '课程',
+                            category: '金融',
+                            status:true
+                        }, {
+                            date: '2016-05-03',
+                            name: 'vue与webpack初步3',
+                            type: '课程',
+                            category: '金融',
+                            newDate: '2017-05-09',
+                            avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
+                            nickName: 'newbee',
+                            useTime: 90,
+                            accessTimes: 10,
+                        }, {
+                            date: '2016-05-03',
+                            name: 'vue与webpack初步4',
+                            type: '课程',
+                            category: '金融',
+                            newDate: '2018-05-03',
+                            avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
+                            nickName: 'newbee',
+                            useTime: 30,
+                            accessTimes: 20,
+                        }, {
+                            date: '2016-05-03',
+                            name: 'vue与webpack初步5',
+                            type: '课程',
+                            category: '金融',
+                            newDate: '2018-05-03',
+                            avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
+                            nickName: 'newbee',
+                            useTime: 10,
+                            accessTimes: 20,
+                        }, {
+                            date: '2016-05-03',
+                            name: 'vue与webpack初步6',
+                            type: '课程',
+                            category: '金融',
+                            newDate: '2018-05-03',
+                            avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
+                            nickName: 'newbee',
+                            useTime: 40,
+                            accessTimes: 20,
+                        }
+                    ];
+                }
+                this.tableData = this.pageData;
             },
+            /**
+             *文章发布
+             */
+            pushArticle(){
+                this.$router.push({path:'/userCenter/articlesManage/articleEdit/#articlesManage'});
+            }
         },
         watch: {
             //监听数据变化以更新视图
@@ -387,6 +514,11 @@
             //监听路由变化
             routerPath() {
                 this.$router.push(this.routerPath);
+            },
+            //监听表格类型变化
+            tableOptions(){
+                this.setTableData();
+                this.selectValue=this.tableOptions.selectOptions[0].value;
             }
         },
         components: {

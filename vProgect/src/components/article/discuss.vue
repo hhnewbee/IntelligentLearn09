@@ -1,6 +1,7 @@
 <template>
     <div class="discuss">
         <div class="header">
+
             <!--用户列表-->
             <vue-scrollbar
                     class="userList"
@@ -10,48 +11,58 @@
                     <div
                             v-for="user in usersOnlineList"
                             class="item"
-                            @mousedown="handleChatChange(user,true)">
+                            @mousedown="handleChatChange(user.nickName)">
                         <img class="avatar" :src="user.avatarUrl"/>
                         <div class="name">
                             {{user.nickName}}
                         </div>
+                        <div v-if="user.messages!==0">
+                            {{user.messages}}
+                        </div>
                     </div>
                 </div>
+                <div class="item"
+                     v-if="usersOnlineList.length===0"
+                     style="font-size: 12px">
+                    暂无用户在线
+                </div>
             </vue-scrollbar>
+
             <!--用户列表切切换-->
             <div
                     tabindex="1"
                     class="users fa fa-user"
-                    @blur="handleShowList"
-                    @click="handleShowList"></div>
+                    @blur="handleShowList(false,$event)"
+                    @click="handleShowList(true,$event)"></div>
             <!--大厅的信息-->
-            <div class="onlines" v-show="!priChat">
+            <div class="onlines" v-if="areaNow.target===discussInfo.theme">
                 <div class="small fa fa-television">
-                    &nbsp;{{usersOnlineList.length}}在线
+                    &nbsp;{{usersOnlineList.length}}人在线
                 </div>
             </div>
             <!--个体用户信息-->
-            <div class="user" v-show="priChat">
-                <div class="name">{{areaInfo.nickName}}</div>
+            <div class="user" v-if="areaNow.target!==discussInfo.theme">
+                <div class="name">{{areaNow.target}}</div>
             </div>
             <!--切回大厅-->
-            <div
-                    class="backHome fa fa-home"
-                    @click="handleChatChange(homeAreaInfo,false)"
-                    v-show="priChat">
+            <div class="backHome fa fa-home"
+                 @click="handleChatChange(discussInfo.theme)"
+                 v-if="areaNow.target!==discussInfo.theme">
             </div>
         </div>
+
+        <!--信息显示区-->
         <vue-scrollbar
                 class="my-scrollbar"
                 v-for="area in chatAreas"
-                :key="area.nickName"
-                :ref="area.nickName"
+                :key="area.target"
+                :ref="area.target"
                 v-show="area.show">
             <div class="message">
                 <div
                         class="item item-left"
                         v-for="messageItem in area.messageItems"
-                        v-if="messageItem.type==='left'">
+                        v-if="messageItem.type==='get'">
                     <div class="info">
                         <div class="avatar">
                             <img :src="messageItem.avatarUrl"/>
@@ -66,7 +77,7 @@
                 </div>
                 <div
                         v-for="messageItem in area.messageItems"
-                        v-if="messageItem.type==='right'"
+                        v-if="messageItem.type==='send'"
                         class="item item-right">
                     <div class="info">
                         <div class="avatar">
@@ -83,6 +94,7 @@
                 </div>
             </div>
         </vue-scrollbar>
+
         <!--发送部分-->
         <div class="control">
             <el-input
@@ -105,76 +117,104 @@
 
 <script>
     import VueScrollbar from 'vue2-scrollbar'
-    import uuidv1 from 'uuid/v1';
-
+    import { mapState } from 'vuex';
     export default {
         created() {
             this.initData();
         },
         data() {
             return {
+                discussInfo:{
+                    theme:'vue',
+                    nickName:'newbeee111',
+                    avatarUrl:'http://localhost:3100/img/avatar/avatar.jpg'
+                },
                 //websocket实例
                 wss: {},
                 //是否打开用户列表
                 showUserList: false,
                 //当前在线用户列表
                 usersOnlineList: [
-                    {nickName: 'newbee1', avatarUrl: 'http://localhost:3100/img/avatar/avatar.jpg'},
-                    {nickName: 'newbee2', avatarUrl: 'http://localhost:3100/img/avatar/avatar.jpg'}
+                    {
+                        nickName:'',
+                        avatarUrl:'',
+                        messages: 0
+                    }
                 ],
-                //是否私聊
-                priChat: false,
-                //主聊天区的信息
-                homeAreaInfo: {},
-                //和不同用户聊天的内容区
-                chatAreas: [],
-                //当前讨论区的信息，用于区分和切换聊天区
-                areaInfo: {},
+                //讨论区的集合
+                chatAreas: [
+                    {
+                        //target（用户昵称/文章或视频标题）是区分不同讨论区的标识
+                        target: '',
+                        //是否显示当前讨论区
+                        show:false,
+                        //消息的集合
+                        messageItems: []
+                    }
+                ],
+                //当前讨论区的信息的标识，用于区分和切换讨论区
+                areaNow: {
+                    target:'',
+                },
                 //当前讨论区的items
-                messageItemsNow: [],
+                messageItemsNow: [
+                    {
+                        nickName: '',
+                        avatarUrl:'',
+                        //是发送还是接受信息，用于前端显示的区分
+                        type: 'get/send',
+                        content: ''
+                    }
+                ],
                 //发送的数据
                 sendData: '',
             }
         },
+        computed:{
+            ...mapState('info',['account'])
+        },
         methods: {
             /**
              * 是否展示用户列表
+             * @param boole
              * @param e
              */
-            handleShowList(e) {
+            handleShowList(boole,e) {
                 let ts = e.target.style;
                 if (!this.showUserList) {
                     ts.color = "#495a6c";
                 } else {
                     ts.color = '#748eab';
                 }
-                this.showUserList = !this.showUserList;
+                this.showUserList = boole;
             },
             /**
              * 切户讨论区
-             * @param info
-             * @param ifPri
+             * @param target
              */
-            handleChatChange(info, ifPri) {
-                //header切换到单个用户聊天模式
-                this.priChat = ifPri;
+            handleChatChange(target) {
                 //确定当前用户信息
-                this.areaInfo = info;
-                //聊天框的切换,判断当前聊天框是否打开过，如果已打开，复用，否则新添加
+                this.areaNow.target = target;
+                //讨论框的切换,判断当前讨论框是否打开过，如果已打开，复用，否则新添加
                 let ifExit = false;
                 this.chatAreas.forEach((item) => {
-                    if (item.show = item.nickName === user.nickName) {
+                    if (item.show = item.target === target) {
                         this.messageItemsNow = item.messageItems;
                         ifExit = true;
                     }
                 });
                 //如果当前讨论区没好有存在，则加入
                 if (!ifExit) {
-                    let newArea = {nickName: user.nickName, show: true, messageItems: []};
-                    this.messageItemsNow = newArea.messageItems;
+                    let newArea = {target: target, show: true, messageItems: []};
                     this.chatAreas.push(newArea);
+                    this.messageItemsNow = newArea.messageItems;
                 }
-
+                //清除显示的信息数
+                this.usersOnlineList.forEach((user)=>{
+                    if(user.nickName===target){
+                        user.messages=0;
+                    }
+                })
             },
 
             /**
@@ -183,20 +223,21 @@
             handleSend() {
                 //发送信息
                 this.wss.send(JSON.stringify({
-                    //发送者的昵称
-                    nickName:"newbee",
-                    //消息的类型
-                    type: "groupChat",
                     //头像
-                    avatarUrl: 'http://localhost:3100/img/avatar/avatar.jpg',
+                    //发送者的昵称
+                    //文章或视频的标题
+                    ...this.discussInfo,
+                    //发送的对象
+                    target:this.areaNow.target,
+                    //消息的类型
+                    type: "message",
                     //内容
-                    content:this.sendData
+                    content: this.sendData
                 }));
                 //本地信息处理
                 this.messageLocalSet({
-                    nickName: 'newbee1',
-                    avatarUrl: 'http://localhost:3100/img/avatar/avatar.jpg',
-                    type: 'right',
+                    ...this.discussInfo,
+                    type: 'send',
                     content: this.sendData
                 })
             },
@@ -205,25 +246,81 @@
              * webSocket链接
              */
             webso() {
-                this.wss = new WebSocket("ws://localhost:3200/"+JSON.stringify({nickName:'newbee',avatarUrl:'http://localhost:3100/img/avatar/avatar.jpg'}));
+                this.wss = new WebSocket("ws://localhost:3200/");
                 //链接成功后回调
                 this.wss.onopen = (event) => {
-
+                    this.wss.send(JSON.stringify({
+                        ...this.discussInfo,
+                        type:'join'
+                    }));
                 };
                 //收到服务器数据后回调
                 this.wss.onmessage = (event) => {
-                    //如果是加入的数据，就是在数组中追加一个用户
-                    if(event.data.type==='join'){
-                        this.usersOnlineList.push();
-                        //否则就是加入信息
-                    }else{
-                        //todo 如果已经队列存在，加入队列，如果队列不是当前队列，则显示信息数
-                        //todo 如果队列不存在，则创建新的队列，并且显示信息数
-                        this.messageLocalSet(JSON.parse(event.data));
+                    //获取的数据
+                    let data=JSON.parse(event.data);
+                    //如果是用户加入，就是在用户数组中追加一个用户
+                    if (data.type === 'join') {
+                        this.usersOnlineList.push(
+                            {
+                                nickName: data.nickName,
+                                avatarUrl:data.avatarUrl,
+                                messages: 0
+                            });
+                        //获取私人信息
+                    }else if(data.type === 'exit'){
+                        this.usersOnlineList.forEach(function (user) {
+                            if(user.nickName===data.nickName){
+                                //移除用户在用户列表中，但讨论区并未移除
+                                this.splice(this.findIndex(user),1);
+                            }
+                        })
+                    } else{
+                        let ifHas = false;
+                        //如果当前区域正好为该用户讨论区域
+                        if (this.areaNow.target ===data.nickName) {
+                            //显示信息并且下拉到底部
+                            this.messageLocalSet(data);
+                        } else {
+                            //如果不在当前区域，则加入到对应的信息数组中
+                            this.chatAreas.forEach((chatArea) => {
+                                if (chatArea.target === data.target) {
+                                    chatArea.messageItems.push({
+                                        nickName: data.nickName,
+                                        avatarUrl: data.avatarUrl,
+                                        type: 'get',
+                                        content: data.content
+                                    },);
+                                    ifHas = true;
+                                }
+                            });
+                            //如果该信息数组没有被创建,则重新创建
+                            if (!ifHas) {
+                                this.chatAreas.push({
+                                    target: data.nickName, show: false, messageItems: [
+                                        {
+                                            nickName: data.nickName,
+                                            avatarUrl: data.avatarUrl,
+                                            type: 'get',
+                                            content: data.content
+                                        },
+                                    ]
+                                })
+                            }
+                            //在用户列表中显示信息数
+                            this.usersOnlineList.forEach(user=>{
+                                if(user.nickName===data.nickName){
+                                    user.messages++;
+                                    if(user.messages>=99){
+                                        user.messages='99+'
+                                    }
+                                }
+                            })
+                        }
                     }
                 };
                 //断开链接后回调
                 this.wss.onclose = (event) => {
+
                 };
             },
             /**
@@ -239,36 +336,19 @@
             /**
              * 初始化数据
              */
-            initData(){
-                //防止用户名和房间名重复，所以用uuid做为房间名,主要是用做讨论区切换时的标识
-                this.homeAreaInfo = {nickName: uuidv1()};
+            initData() {
+                //初始化当前讨论的信息
+                this.discussInfo.nickName=this.account;
                 //初始化大厅讨论区
-                this.chatAreas = [{
-                    nickName: this.homeAreaInfo.nickName, show: true, messageItems: [
-                        {
-                            nickName: 'newbee1',
-                            avatarUrl: 'http://localhost:3100/img/avatar/avatar.jpg',
-                            type: 'left',
-                            content: '你好dewdwededawdawdewadeawdeawdaw'
-                        },
-                        {
-                            nickName: 'newbee2',
-                            avatarUrl: 'http://localhost:3100/img/avatar/avatar.jpg',
-                            type: 'left',
-                            content: '你好dewdwededawdawdewadeawdeawdaw'
-                        },
-                        {
-                            nickName: 'newbee3',
-                            avatarUrl: 'http://localhost:3100/img/avatar/avatar.jpg',
-                            type: 'right',
-                            content: '你好dewdwededawdawdewadeawdeawdaw'
-                        },
-                    ]
-                }];
-                //初始化当前讨论区的信息，如头部等信息
-                this.areaInfo = this.homeAreaInfo;
+                this.chatAreas = [
+                    {
+                        target: this.discussInfo.theme, show: true, messageItems: []
+                    }
+                ];
                 //将讨论区的信息items赋给当前信息items
                 this.messageItemsNow = this.chatAreas[0].messageItems;
+                this.areaNow.target=this.discussInfo.theme;
+                this.usersOnlineList=[];
                 //链接websock
                 this.webso();
             },
@@ -276,12 +356,12 @@
              * 本地信息处理
              * @param message
              */
-            messageLocalSet(message){
+            messageLocalSet(message) {
                 //本地信息的更新
                 this.messageItemsNow.push(message);
 
                 //下拉到最底部
-                this.messageScrollTo(this.$refs[this.areaInfo.nickName][0]);
+                this.messageScrollTo(this.$refs[this.areaNow.target][0]);
             }
         },
         components: {
@@ -291,6 +371,7 @@
 </script>
 
 <style scoped lang="scss">
+    $borderColor: #e8e3e3;
     @mixin center {
         display: flex;
         justify-content: center;
@@ -299,17 +380,18 @@
 
     .discuss {
         height: 100%;
+        width: 100%;
         display: flex;
         flex-direction: column;
         background-color: #f0f4f7;
-        border: 1px solid #e8e3e3;
+        border: 1px solid $borderColor;
         /*头部*/
         .header {
             display: flex;
             justify-content: flex-start;
             align-items: center;
             position: relative;
-            border-bottom: 1px solid #e8e3e3;
+            border-bottom: 1px solid $borderColor;
             /*用户列表*/
             .userList {
                 z-index: 100;
@@ -343,6 +425,20 @@
                     &:hover {
                         color: #3c3c3c;
                         background-color: #f6f6f6;
+                    }
+                    div:nth-child(3) {
+                        margin-left: 40px;
+                        background-color: #f56c6c;
+                        border-radius: 10px;
+                        color: #fff;
+                        display: inline-block;
+                        font-size: 12px;
+                        height: 18px;
+                        line-height: 18px;
+                        padding: 0 6px;
+                        text-align: center;
+                        white-space: nowrap;
+                        border: 1px solid #fff;
                     }
                 }
             }
@@ -394,6 +490,7 @@
         }
         .my-scrollbar {
             height: 1%;
+            width: 100%;
             flex-grow: 1;
             background-color: #f0f4f7;
             .message {
@@ -474,7 +571,7 @@
             align-items: center;
             width: 100%;
             padding: 15px 10px;
-            border-top: 1px solid #ddd5d5;
+            border-top: 1px solid $borderColor;
             box-sizing: border-box;
         }
     }

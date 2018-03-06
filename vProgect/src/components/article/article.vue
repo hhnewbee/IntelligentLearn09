@@ -38,6 +38,7 @@
                 <keep-alive>
                     <component
                             :headers="headers"
+                            :discussInfo="discussInfo"
                             :is="changePop">
                     </component>
                 </keep-alive>
@@ -65,7 +66,13 @@
                 //加载的sidebar
                 changePop: 'chapter',
                 //传递给目录的变量
-                headers:[]
+                headers:[],
+                //讨论的信息
+                discussInfo:{
+                    theme:'vue',
+                    nickName:'newbeee',
+                    avatarUrl:'http://localhost:3100/img/avatar/avatar.jpg'
+                }
             }
         },
         methods: {
@@ -293,6 +300,7 @@
             }
             .sideBarContent {
                 height: 1%;
+                width: 100%;
                 flex-grow: 1;
                 margin-top: 10px;
             }

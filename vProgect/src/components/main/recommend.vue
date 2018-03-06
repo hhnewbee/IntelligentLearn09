@@ -51,6 +51,9 @@
 <script>
 import course from './courseItem.vue';
 import articleItem from './articleItem.vue';
+import {mapMutations} from 'vuex'
+import { mapState } from 'vuex';
+
 export default {
     created(){
         this.initPage();
@@ -59,6 +62,9 @@ export default {
         return{
             articleItems:[]
         }
+    },
+    computed:{
+        ...mapState('info',['accountHashMap'])
     },
     methods:{
         initPage(){
@@ -97,7 +103,13 @@ export default {
                     collections:'22'
                 }
             ];
-        }
+            this.$ajax.get(`getAccount/${this.accountHashMap}`).then((res)=>{
+                this.setAccount(res.data[0].account);
+            });
+        },
+        ...mapMutations('info', [
+            'setAccount',
+        ]),
     },
     components:{
         course,

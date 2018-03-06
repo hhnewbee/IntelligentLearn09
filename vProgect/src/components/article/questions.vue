@@ -1,5 +1,9 @@
 <template>
     <div class="comments">
+        <div class="questionHeader">
+            <span class=" fa fa-question-circle-o" style="font-size: 15px;margin-left: 5px"></span>
+            &nbsp;123个问题
+        </div>
         <!--问题items-->
         <vue-scrollbar
                 class="my-scrollbar"
@@ -65,7 +69,8 @@
                 <span class="cheart fa fa-heart">&nbsp;34</span>
             </div>
             <div class="listItem">
-                <vue-scrollbar class="my-scrollbar">
+                <vue-scrollbar class="my-scrollbar"
+                               style="background-color: white">
                     <div class="itemList">
                         <div class="item" v-for="item in area.itemList">
                             <div class="header">
@@ -284,15 +289,22 @@
 
 <style scoped lang="scss">
     $primaryColor:#409EFF;
+    $borderColor: #e5dddd;
     .comments {
+        .questionHeader{
+            font-size: 14px;
+            padding: 10px;
+            border-bottom: 1px solid $borderColor;
+        }
         height: 100%;
-        width: 300px;
+        width: 100%;
         display: flex;
         flex-direction: column;
-        border: 1px solid #eeeeee;
+        border: 1px solid $borderColor;
         background-color: #eeeeee;
         .my-scrollbar {
             height: 100%;
+            width: 100%;
             flex-grow: 1;
             background-color: #eeeeee;
             //问题的列表
@@ -302,12 +314,12 @@
                 display: flex;
                 box-sizing: border-box;
                 flex-direction: column;
-                padding: 10px;
+                align-items: center;
+                padding: 10px 0;
                 color: #000000;
                 /*问题的item*/
                 .item {
                     width: 265px;
-                    margin-right: 8px;
                     padding: 10px 10px;
                     margin-bottom: 20px;
                     background-color: white;
@@ -374,6 +386,7 @@
             display: flex;
             flex-direction: column;
             padding-bottom: 10px;
+            background-color: white;
             .listHeader {
                 display: flex;
                 align-items: center;
@@ -470,9 +483,7 @@
             display: flex;
             align-items: center;
             padding: 15px 10px;
-            padding-bottom: 20px;
-            border-top: 1px solid #ddd5d5;
-
+            border-top: 1px solid $borderColor;
         }
     }
 </style>

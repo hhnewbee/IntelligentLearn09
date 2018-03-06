@@ -1,5 +1,6 @@
 <template>
     <el-tabs
+            style="margin-top: 20px"
             v-model="tab"
             @tab-click="handleTabClick"
             tab-position="right">
@@ -17,13 +18,14 @@
         props:['headers'],
         data(){
           return{
+              //选项的保存值
               tab:"1h"
           }
         },
         methods:{
             /**
              * 目录选择
-             * @param id
+             * @param tar
              */
             handleTabClick(tar){
                 //目录位置滚动
@@ -33,7 +35,10 @@
     }
 </script>
 
-<style>
-
+<style lang="scss">
+    .el-tabs--left, .el-tabs--right{
+        display: flex;
+        justify-content: center;
+    }
 </style>
 

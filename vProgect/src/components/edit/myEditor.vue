@@ -392,7 +392,7 @@
              * 返回文章管理
              */
             handleBackManage(){
-                this.$router.push({path: '/userCenter/articleManage/#articleManage'});
+                this.$router.push({path: '/userCenter/articlesManage/#articlesManage'});
             },
             /**
              * 生成video展示

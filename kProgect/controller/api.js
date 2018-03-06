@@ -25,8 +25,7 @@ let getAll = async (ctx,next,tb,args) => {
  * @param args
  * @returns {Promise.<void>}
  */
-let addAll=async (ctx,next,tb,args) =>
-{
+let addAll=async (ctx,next,tb,args) => {
     try {
         await moduls[tb].create(args);
         ctx.response.body=1;

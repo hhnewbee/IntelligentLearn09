@@ -203,7 +203,7 @@
              * 返回课程管理
              */
             handleBackManage(){
-                this.$router.push({path: '/userCenter/courseManage/#courseManage'});
+                this.$router.push({path: '/userCenter/coursesManage/#coursesManage'});
 
             },
             /**

@@ -31,7 +31,7 @@
                         <i class="el-icon-star-off"></i>
                         <span slot="title">我的收藏</span>
                     </el-menu-item>
-                    <el-menu-item index="information">
+                    <el-menu-item index="informationManage">
                         <i class="el-icon-message"></i>
                         <span slot="title">我的信息</span>
                     </el-menu-item>
@@ -43,11 +43,11 @@
 
                         <el-menu-item-group class="children">
 
-                            <el-menu-item index="courseManage">
+                            <el-menu-item index="coursesManage">
                                 课程管理
                             </el-menu-item>
 
-                            <el-menu-item index="articleManage">
+                            <el-menu-item index="articlesManage">
                                 文章管理
                             </el-menu-item>
 
@@ -60,16 +60,14 @@
                     </el-submenu>
                 </el-menu>
             </div>
-            <headerControl class="chart" :routerPath="routerPath"></headerControl>
-            <!--<keep-alive>-->
-                <!--<router-view class="chart"></router-view>-->
-            <!--</keep-alive>-->
+            <keep-alive>
+                <router-view class="chart"></router-view>
+            </keep-alive>
         </div>
     </div>
 </template>
 
 <script>
-    import headerControl from './headerControl.vue'
     export default {
         mounted() {
             //路由到达时判断模拟点击的选择（用hash）的选项
@@ -94,18 +92,18 @@
                     this.$refs.menu.activeIndex = "collection";
                     break;
                 }
-                case '#information': {
-                    this.$refs.menu.activeIndex = "information";
+                case '#informationManage': {
+                    this.$refs.menu.activeIndex = "informationManage";
                     break;
                 }
-                case '#articleManage': {
+                case '#articlesManage': {
                     this.$refs.menu.open('backManage');
-                    this.$refs.menu.activeIndex = "articleManage";
+                    this.$refs.menu.activeIndex = "articlesManage";
                     break;
                 }
-                case '#courseManage': {
+                case '#coursesManage': {
                     this.$refs.menu.open('backManage');
-                    this.$refs.menu.activeIndex = "courseManage";
+                    this.$refs.menu.activeIndex = "coursesManage";
                     break;
                 }
                 case '#usersManage': {
@@ -116,11 +114,6 @@
             }
 
         },
-        data() {
-            return {
-                routerPath:{}
-            }
-        },
         methods: {
             /**
              * 侧边菜单的选择
@@ -129,65 +122,47 @@
             handleChange(tar) {
                 switch (tar) {
                     case "userInfo": {
-                        this.routerPath={path: '/userCenter/userInfo/#userInfo'};
-//                        this.$router.push({path: '/userCenter/userInfo/#userInfo'});
+                        this.$router.push({path: '/userCenter/userInfo/#userInfo'});
                         break;
                     }
 
                     case "record": {
-                        this.routerPath={path: '/userCenter/record/#record'};
-
-//                        this.$router.push({path: '/userCenter/record/#record'});
+                        this.$router.push({path: '/userCenter/record/#record'});
                         break;
                     }
 
                     case "status": {
-                        this.routerPath={path: '/userCenter/status/#status'};
-
-//                        this.$router.push({path: '/userCenter/status/#status'});
+                        this.$router.push({path: '/userCenter/status/#status'});
                         break;
                     }
 
                     case "collection": {
-                        this.routerPath={path: '/userCenter/collection/#collection'};
-
-//                        this.$router.push({path: '/userCenter/collection/#collection'});
+                        this.$router.push({path: '/userCenter/collection/#collection'});
                         break;
                     }
 
-                    case "information": {
-                        this.routerPath={path: '/userCenter/information/#information'};
-
-//                        this.$router.push({path: '/userCenter/information/#information'});
+                    case "informationManage": {
+                        this.$router.push({path: '/userCenter/informationManage/#informationManage'});
                         break;
                     }
 
-                    case "courseManage": {
-                        this.routerPath={path: '/userCenter/courseManage/#courseManage'};
-
-//                        this.$router.push({path: '/userCenter/courseManage/#courseManage'});
+                    case "coursesManage": {
+                        this.$router.push({path: '/userCenter/coursesManage/#coursesManage'});
                         break;
                     }
 
-                    case "articleManage": {
-                        this.routerPath={path: '/userCenter/articleManage/#articleManage'};
-
-                        this.$router.push({path: '/userCenter/articleManage/#articleManage'});
+                    case "articlesManage": {
+                        this.$router.push({path: '/userCenter/articlesManage/#articlesManage'});
                         break;
                     }
 
                     case "usersManage": {
-                        this.routerPath={path: '/userCenter/usersManage/#usersManage'};
-
-//                        this.$router.push({path: '/userCenter/usersManage/#usersManage'});
+                        this.$router.push({path: '/userCenter/usersManage/#usersManage'});
                         break;
                     }
                 }
             }
         },
-        components:{
-            headerControl
-        }
     }
 </script>
 

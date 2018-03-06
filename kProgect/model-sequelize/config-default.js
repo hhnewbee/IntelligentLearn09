@@ -4,7 +4,7 @@ let config = {
     database: 'IL09',
     username: 'root',
     password: '1234',
-    host: 'localhost',
+    host: '172.16.116.18',
     port: 3306
 };
 

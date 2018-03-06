@@ -23,7 +23,7 @@ import Axios from 'axios';
 //在原型上添加，这样所有的vue对象都可以使用axios
 Vue.prototype.$ajax = Axios;
 //全局url配置
-Axios.defaults.baseURL = 'http://localhost:3100/IL09api/';
+Axios.defaults.baseURL = 'http://172.16.116.18:3100/IL09api/';
 //axios的拦截器
 let loadingInstance;
 Axios.interceptors.request.use(function (config) {
@@ -129,27 +129,27 @@ let router = new VueRouter(
                         component: () => import('./components/userCenter/collection.vue'),
                     },
                     {
-                        path: 'information',
-                        component: () => import('./components/userCenter/information.vue'),
+                        path: 'informationManage',
+                        component: () => import('./components/userCenter/informationManage.vue'),
                     },
                     {
-                        path: 'courseManage',
-                        component: () => import('./components/userCenter/courseManage.vue'),
+                        path: 'coursesManage',
+                        component: () => import('./components/userCenter/coursesManage.vue'),
                     },
                     {
-                        path: 'articleManage',
-                        component: () => import('./components/userCenter/articleManage.vue'),
+                        path: 'articlesManage',
+                        component: () => import('./components/userCenter/articlesManage.vue'),
                     },
                     {
                         path: 'usersManage',
                         component: () => import('./components/userCenter/usersManage.vue'),
                     },
                     {
-                        path: 'articleManage/articleEdit',
+                        path: 'articlesManage/articleEdit',
                         component: () => import('./components/edit/myEditor.vue'),
                     },
                     {
-                        path: 'courseManage/coursesUpload',
+                        path: 'coursesManage/coursesUpload',
                         component: () => import('./components/userCenter/coursesUpload.vue'),
                     }
                 ]

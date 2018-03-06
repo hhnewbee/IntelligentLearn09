@@ -6,7 +6,7 @@
             </el-breadcrumb-item>
             <el-breadcrumb-item>
                 <span @click="handleBackSearch">
-                    用户管理
+                    课程管理
                 </span>
             </el-breadcrumb-item>
             <el-breadcrumb-item
@@ -14,7 +14,6 @@
             </el-breadcrumb-item>
         </el-breadcrumb>
         <div class="header">
-
             <!--搜索-->
             <el-input
                     style="width: 300px;"
@@ -25,14 +24,14 @@
                       @click="handleSearch"
                       class="el-icon-search searchIcon"></span>
             </el-input>
-
-            <!--添加用户-->
-            <el-button type="success"
-                       style="margin-left: 10px"
-                       size="small">
-                添加管理员
+            <!--上传课程-->
+            <el-button
+                    @click="handleUpload"
+                    type="success"
+                    style="margin-left: 10px"
+                    size="small">
+                上传课程
             </el-button>
-
             <!--更多功能-->
             <el-button type="primary"
                        size="small"
@@ -40,21 +39,6 @@
                        style="margin-left: 10px"
                        icon="el-icon-menu">
             </el-button>
-
-            <!--用户类型切换-->
-            <el-select
-                    @change="handleUserTypeChange"
-                    style="width: 110px;position: absolute;right: 160px"
-                    v-model="userSelectV"
-                    size="small"
-                    placeholder="请选择">
-                <el-option
-                        v-for="item in userTypes"
-                        :key="item.label"
-                        :value="item.value">
-                </el-option>
-            </el-select>
-
             <!--图表类型切换-->
             <el-select
                     @change="handleChartChange"
@@ -68,7 +52,6 @@
                 </el-option>
             </el-select>
         </div>
-
         <div class="moreFun"
              v-if='ifMoreFun'>
             <el-button
@@ -86,20 +69,7 @@
                     icon="el-icon-delete">
                 全部删除
             </el-button>
-            <el-button
-                    type="success"
-                    style="margin-left: 10px"
-                    size="small">
-                全局信息
-            </el-button>
-            <el-button
-                    type="success"
-                    style="margin-left: 10px"
-                    size="small">
-                批量信息
-            </el-button>
         </div>
-
         <div class="content">
             <el-table
                     v-show="ifTable"
@@ -114,44 +84,43 @@
                         type="selection"
                         width="45">
                 </el-table-column>
-
                 <el-table-column
                         align='center'
                         prop="date"
-                        label="开通时间"
-                        width="100">
-                </el-table-column>
-
-                <el-table-column
-                        align='center'
-                        prop="account"
-                        label="账号"
-                        min-width="200">
+                        label="上传时间"
+                        width="150">
                 </el-table-column>
 
                 <el-table-column
                         align='center'
                         prop="name"
-                        label="姓名"
+                        label="名称"
+                        min-width="120">
+                </el-table-column>
+
+                <el-table-column
+                        align='center'
+                        prop="type"
+                        label="类型"
+                        width="60">
+                </el-table-column>
+
+                <el-table-column
+                        align='center'
+                        prop="category"
+                        label="类别"
+                        width="60">
+                </el-table-column>
+
+                <el-table-column
+                        align='center'
+                        label="课程状态"
                         width="200">
-                </el-table-column>
-
-                <el-table-column
-                        align='center'
-                        prop="areaFocus"
-                        label="专注领域"
-                        width="130">
-                </el-table-column>
-
-                <el-table-column
-                        align='center'
-                        label="用户状态"
-                        width="150">
                     <div slot-scope="scope">
                         <el-switch
                                 v-model="scope.row.status"
-                                active-text="开通"
-                                inactive-text="关闭"
+                                active-text="可以观看"
+                                inactive-text="不可观看"
                                 active-color="#13ce66"
                                 inactive-color="#ff4949">
                         </el-switch>
@@ -181,11 +150,10 @@
                     </template>
                 </el-table-column>
             </el-table>
-            <hightChart
+            <courseChart
                     v-if="!ifTable"
-                    :chartData="chartData"></hightChart>
+                    :chartData="chartData"></courseChart>
         </div>
-
         <el-pagination
                 style="align-self: center"
                 @current-change="handlePage"
@@ -198,91 +166,113 @@
 
 <script>
     import {manageMixin} from './manageMixin.js';
-
     export default {
         created() {
             this.initData([
                 {
                     date: '2016-05-03',
-                    account: '154091333',
-                    name: 'newbee',
-                    sex: '男',
-                    areaFocus: '金融',
+                    name: 'vue与webpack初步1',
+                    type: '课程',
+                    category: '金融',
                     status: true,
-                    accessTimes: 40,
-                    useTime: 200,
+                    chartData: {
+                        accessTimes: '30',
+                        likes: '22',
+                        collection: '20',
+                        question: '11'
+                    }
                 }, {
                     date: '2016-05-03',
-                    account: '154091334',
-                    name: 'newbee',
-                    sex: '男',
-                    areaFocus: '汽车',
-                    status: true,
-                    accessTimes: 30,
-                    useTime: 150,
+                    name: 'vue与webpack初步2',
+                    type: '课程',
+                    category: '金融',
+                    status: true
                 }, {
                     date: '2016-05-03',
-                    account: '154091335',
-                    name: 'newbee',
-                    sex: '男',
-                    areaFocus: '互联网',
-                    status: true,
-                    accessTimes: 20,
-                    useTime: 120,
-                }, {
-                    date: '2016-05-03',
-                    account: '154091336',
-                    name: 'newbee',
-                    sex: '男',
-                    areaFocus: '产品',
-                    status: true,
-                    accessTimes: 20,
-                    useTime: 101,
-                }, {
-                    date: '2016-05-03',
-                    account: '154091337',
-                    name: 'newbee',
-                    sex: '男',
-                    areaFocus: '设计',
-                    status: false,
+                    name: 'vue与webpack初步3',
+                    type: '课程',
+                    category: '金融',
+                    newDate: '2017-05-09',
+                    avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
+                    nickName: 'newbee',
+                    useTime: 90,
                     accessTimes: 10,
-                    useTime: 101,
                 }, {
                     date: '2016-05-03',
-                    account: '154091338',
-                    name: 'newbee',
-                    sex: '男',
-                    areaFocus: '教育',
-                    status: true,
-                    accessTimes: 90,
-                    useTime: 181,
+                    name: 'vue与webpack初步4',
+                    type: '课程',
+                    category: '金融',
+                    newDate: '2018-05-03',
+                    avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
+                    nickName: 'newbee',
+                    useTime: 30,
+                    accessTimes: 20,
+                }, {
+                    date: '2016-05-03',
+                    name: 'vue与webpack初步5',
+                    type: '课程',
+                    category: '金融',
+                    newDate: '2018-05-03',
+                    avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
+                    nickName: 'newbee',
+                    useTime: 10,
+                    accessTimes: 20,
+                }, {
+                    date: '2016-05-03',
+                    name: 'vue与webpack初步6',
+                    type: '课程',
+                    category: '金融',
+                    newDate: '2018-05-03',
+                    avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
+                    nickName: 'newbee',
+                    useTime: 40,
+                    accessTimes: 20,
                 }
-            ], [{value: '学习记录'}, {value: '学习详情'}]);
+            ], [{value: '文章记录'}, {value: '文章详情'}]);
         },
-        data(){
-          return{
-              //用户类型选项值
-              userSelectV: '普通用户',
-          }
+        data() {
+            return {
+                //要删除的行
+                delectRows: [],
+                //批量删除按钮是否可用
+                ifDelect: true,
+                //当前列表要显示的数据
+                tableData: [],
+                //正常分页时显示的数据,
+                pageData: [],
+                //是否删除当前列表的所有数据
+                ifSelecttALl: false,
+                //显示搜索状态
+                ifSearch: false,
+                //搜索的字段
+                searchInput: '',
+                //类型选项的值
+                selectValue: '学习记录',
+                //图表类型切换
+                options: [{value: '学习记录'}, {value: '课程详情'}],
+                //图表与表格的切换
+                ifTable: true,
+                //图表的数据
+                chartData: [[], [], []],
+            }
         },
+
         methods: {
             /**
-             * 用户类型切换
-             * @param value
+             * 上传课程
              */
-            handleUserTypeChange(value) {
-                //todo 根据不同的类型取查找不同的数据
-                //this.tableData=this.pageData=this.$ajax.get();
-            },
+            handleUpload() {
+                this.$router.push({path: '/userCenter/coursesManage/coursesUpload/#coursesManage'});
+            }
         },
-        mixins: [manageMixin],
         components: {
-            hightChart: () => import('./hightChart.vue')
-        }
+            courseChart: () => import( './courseChart.vue'),
+        },
+        mixins:[manageMixin]
     }
 </script>
 
 <style scoped lang="scss">
-    @import "./manageStyle.scss";
+    @import './manageStyle.scss';
 </style>
 
