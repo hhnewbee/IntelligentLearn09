@@ -55,13 +55,8 @@ let router = new VueRouter(
             {
                 path: '/',
                 redirect: {
-                    name: 'ifLogin',
+                    path: '/main/recommend',
                 }
-            },
-            {
-                name: 'ifLogin',
-                path: '/ifLogin',
-                component: () => import(/* webpackChunkName: "ifLogin.vue" */ './components/login/ifLogin.vue'),
             },
             {
                 name: "login",
@@ -69,7 +64,6 @@ let router = new VueRouter(
                 component: () => import(/* webpackChunkName: "login.vue" */ './components/login/login.vue'),
             },
             {
-                name: "main",
                 path: '/main',
                 component: () => import(/* webpackChunkName: "main.vue" */ './components/main/main.vue'),
                 children: [
@@ -105,7 +99,7 @@ let router = new VueRouter(
             {
                 name: "course",
                 path: '/course',
-                component: () => import(/* webpackChunkName: "courseItem.vue" */ './components/course/courseMain.vue'),
+                component: () => import('./components/course/courseMain.vue'),
             },
             {
                 name: "userCenter",

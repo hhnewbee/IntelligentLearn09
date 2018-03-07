@@ -99,11 +99,11 @@ router.post("/IL09api/sign", async (ctx) => {
 });
 
 /**
- *获取用户名
+ *获取用户名和头像链接
  */
 router.get("/IL09api/getAccount/:accountHashMap", async (ctx, next) => {
     await apiGet.getAll(ctx, next, "users", {
-            attributes: ["account"],
+            attributes: ["account","avatarUrl"],
             where: {accountHashMap: ctx.params.accountHashMap}
         },
     );

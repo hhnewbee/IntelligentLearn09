@@ -74,7 +74,8 @@ module.exports = {
     plugins: [
         new htmlWebpackPlugin({
             template: './vProgect/src/index.html',
-            filename:'index.html'
+            filename:'index.html',
+            favicon:'./vProgect/src/static/imgs/avatar.jpg'
         }),
         new CleanWebpackPlugin(['dist']),
         //让render的哈希值不随文件的增删改变

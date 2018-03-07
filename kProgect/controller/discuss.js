@@ -5,95 +5,75 @@ const WebSocketServer = require('ws').Server,
     });
 
 //不同课程或者文章的讨论组
-const themeArray = [];
+const themeMap = new Map();
 
 //监听客户端连接事件 ws - 是每个客户链接的实例
 wss.on('connection', function (ws) {
     //每个用户的信息监听
     ws.on('message', function (message) {
-        let data=JSON.parse(message);
+        let data = JSON.parse(message);
         //如果是用户加入信息
-        if(data.type==='join'){
-            let ifHas = false;
-            ws.nickName = data.nickName;
-            ws.avatarUrl = data.avatarUrl;
-            ws.theme=data.theme;
-            themeArray.forEach((theme) => {
-                //该讨论组是否已经存在
-                if (theme.theme === data.theme) {
-                    theme.clientArray.push(ws);
-                    ifHas = true;
-                }
-            });
-            //如果该讨论组不存在则新加入
-            if (!ifHas) {
-                themeArray.push({theme: data.theme, clientArray: [ws]});
+        if (data.type === 'join') {
+            //初始化每个websocket客户端的信息
+            this.nickName = data.nickName;
+            this.avatarUrl = data.avatarUrl;
+            this.theme = data.theme;
+            //判断该讨论组是否已经存在
+            if (themeMap.has(data.theme)) {
+                themeMap.get(data.theme).set(data.nickName, this);
+            } else {
+                themeMap.set(data.theme, new Map([[data.nickName, this]]));
             }
-
-            themeArray.forEach((theme)=>{
-                if(theme.theme===data.theme){
-                    theme.clientArray.forEach(client=>{
-                        if(client.nickName!==data.nickName){
-                            //把目前所有房间内人员的信息发给新用户
-                            ws.send(JSON.stringify({
-                                nickName: client.nickName,
-                                avatarUrl: client.avatarUrl,
-                                type: "join"
-                            }));
-                            //将新加入用户的信息告诉所有房间内的用户
-                            client.send(JSON.stringify({
-                                nickName: ws.nickName,
-                                avatarUrl: ws.avatarUrl,
-                                type: "join"
-                            }));
-                        }
-                    })
-                }
-            });
-            //如果是用户发送信息
-        }else{
-            themeArray.forEach((theme)=>{
-                //判断属于哪个讨论组
-                if(data.theme===theme.theme){
-                    //判断是发送给谁的信息
-                    if(data.target===theme.theme){
-                        //群聊信息
-                        theme.clientArray.forEach((client)=>{
-                            if(data.nickName!==client.nickName){
-                                client.send(JSON.stringify(data));
-                            }
-                        })
-                        //个人用户信息
-                    }else{
-                        theme.clientArray.forEach((client)=>{
-                            if(data.target===client.nickName){
-                                client.send(JSON.stringify(data));
-                            }
-                        })
-                    }
+            //广播用户的加入信息
+            themeMap.get(data.theme).forEach(client => {
+                //把目前所有房间内人员的信息发给新用户
+                if (client.nickName !== data.nickName) {
+                    this.send(JSON.stringify({
+                        nickName: client.nickName,
+                        avatarUrl: client.avatarUrl,
+                        type: "join"
+                    }));
+                    //将新加入用户的信息告诉所有房间内的用户
+                    client.send(JSON.stringify({
+                        nickName: data.nickName,
+                        avatarUrl: data.avatarUrl,
+                        type: "join"
+                    }));
                 }
             })
+            //如果是用户发送信息
+        } else {
+            //判断是发送给谁的信息
+            if (themeMap.has(data.target)) {
+                //如果是群聊信息
+                themeMap.get(data.theme).forEach((client) => {
+                    if (client.nickName!==data.nickName) {
+                        client.send(JSON.stringify(data));
+                    }
+                })
+                //个人用户信息
+            } else {
+                themeMap.get(data.theme).get(data.target).send(JSON.stringify(data));
+            }
         }
     });
 
     //每个用户关闭监听
     ws.on('close', function () {
-        themeArray.forEach((theme)=>{
-            if(theme.theme===this.theme){
-                theme.clientArray.forEach(client=>{
-                    if(client.nickName!==this.nickName){
+        //广播用户已近退出
+        themeMap.get(this.theme).forEach(client => {
+                    if (client.nickName !== this.nickName) {
                         client.send(JSON.stringify({
-                            nickName:this.nickName,
-                            type:'exit'
+                            nickName: this.nickName,
+                            type: 'exit'
                         }));
-                    }else{
+                    } else {
                         //删除用户
-                        theme.clientArray.splice(theme.clientArray.findIndex(client),1);
+                        themeMap.get(this.theme).delete(client.nickName);
                     }
                 });
-            }
-        });
-});
-    ws.on('error',function (event) {
+    });
+    //防止用户退出时报错服务器退出
+    ws.on('error', function (event) {
     })
 });

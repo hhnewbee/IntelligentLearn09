@@ -3,7 +3,7 @@ export const info = {
     state: {
         account:'',
         accountHashMap:'',
-        avatar:'',
+        avatarUrl:'',
         name:'',
         areaFocus:'',
         eMail:'',
@@ -15,8 +15,8 @@ export const info = {
         setAccountHashMap(state,newAccountHashMap){
             state.accountHashMap=newAccountHashMap;
         },
-        setAvatar(state,newAvatar){
-            state.avatar=newAvatar;
+        setAvatarUrl(state,newAvatarUrl){
+            state.avatarUrl=newAvatarUrl;
         },
         setName(state,newName){
             state.name=newName;

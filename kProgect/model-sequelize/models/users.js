@@ -7,7 +7,7 @@ module.exports = db.defineModel('users', {
         allowNull: true,
     },
     passwd:db.STRING(100),
-    avatar:{
+    avatarUrl:{
         type: db.STRING(100),
         defaultValue: 'http://localhost:3100/img/avatar/avatar.jpg'
     },

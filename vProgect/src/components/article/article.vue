@@ -38,7 +38,6 @@
                 <keep-alive>
                     <component
                             :headers="headers"
-                            :discussInfo="discussInfo"
                             :is="changePop">
                     </component>
                 </keep-alive>
@@ -68,11 +67,6 @@
                 //传递给目录的变量
                 headers:[],
                 //讨论的信息
-                discussInfo:{
-                    theme:'vue',
-                    nickName:'newbeee',
-                    avatarUrl:'http://localhost:3100/img/avatar/avatar.jpg'
-                }
             }
         },
         methods: {

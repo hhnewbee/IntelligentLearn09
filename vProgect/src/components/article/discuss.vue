@@ -125,9 +125,9 @@
         data() {
             return {
                 discussInfo:{
-                    theme:'vue',
-                    nickName:'newbeee111',
-                    avatarUrl:'http://localhost:3100/img/avatar/avatar.jpg'
+                    theme:'vue与webpack的学习',
+                    nickName:'',
+                    avatarUrl:''
                 },
                 //websocket实例
                 wss: {},
@@ -171,7 +171,10 @@
             }
         },
         computed:{
-            ...mapState('info',['account'])
+            ...mapState('info',[
+                'account',
+                'avatarUrl'
+            ])
         },
         methods: {
             /**
@@ -339,6 +342,7 @@
             initData() {
                 //初始化当前讨论的信息
                 this.discussInfo.nickName=this.account;
+                this.discussInfo.avatarUrl=this.avatarUrl;
                 //初始化大厅讨论区
                 this.chatAreas = [
                     {
@@ -347,7 +351,9 @@
                 ];
                 //将讨论区的信息items赋给当前信息items
                 this.messageItemsNow = this.chatAreas[0].messageItems;
+                //设置当前讨论区
                 this.areaNow.target=this.discussInfo.theme;
+                //初始化用户列表
                 this.usersOnlineList=[];
                 //链接websock
                 this.webso();

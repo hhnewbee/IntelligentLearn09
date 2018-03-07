@@ -2,3 +2,41 @@
     <router-view></router-view>
 </template>
 
+<script>
+    /*
+    * 如果是登录过了，服务器返回对应账号生成的字符序列，作为下次不用登录的依据
+    * */
+    import {mapMutations} from 'vuex'
+
+    export default {
+        created() {
+            this.initVuex();
+        },
+        methods: {
+            ...mapMutations('info', [
+                'setAccountHashMap',
+                'setAccount',
+                'setAvatarUrl'
+            ]),
+            /**
+             * 初始化vuex的数据
+             */
+            initVuex(){
+                //判断用户是否登录
+                let accountHashMap = localStorage["ifLogin"];
+                if (accountHashMap) {
+                    //初始化vuex的数据(用户基本信息)
+                    this.setAccountHashMap(accountHashMap);
+                    this.$ajax.get(`getAccount/${accountHashMap}`).then((res)=>{
+                        this.setAccount(res.data[0].account);
+                        this.setAvatarUrl(res.data[0].avatarUrl);
+                    });
+                    this.setAccount()
+                } else {
+                    this.$router.push({name: 'login'});
+                }
+            }
+        }
+    }
+</script>
+
