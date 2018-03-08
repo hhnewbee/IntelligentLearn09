@@ -222,9 +222,24 @@
                         if (formName === 'loginForm') {//登录
                             data = {
                                 account: this.formDataLogin.account,
-                                passwd: sha256(this.formDataLogin.passwd)
+                                passwd: this.formDataLogin.passwd
                             };
-                            this.$ajax.post('login', data).then((response) => {
+
+                            let axiosSearch = this.$ajax.create({baseURL:'http://172.16.148.27:8080/',
+                            });
+
+//                            this.$ajax.post('checklogin', data).then((response) => {
+//                                if (!response.data) {//如果返回的是0
+//                                    this.$message({
+//                                        type: 'error',
+//                                        message: `账号或者密码错误`
+//                                    });
+//                                }else{//登录成功
+//                                    this.successhandle(response.data);
+//                                }
+//                            });
+
+                            axiosSearch.post('checklogin', data).then((response) => {
                                 if (!response.data) {//如果返回的是0
                                     this.$message({
                                         type: 'error',
@@ -235,6 +250,7 @@
                                 }
 
                             });
+
                         } else {//注册
                             data = {
                                 account: this.formDataSign.accountLogin,

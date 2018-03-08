@@ -9,20 +9,20 @@
                 <div>
                     <!--不能用click，因为blur事件-->
                     <div
-                            v-for="user in usersOnlineList"
+                            v-for="user in userListArray"
                             class="item"
-                            @mousedown="handleChatChange(user.nickName)">
-                        <img class="avatar" :src="user.avatarUrl"/>
+                            @mousedown="handleChatChange(user[0])">
+                        <img class="avatar" :src="user[1].avatarUrl"/>
                         <div class="name">
-                            {{user.nickName}}
+                            {{user[0]}}
                         </div>
-                        <div v-if="user.messages!==0">
-                            {{user.messages}}
+                        <div v-if="user[1].messages!==0">
+                            {{user[1].messages}}
                         </div>
                     </div>
                 </div>
                 <div class="item"
-                     v-if="usersOnlineList.length===0"
+                     v-if="usersOnlineList.size===0"
                      style="font-size: 12px">
                     暂无用户在线
                 </div>
@@ -37,7 +37,7 @@
             <!--大厅的信息-->
             <div class="onlines" v-if="areaNow.target===discussInfo.theme">
                 <div class="small fa fa-television">
-                    &nbsp;{{usersOnlineList.length}}人在线
+                    &nbsp;{{usersOnlineList.size}}人在线
                 </div>
             </div>
             <!--个体用户信息-->
@@ -54,42 +54,41 @@
         <!--信息显示区-->
         <vue-scrollbar
                 class="my-scrollbar"
-                v-for="area in chatAreas"
-                :key="area.target"
-                :ref="area.target"
-                v-show="area.show">
+                v-for="area in Array.from(chatAreas)"
+                :key="area[0]"
+                :ref="area[0]"
+                v-show="area[1].show">
             <div class="message">
                 <div
-                        class="item item-left"
-                        v-for="messageItem in area.messageItems"
-                        v-if="messageItem.type==='get'">
-                    <div class="info">
-                        <div class="avatar">
-                            <img :src="messageItem.avatarUrl"/>
+                     v-for="messageItem in area[1].messageItems">
+                    <div v-if="messageItem.type==='get'"
+                         class="item">
+                        <div class="info">
+                            <div class="avatar">
+                                <img :src="messageItem.avatarUrl"/>
+                            </div>
+                            <div class="name">
+                                {{messageItem.nickName}}
+                            </div>
                         </div>
-                        <div class="name">
-                            {{messageItem.nickName}}
-                        </div>
-                    </div>
-                    <div class="content">
-                        {{messageItem.content}}
-                    </div>
-                </div>
-                <div
-                        v-for="messageItem in area.messageItems"
-                        v-if="messageItem.type==='send'"
-                        class="item item-right">
-                    <div class="info">
-                        <div class="avatar">
-                            <img :src="messageItem.avatarUrl"/>
-                        </div>
-                        <div class="name">
-                            {{messageItem.nickName}}
+                        <div class="content">
+                            {{messageItem.content}}
                         </div>
                     </div>
-                    <div class="content">
-                        <div class="tig"></div>
-                        {{messageItem.content}}
+                    <div v-if="messageItem.type==='send'"
+                         class="item item-right">
+                        <div class="info">
+                            <div class="avatar">
+                                <img :src="messageItem.avatarUrl"/>
+                            </div>
+                            <div class="name">
+                                {{messageItem.nickName}}
+                            </div>
+                        </div>
+                        <div class="content">
+                            <div class="tig"></div>
+                            {{messageItem.content}}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -97,13 +96,13 @@
 
         <!--发送部分-->
         <div class="control">
-            <el-input
-                    resize="none"
-                    type="textarea"
-                    :autosize="{ minRows: 1}"
-                    placeholder="请输入内容"
-                    v-model="sendData">
-            </el-input>
+            <div class="expandingArea ">
+                <div>{{sendData}}<br></div>
+                <textarea placeholder="请输入内容"
+                          @keyup.enter.prevent="handleSend"
+                          v-model="sendData">
+                </textarea>
+            </div>
             <el-button
                     @click="handleSend"
                     type="primary"
@@ -134,47 +133,23 @@
                 //是否打开用户列表
                 showUserList: false,
                 //当前在线用户列表
-                usersOnlineList: [
-                    {
-                        nickName:'',
-                        avatarUrl:'',
-                        messages: 0
-                    }
-                ],
+                usersOnlineList: new Map(),
                 //讨论区的集合
-                chatAreas: [
-                    {
-                        //target（用户昵称/文章或视频标题）是区分不同讨论区的标识
-                        target: '',
-                        //是否显示当前讨论区
-                        show:false,
-                        //消息的集合
-                        messageItems: []
-                    }
-                ],
+                chatAreas:new Map(),
                 //当前讨论区的信息的标识，用于区分和切换讨论区
-                areaNow: {
-                    target:'',
-                },
+                areaNow:{},
                 //当前讨论区的items
-                messageItemsNow: [
-                    {
-                        nickName: '',
-                        avatarUrl:'',
-                        //是发送还是接受信息，用于前端显示的区分
-                        type: 'get/send',
-                        content: ''
-                    }
-                ],
+                messageItemsNow:[],
                 //发送的数据
                 sendData: '',
+                userListArray:[]
             }
         },
         computed:{
             ...mapState('info',[
                 'account',
                 'avatarUrl'
-            ])
+            ]),
         },
         methods: {
             /**
@@ -196,28 +171,26 @@
              * @param target
              */
             handleChatChange(target) {
+                //关闭之前的讨论区
+                this.chatAreas.get(this.areaNow.target).show=false;
                 //确定当前用户信息
                 this.areaNow.target = target;
-                //讨论框的切换,判断当前讨论框是否打开过，如果已打开，复用，否则新添加
-                let ifExit = false;
-                this.chatAreas.forEach((item) => {
-                    if (item.show = item.target === target) {
-                        this.messageItemsNow = item.messageItems;
-                        ifExit = true;
-                    }
-                });
-                //如果当前讨论区没好有存在，则加入
-                if (!ifExit) {
-                    let newArea = {target: target, show: true, messageItems: []};
-                    this.chatAreas.push(newArea);
+                //判断当前讨论区是否打开过，如果已打开，复用，否则新添加
+                let chatArea=this.chatAreas.get(target);
+                if(chatArea!==undefined){
+                    chatArea.show=true;
+                    this.messageItemsNow=chatArea.messageItems;
+                    //如果当前讨论区没好有存在，则加入
+                }else{
+                    let newArea={show:true,messageItems:[]};
+                    this.chatAreas.set(target,newArea);
                     this.messageItemsNow = newArea.messageItems;
                 }
-                //清除显示的信息数
-                this.usersOnlineList.forEach((user)=>{
-                    if(user.nickName===target){
-                        user.messages=0;
-                    }
-                })
+                //如果不是切回主页
+                if(this.discussInfo.theme!==target){
+                    //清除显示的信息数
+                    this.usersOnlineList.get(target).messages=0;
+                }
             },
 
             /**
@@ -242,16 +215,18 @@
                     ...this.discussInfo,
                     type: 'send',
                     content: this.sendData
-                })
+                });
+                //信息清空
+                this.sendData='';
             },
 
             /**
              * webSocket链接
              */
             webso() {
-                this.wss = new WebSocket("ws://localhost:3200/");
+                this.wss = new WebSocket("ws://172.16.116.18:3200");
                 //链接成功后回调
-                this.wss.onopen = (event) => {
+                this.wss.onopen = () => {
                     this.wss.send(JSON.stringify({
                         ...this.discussInfo,
                         type:'join'
@@ -261,63 +236,69 @@
                 this.wss.onmessage = (event) => {
                     //获取的数据
                     let data=JSON.parse(event.data);
-                    //如果是用户加入，就是在用户数组中追加一个用户
+                    //如果是用户加入，就是在用户集合中追加一个用户
                     if (data.type === 'join') {
-                        this.usersOnlineList.push(
-                            {
-                                nickName: data.nickName,
-                                avatarUrl:data.avatarUrl,
-                                messages: 0
-                            });
-                        //获取私人信息
+                        this.usersOnlineList.set(
+                            data.nickName,
+                            {avatarUrl:data.avatarUrl,messages: 0}
+                        );
+                    //如果是用户退出，就是在用户集合删减一个用户
                     }else if(data.type === 'exit'){
-                        this.usersOnlineList.forEach(function (user) {
-                            if(user.nickName===data.nickName){
-                                //移除用户在用户列表中，但讨论区并未移除
-                                this.splice(this.findIndex(user),1);
-                            }
-                        })
-                    } else{
-                        let ifHas = false;
-                        //如果当前区域正好为该用户讨论区域
-                        if (this.areaNow.target ===data.nickName) {
-                            //显示信息并且下拉到底部
-                            this.messageLocalSet(data);
-                        } else {
-                            //如果不在当前区域，则加入到对应的信息数组中
-                            this.chatAreas.forEach((chatArea) => {
-                                if (chatArea.target === data.target) {
-                                    chatArea.messageItems.push({
+                        this.usersOnlineList.delete(data.nickName);
+                    }else{
+                        //如果是群聊信息
+                        if(this.discussInfo.theme ===data.target){
+                            if (this.areaNow.target ===data.target) {
+                                data.type='get';
+                                this.messageLocalSet(data);
+                            }else{
+                                this.chatAreas.get(data.target).messageItems.push(
+                                    {
                                         nickName: data.nickName,
                                         avatarUrl: data.avatarUrl,
                                         type: 'get',
                                         content: data.content
-                                    },);
-                                    ifHas = true;
-                                }
-                            });
-                            //如果该信息数组没有被创建,则重新创建
-                            if (!ifHas) {
-                                this.chatAreas.push({
-                                    target: data.nickName, show: false, messageItems: [
+                                    }
+                                );
+                            }
+                            //如果是个人信息
+                        }else{
+                            //如果当前区域正好为该用户讨论区域
+                            if (this.areaNow.target ===data.nickName) {
+                                //显示信息并且下拉到底部
+                                data.type='get';
+                                this.messageLocalSet(data);
+                            } else {
+                                //如果不在当前区域，则加入到对应的信息数组中
+                                if(this.chatAreas.has(data.nickName)){
+                                    this.chatAreas.get(data.nickName).messageItems.push(
                                         {
                                             nickName: data.nickName,
                                             avatarUrl: data.avatarUrl,
                                             type: 'get',
                                             content: data.content
-                                        },
-                                    ]
-                                })
-                            }
-                            //在用户列表中显示信息数
-                            this.usersOnlineList.forEach(user=>{
-                                if(user.nickName===data.nickName){
-                                    user.messages++;
-                                    if(user.messages>=99){
-                                        user.messages='99+'
-                                    }
+                                        }
+                                    );
+                                    //如果该信息数组没有被创建,则重新创建
+                                }else{
+                                    this.chatAreas.set(data.nickName, {
+                                        show: false,
+                                        messageItems: [
+                                            {
+                                                nickName: data.nickName,
+                                                avatarUrl: data.avatarUrl,
+                                                type: 'get',
+                                                content: data.content
+                                            }
+                                        ]
+                                    });
                                 }
-                            })
+                                //在用户列表中显示信息数
+                                let user=this.usersOnlineList.get(data.nickName);
+                                if(user.messages++>99){
+                                    user.messages='99+'
+                                }
+                            }
                         }
                     }
                 };
@@ -344,17 +325,14 @@
                 this.discussInfo.nickName=this.account;
                 this.discussInfo.avatarUrl=this.avatarUrl;
                 //初始化大厅讨论区
-                this.chatAreas = [
-                    {
-                        target: this.discussInfo.theme, show: true, messageItems: []
-                    }
-                ];
+                this.chatAreas.set(
+                    this.discussInfo.theme,
+                    {show: true, messageItems: []}
+                );
                 //将讨论区的信息items赋给当前信息items
-                this.messageItemsNow = this.chatAreas[0].messageItems;
+                this.messageItemsNow = this.chatAreas.get(this.discussInfo.theme).messageItems;
                 //设置当前讨论区
                 this.areaNow.target=this.discussInfo.theme;
-                //初始化用户列表
-                this.usersOnlineList=[];
                 //链接websock
                 this.webso();
             },
@@ -368,6 +346,11 @@
 
                 //下拉到最底部
                 this.messageScrollTo(this.$refs[this.areaNow.target][0]);
+            }
+        },
+        watch:{
+            usersOnlineList(){
+                this.userListArray=Array.from(this.usersOnlineList);
             }
         },
         components: {
@@ -526,6 +509,7 @@
                     }
                     .content {
                         min-width: 50px;
+                        max-height: 280px;
                         padding: 10px;
                         margin-bottom: 16px;
                         background-color: #409EFF;
@@ -573,6 +557,35 @@
             }
         }
         .control {
+            .expandingArea{
+                display: inline-block;
+                position:relative;
+                width: 100%;
+                min-height: 52px;
+                font-size: 14px;
+                vertical-align: bottom;
+                div{
+                    padding: 5px 15px;
+                    line-height: 1.5;
+                    word-break:break-all;
+                    visibility:hidden;
+                }
+                textarea{
+                    position:absolute;
+                    top:0;
+                    left:0;
+                    width: 100%;
+                    height:100%;
+                    resize: none;
+                    padding: 5px 15px;
+                    line-height: 1.5;
+                    color: #606266;
+                    background-color: #fff;
+                    border: 1px solid #dcdfe6;
+                    border-radius: 4px;
+                    transition: border-color .2s cubic-bezier(.645,.045,.355,1);
+                }
+            }
             display: flex;
             align-items: center;
             width: 100%;

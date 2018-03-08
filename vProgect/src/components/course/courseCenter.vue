@@ -6,7 +6,7 @@
                     controls
                     preload="auto"
                     data-setup='{"playbackRates": [0.7, 1, 1.5, 1.7, 2],"techOrder": ["html5","flash"]}'>
-                <source src="http://localhost:3100/video/studySource/video1.mp4">
+                <source src="http://172.16.116.18:3100/video/studySource/video1.mp4">
             </video>
         </div>
         <div class="rightPop">

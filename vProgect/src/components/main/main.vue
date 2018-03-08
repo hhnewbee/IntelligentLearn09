@@ -1,7 +1,8 @@
 <template>
     <div class="main">
+        <!--固定的头部-->
         <header_ class="header_"></header_>
-        <!--用来占据空间的-->
+        <!--用来占据头部空间-->
         <div class="freeContent"></div>
         <!--主体内容-->
         <router-view class="content"></router-view>

@@ -241,14 +241,14 @@
     .question {
         display: flex;
         justify-content: center;
+        /*align-items: flex-start;*/
         padding: 40px 20px;
         background-color: #f6f6f6;
-        overflow: hidden;
         .left {
             display: flex;
             flex-direction: column;
             margin-right: 60px;
-            align-self: start;
+            align-self: flex-start;
             .autorDetail {
                 display: flex;
                 justify-content: flex-start;

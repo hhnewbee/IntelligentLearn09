@@ -5,11 +5,9 @@
         </div>
         <div class="name">Vue+webpack</div>
         <div class="detail">
-            <span class="likes fa fa-heart"> 222</span>
-            <span class="learns fa fa-user" style="margin-left: 10px"> 222</span>
+            <span class="likes fa fa-heart">&nbsp;222</span>
+            <span class="learns fa fa-user" style="margin-left: 10px">&nbsp;222</span>
         </div>
-        <div class="introduction">为你准备好了全面、系统的Python3入门视频课程
-            Python教程很多，但能做到如此全面系统，带你入门并打牢基础的视频类课程，全网都是稀缺的，你可以自行比较一下</div>
     </div>
 </template>
 
@@ -19,11 +17,10 @@
 
 <style scoped lang="scss">
     .course{
-        float: left;
+        width: 200px;
         margin: 20px 0;
         display: flex;
         flex-direction: column;
-        width: 200px;
         .pic{
             width: 100%;
             height: 120px;
@@ -34,22 +31,17 @@
             }
         }
         .name{
-            align-self: center;
+            align-self: flex-start;
             font-size: 16px;
+            color: #18C0DF;
             font-weight: bold;
-            margin: 5px 0;
+            margin: 12px 10px;
         }
         .detail{
+            align-self: flex-start;
             font-size: 13px;
-            color: rgba(57, 66, 79, 0.61);
-        }
-        .introduction{
-            text-overflow:ellipsis;
-            overflow:hidden;
-            margin: 5px 0;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
+            margin: 0 10px;
+            color: rgba(133, 135, 136, 0.61);
         }
     }
 </style>

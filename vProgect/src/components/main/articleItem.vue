@@ -1,5 +1,5 @@
 <template>
-    <div class="article">
+    <div class="articleItem">
         <div class="title">{{itemContent.title}}</div>
         <div class="detail">
             <infoDetail
@@ -47,7 +47,7 @@
 </script>
 
 <style scoped lang="scss">
-    .article{
+    .articleItem{
         width: 800px;
         padding:16px 20px;
         margin: 15px 0;

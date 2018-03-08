@@ -80,10 +80,10 @@
                     {
                         title:'vue和webpack的使用',
                         avatar:'http://localhost:3100/img/avatar/avatar.jpg',
-                        nickname:'newbee2',
+                        nickname:'newbee1',
                         time:'2018-1-1',
-                        pic:'http://localhost:3100/img/avatar/avatar.jpg',
-                        content:'这几天在修改 WPJAM 问答网站首页列表的时候，发现一个问题，就是有些问题的标题比较长，为了显示美观，我想将首页列表的标题都设置为1行，如果超出的在最后显示 …，开始的时候我使用 PHP 函数来计算文字个数，但是由于中英文字数算法和长度的问题，总是不能做到很完美的效果，后来发现可以通过定义元素的 text-overflow 这个 CSS 属性实现文本溢出省略号。这几天在修改 WPJAM 问答网站首页列表的时候，发现一个问题，就是有些问题的标题比较长，为了显示美观，我想将首页列表的标题都设置为...',
+                        pic:'',
+                        content:'这几天在修改 WPJAM 问答网站首页列表的时候，发现一个问题，就是有些问题的标题比较长，为了显示美观，我想将首页列表的标题都设置为1行，如果超出的在最后显示 …，开始的时候我使用 PHP 函数来计算文字个数，但是由于中英文字数算法和长度的问题，总是不能做.',
                         likes:'22',
                         answers:'22',
                         collections:'22'
@@ -91,14 +91,25 @@
                     {
                         title:'vue和webpack的使用',
                         avatar:'http://localhost:3100/img/avatar/avatar.jpg',
-                        nickname:'newbee3',
+                        nickname:'newbee1',
                         time:'2018-1-1',
-                        pic:'http://localhost:3100/img/avatar/avatar.jpg',
-                        content:'这几天在修改 WPJAM 问答网站首页列表的时候，发现一个问题，就是有些问题的标题比较长，为了显示美观，我想将首页列表的标题都设置为1行，如果超出的在最后显示 …，开始的时候我使用 PHP 函数来计算文字个数，但是由于中英文字数算法和长度的问题，总是不能做到很完美的效果，后来发现可以通过定义元素的 text-overflow 这个 CSS 属性实现文本溢出省略号。这几天在修改 WPJAM 问答网站首页列表的时候，发现一个问题，就是有些问题的标题比较长，为了显示美观，我想将首页列表的标题都设置为...',
+                        pic:'',
+                        content:'这几天在修改 WPJAM 问答网站首页列表的时候，发现一个问题，就是有些问题的标题比较长，为了显示美观，我想将首页列表的标题都设置为1行，如果超出的在最后显示 …，开始的时候我使用 PHP 函数来计算文字个数，但是由于中英文字数算法和长度的问题，总是不能做.',
                         likes:'22',
                         answers:'22',
                         collections:'22'
-                    }
+                    },
+                    {
+                        title:'vue和webpack的使用',
+                        avatar:'http://localhost:3100/img/avatar/avatar.jpg',
+                        nickname:'newbee1',
+                        time:'2018-1-1',
+                        pic:'',
+                        content:'这几天在修改 WPJAM 问答网站首页列表的时候，发现一个问题，就是有些问题的标题比较长，为了显示美观，我想将首页列表的标题都设置为1行，如果超出的在最后显示 …，开始的时候我使用 PHP 函数来计算文字个数，但是由于中英文字数算法和长度的问题，总是不能做.',
+                        likes:'22',
+                        answers:'22',
+                        collections:'22'
+                    },
                 ];
                 //侧边的推荐文章列表
                 this.constructionArticle = [
@@ -122,8 +133,6 @@
     .questionPage {
         display: flex;
         justify-content: center;
-        /*触发bfc，防止父元素的margin与子元素的折叠*/
-        overflow: hidden;
         background-color: #f6f6f6;
         padding: 20px 20px;
         .left {
