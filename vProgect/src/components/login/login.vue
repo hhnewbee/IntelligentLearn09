@@ -216,30 +216,19 @@
              * @param formName
              */
             submitForm(formName) {
-                this.$refs[formName].validate((valid) => { //对整个表单进行校验
-                    if (valid) { //如果没有错误，则提交数据
-                        let data;//不同的数据封装
-                        if (formName === 'loginForm') {//登录
+                //对整个表单进行校验
+                this.$refs[formName].validate((valid) => {
+                    //如果没有错误，则提交数据
+                    if (valid) {
+                        //不同的数据封装
+                        let data;
+                        //登录
+                        if (formName === 'loginForm') {
                             data = {
                                 account: this.formDataLogin.account,
                                 passwd: this.formDataLogin.passwd
                             };
-
-                            let axiosSearch = this.$ajax.create({baseURL:'http://172.16.148.27:8080/',
-                            });
-
-//                            this.$ajax.post('checklogin', data).then((response) => {
-//                                if (!response.data) {//如果返回的是0
-//                                    this.$message({
-//                                        type: 'error',
-//                                        message: `账号或者密码错误`
-//                                    });
-//                                }else{//登录成功
-//                                    this.successhandle(response.data);
-//                                }
-//                            });
-
-                            axiosSearch.post('checklogin', data).then((response) => {
+                            this.$ajax.post('checklogin', data).then((response) => {
                                 if (!response.data) {//如果返回的是0
                                     this.$message({
                                         type: 'error',
@@ -248,9 +237,7 @@
                                 }else{//登录成功
                                     this.successhandle(response.data);
                                 }
-
                             });
-
                         } else {//注册
                             data = {
                                 account: this.formDataSign.accountLogin,
