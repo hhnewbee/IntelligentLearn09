@@ -9,7 +9,7 @@
                 <div>
                     <!--不能用click，因为blur事件-->
                     <div
-                            v-for="user in userListArray"
+                            v-for="user in Array.from(this.usersOnlineList)"
                             class="item"
                             @mousedown="handleChatChange(user[0])">
                         <img class="avatar" :src="user[1].avatarUrl"/>
@@ -60,7 +60,7 @@
                 v-show="area[1].show">
             <div class="message">
                 <div
-                     v-for="messageItem in area[1].messageItems">
+                     v-for="messageItem in messageItemsNow">
                     <div v-if="messageItem.type==='get'"
                          class="item">
                         <div class="info">
@@ -121,13 +121,9 @@
         created() {
             this.initData();
         },
+        props:['discussInfo'],
         data() {
             return {
-                discussInfo:{
-                    theme:'vue与webpack的学习',
-                    nickName:'',
-                    avatarUrl:''
-                },
                 //websocket实例
                 wss: {},
                 //是否打开用户列表
@@ -142,14 +138,7 @@
                 messageItemsNow:[],
                 //发送的数据
                 sendData: '',
-                userListArray:[]
             }
-        },
-        computed:{
-            ...mapState('info',[
-                'account',
-                'avatarUrl'
-            ]),
         },
         methods: {
             /**
@@ -217,7 +206,7 @@
                     content: this.sendData
                 });
                 //信息清空
-                this.sendData='';
+//                this.sendData='';
             },
 
             /**
@@ -321,9 +310,6 @@
              * 初始化数据
              */
             initData() {
-                //初始化当前讨论的信息
-                this.discussInfo.nickName=this.account;
-                this.discussInfo.avatarUrl=this.avatarUrl;
                 //初始化大厅讨论区
                 this.chatAreas.set(
                     this.discussInfo.theme,
@@ -346,11 +332,6 @@
 
                 //下拉到最底部
                 this.messageScrollTo(this.$refs[this.areaNow.target][0]);
-            }
-        },
-        watch:{
-            usersOnlineList(){
-                this.userListArray=Array.from(this.usersOnlineList);
             }
         },
         components: {

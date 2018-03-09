@@ -97,7 +97,7 @@
                     ['removeFormat', ["fa-eraser"],"去除格式"],
                     ["img", ["fa-picture-o"],"添加图片"],
                     ["video", ["fa-youtube-play"],"添加视频"],
-                    ["file", ["fa-file-text"],"添加资料"],
+                    ["file", ["fa-file-test"],"添加资料"],
                     ["back", ["fa-undo"],"回退"],
                     ["cancel", ["fa-times fontSize"],"取消全部编辑"],
                     ["save", ["fa-floppy-o"],"保存"],
@@ -204,7 +204,7 @@
                 } else if (this.uploadType === 'video') {
                     tmp = 'fa-youtube-play'
                 } else {
-                    tmp = 'fa-file-text'
+                    tmp = 'fa-file-test'
                 }
                 newNode.innerHTML = ` <i class='fa ${tmp}'></i> : ${file.name} `;
 

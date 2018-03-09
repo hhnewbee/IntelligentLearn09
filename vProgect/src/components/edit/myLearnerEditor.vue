@@ -233,7 +233,7 @@
                 } else if (this.uploadType === 'video') {
                     tmp = 'fa-youtube-play'
                 } else {
-                    tmp = 'fa-file-text'
+                    tmp = 'fa-file-test'
                 }
                 newNode.innerHTML = ` <i class='fa ${tmp}'></i> : ${file.name} `;
 

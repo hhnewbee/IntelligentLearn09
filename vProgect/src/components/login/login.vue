@@ -226,9 +226,9 @@
                         if (formName === 'loginForm') {
                             data = {
                                 account: this.formDataLogin.account,
-                                passwd: this.formDataLogin.passwd
+                                passwd: sha256(this.formDataLogin.passwd)
                             };
-                            this.$ajax.post('checklogin', data).then((response) => {
+                            this.$ajax.post('login', data).then((response) => {
                                 if (!response.data) {//如果返回的是0
                                     this.$message({
                                         type: 'error',
