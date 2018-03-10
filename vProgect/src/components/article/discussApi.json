@@ -1,0 +1,45 @@
+{
+  "webSocketUrl": "websocket的url",
+  "sendData":{
+    "describe":"用户发送的数据",
+    "userJoin":{
+      "describe":"用户登录",
+      "theme":"当前讨论组的标识（视频标题或者文章标题）",
+      "nickName":"当前用户标识（用户昵称）",
+      "avatarUrl":"用户头像链接",
+      "type":"信息类型（join）"
+
+    },
+    "massageSend":{
+      "describe":"发送消息",
+      "theme":"当前讨论组的标识（视频标题或者文章标题）",
+      "nickName":"当前用户标识（用户昵称）",
+      "avatarUrl":"用户头像链接",
+      "target":"接收方的标识（是群聊（视频或者文章标题）还是私聊（用户昵称））",
+      "type": "信息类型（message）",
+      "content": "消息内容"
+    }
+  },
+  "getData":{
+    "describe":"用户接收的数据",
+    "userJoin":{
+      "describe":"用户上线",
+      "nickName":"当前用户标识（用户昵称）",
+      "avatarUrl":"用户头像链接",
+      "type":"信息类型（join）"
+    },
+    "userExit":{
+      "describe":"用户下线",
+      "nickName":"当前用户标识（用户昵称）",
+      "type":"信息类型（exit）"
+    },
+    "massageGet":{
+      "describe":"接收消息",
+      "nickName":"当前用户标识（用户昵称）",
+      "avatarUrl":"用户头像链接",
+      "target":"接收方的标识（是群聊（视频或者文章标题）还是私聊（用户昵称））",
+      "type": "信息类型（message）",
+      "content": "消息内容"
+    }
+  }
+}

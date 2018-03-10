@@ -1,7 +1,6 @@
 <template>
     <div class="discuss">
         <div class="header">
-
             <!--用户列表-->
             <vue-scrollbar
                     class="userList"
@@ -9,7 +8,7 @@
                 <div>
                     <!--不能用click，因为blur事件-->
                     <div
-                            v-for="user in userListArray"
+                            v-for="user in Array.from(this.usersOnlineList)"
                             class="item"
                             @mousedown="handleChatChange(user[0])">
                         <img class="avatar" :src="user[1].avatarUrl"/>
@@ -27,13 +26,11 @@
                     暂无用户在线
                 </div>
             </vue-scrollbar>
-
             <!--用户列表切切换-->
-            <div
-                    tabindex="1"
-                    class="users fa fa-user"
-                    @blur="handleShowList(false,$event)"
-                    @click="handleShowList(true,$event)"></div>
+            <div tabindex="1"
+                 class="users fa fa-user"
+                 @blur="handleShowList(false,$event)"
+                 @click="handleShowList(true,$event)"></div>
             <!--大厅的信息-->
             <div class="onlines" v-if="areaNow.target===discussInfo.theme">
                 <div class="small fa fa-television">
@@ -60,7 +57,7 @@
                 v-show="area[1].show">
             <div class="message">
                 <div
-                     v-for="messageItem in area[1].messageItems">
+                     v-for="messageItem in messageItemsNow">
                     <div v-if="messageItem.type==='get'"
                          class="item">
                         <div class="info">
@@ -111,23 +108,21 @@
                 发送
             </el-button>
         </div>
+
+        <!--帮助vue对map做响应-->
+        <div v-if="statusHelp"></div>
     </div>
 </template>
 
 <script>
     import VueScrollbar from 'vue2-scrollbar'
-    import { mapState } from 'vuex';
     export default {
         created() {
             this.initData();
         },
+        props:['discussInfo'],
         data() {
             return {
-                discussInfo:{
-                    theme:'vue与webpack的学习',
-                    nickName:'',
-                    avatarUrl:''
-                },
                 //websocket实例
                 wss: {},
                 //是否打开用户列表
@@ -142,14 +137,9 @@
                 messageItemsNow:[],
                 //发送的数据
                 sendData: '',
-                userListArray:[]
+                //用来帮助map监听状态的响应
+                statusHelp:false
             }
-        },
-        computed:{
-            ...mapState('info',[
-                'account',
-                'avatarUrl'
-            ]),
         },
         methods: {
             /**
@@ -199,9 +189,6 @@
             handleSend() {
                 //发送信息
                 this.wss.send(JSON.stringify({
-                    //头像
-                    //发送者的昵称
-                    //文章或视频的标题
                     ...this.discussInfo,
                     //发送的对象
                     target:this.areaNow.target,
@@ -225,7 +212,7 @@
              */
             webso() {
                 this.wss = new WebSocket("ws://172.16.116.18:3200");
-                //链接成功后回调
+                //链接成功后回调，通知后端有用户加入
                 this.wss.onopen = () => {
                     this.wss.send(JSON.stringify({
                         ...this.discussInfo,
@@ -245,52 +232,33 @@
                     //如果是用户退出，就是在用户集合删减一个用户
                     }else if(data.type === 'exit'){
                         this.usersOnlineList.delete(data.nickName);
+                    //如果是发送消息
                     }else{
+                        //设置本地消息类型为接收
+                        data.type='get';
                         //如果是群聊信息
                         if(this.discussInfo.theme ===data.target){
+                            //如果当前讨论区为群聊
                             if (this.areaNow.target ===data.target) {
-                                data.type='get';
+                                //本地信息的显示处理
                                 this.messageLocalSet(data);
                             }else{
-                                this.chatAreas.get(data.target).messageItems.push(
-                                    {
-                                        nickName: data.nickName,
-                                        avatarUrl: data.avatarUrl,
-                                        type: 'get',
-                                        content: data.content
-                                    }
-                                );
+                                this.chatAreas.get(data.target).messageItems.push(data);
                             }
                             //如果是个人信息
                         }else{
                             //如果当前区域正好为该用户讨论区域
                             if (this.areaNow.target ===data.nickName) {
-                                //显示信息并且下拉到底部
-                                data.type='get';
                                 this.messageLocalSet(data);
                             } else {
                                 //如果不在当前区域，则加入到对应的信息数组中
                                 if(this.chatAreas.has(data.nickName)){
-                                    this.chatAreas.get(data.nickName).messageItems.push(
-                                        {
-                                            nickName: data.nickName,
-                                            avatarUrl: data.avatarUrl,
-                                            type: 'get',
-                                            content: data.content
-                                        }
-                                    );
+                                    this.chatAreas.get(data.nickName).messageItems.push(data);
                                     //如果该信息数组没有被创建,则重新创建
                                 }else{
                                     this.chatAreas.set(data.nickName, {
                                         show: false,
-                                        messageItems: [
-                                            {
-                                                nickName: data.nickName,
-                                                avatarUrl: data.avatarUrl,
-                                                type: 'get',
-                                                content: data.content
-                                            }
-                                        ]
+                                        messageItems: [data]
                                     });
                                 }
                                 //在用户列表中显示信息数
@@ -301,6 +269,7 @@
                             }
                         }
                     }
+                    this.statusHelp=!this.statusHelp;
                 };
                 //断开链接后回调
                 this.wss.onclose = (event) => {
@@ -321,9 +290,6 @@
              * 初始化数据
              */
             initData() {
-                //初始化当前讨论的信息
-                this.discussInfo.nickName=this.account;
-                this.discussInfo.avatarUrl=this.avatarUrl;
                 //初始化大厅讨论区
                 this.chatAreas.set(
                     this.discussInfo.theme,
@@ -348,11 +314,6 @@
                 this.messageScrollTo(this.$refs[this.areaNow.target][0]);
             }
         },
-        watch:{
-            usersOnlineList(){
-                this.userListArray=Array.from(this.usersOnlineList);
-            }
-        },
         components: {
             VueScrollbar
         }
@@ -374,7 +335,6 @@
         flex-direction: column;
         background-color: #f0f4f7;
         border: 1px solid $borderColor;
-        /*头部*/
         .header {
             display: flex;
             justify-content: flex-start;

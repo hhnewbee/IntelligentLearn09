@@ -43,17 +43,19 @@ wss.on('connection', function (ws) {
             })
             //如果是用户发送信息
         } else {
-            //判断是发送给谁的信息
+            //回送消息不用携带theme所以删除
+            let theme=data.theme;
+            delete data.theme;
+            //判断是发送给谁的信息，如果是群聊信息
             if (themeMap.has(data.target)) {
-                //如果是群聊信息
-                themeMap.get(data.theme).forEach((client) => {
+                themeMap.get(theme).forEach((client) => {
                     if (client.nickName!==data.nickName) {
                         client.send(JSON.stringify(data));
                     }
                 })
                 //个人用户信息
             } else {
-                themeMap.get(data.theme).get(data.target).send(JSON.stringify(data));
+                themeMap.get(theme).get(data.target).send(JSON.stringify(data));
             }
         }
     });
