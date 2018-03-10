@@ -1,12 +1,12 @@
 const db = require('../db');
 
 module.exports = db.defineModel('comments', {
-    theme:db.STRING(50),
-    avatar:db.STRING(50),
-    name:db.STRING(50),
+    themeId:db.STRING(50),
+    nickName:db.STRING(50),
     time:db.STRING(50),
-    auto:db.BOOLEAN,
-    likes:db.INTEGER,
-    replys:db.INTEGER,
+    tag:{
+        type: db.STRING(50),
+        defaultValue: '普通用户'
+    },
     content: db.TEXT
 });

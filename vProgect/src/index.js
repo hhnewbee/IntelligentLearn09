@@ -1,17 +1,17 @@
 import Vue from 'vue';
+
 //导入全局布局
 import './static/css/index.scss';
-//导入根组件
+//导入全局图标
+import '../src/static/css/iconfont.css';
+//导入第一个字组件
 import index from './components/index.vue';
 
 //导入element-ui的所有样式
 import 'element-ui/lib/theme-chalk/index.css';
 //全局导入element-ui
 import ElementUI from 'element-ui';
-
 Vue.use(ElementUI);
-//导入图标
-import '../src/static/css/iconfont.css';
 
 //时间出来组件
 import Moment from 'moment';
