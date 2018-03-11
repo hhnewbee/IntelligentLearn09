@@ -1,5 +1,5 @@
 <template>
-    <div style="">
+    <div style="height: 100%">
         <comments :commentsInfo="commentsInfo"></comments>
     </div>
 </template>

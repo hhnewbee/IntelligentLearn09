@@ -1,18 +1,22 @@
 <template>
     <div class="comments">
-        <div class="questionHeader">
-            <span class=" fa fa-question-circle-o" style="font-size: 15px;margin-left: 5px"></span>
+        <div class="commentsHeader"
+             v-if="!ifReplysList">
+            <span class=" fa fa-question-circle-o"
+                  style="font-size: 15px;margin-left: 5px">
+            </span>
             &nbsp;{{commentItems.length}}个问题
         </div>
-        <!--问题列表items-->
+
+        <!--评论列表items-->
         <vue-scrollbar v-show="!ifReplysList"
                        class="my-scrollbar">
-            <div class="commentsContent">
+            <div class="commentsList">
                 <div v-if="commentItems.length===0">暂无问题</div>
                 <div class="item"
                      v-for="(comment,index) in commentItems"
                      :key="index">
-                    <div class="head">
+                    <div class="header">
                         <img :src="comment.avatarUrl">
                         <div class="name">
                             {{comment.nickName}}
@@ -21,7 +25,7 @@
                             {{comment.tag}}
                         </div>
                         <div class="time">
-                            {{comment.time | formatDate}}
+                            {{comment.time | formatFromNow}}
                         </div>
                     </div>
                     <div class="content">
@@ -50,62 +54,69 @@
                 </div>
             </div>
         </vue-scrollbar>
-        <!--回答列表items-->
+        <!--回复列表items-->
         <div v-for="area in replysAreas"
              v-show="area.show"
              :key="area.id"
-             class="commentList">
+             class="replysList">
             <div class="listHeader">
-                <div
-                        @click="handleAreaChange(false)"
-                        class="home fa fa-home"></div>
+                <div class="home fa fa-home"
+                     @click="handleAreaChange(false)"></div>
                 <div class="info">
-                    <div class="listName">{{area.nickName}}</div>
                     <img class="listAvatar" :src="area.avatarUrl">
+                    <div class="listName">{{area.nickName}}</div>
                 </div>
             </div>
             <div class="listContent">
                 {{area.content}}
                 <span class="cheart el-icon-time"
-                      style="color:#b5b9bc;left: 10px;bottom: 5px">&nbsp;2015-1-1 10:10</span>
-                <span class="cheart fa fa-heart">&nbsp;34</span>
+                      style="color:#b5b9bc;left: 10px;bottom: 5px">
+                    &nbsp;{{area.time | formatDateTime}}
+                </span>
+                <span class="cheart fa fa-heart"
+                      @click="handleSupport(area)">
+                    &nbsp;{{area.supports}}
+                </span>
             </div>
-            <div class="listItem">
-                <vue-scrollbar class="my-scrollbar"
-                               style="background-color: white">
-                    <div class="itemsList">
-                        <div class="item" v-for="item in area.itemsList">
-                            <div class="header">
-                                <img :src="item.avatarUrl"/>
-                                <div class="name">{{item.nickName}}</div>
-                                <div class="time">{{item.time | formatDate}}</div>
-                            </div>
-                            <div class="content">
-                                {{item.content}}
-                            </div>
-                            <div class="footer">
-                        <span class="count fa fa-heart"
-                              @click="handleSupport(item)">
-                            {{ item.supports}}
-                        </span>
+            <div class="itemCount">
+                {{area.itemsList.length}}个回答
+            </div>
+            <vue-scrollbar class="my-scrollbar"
+                           style="background-color: white">
+                <div class="itemsList">
+                    <div class="item"
+                         v-for="item in area.itemsList">
+                        <div class="header">
+                            <img :src="item.avatarUrl"/>
+                            <div class="name">{{item.nickName}}</div>
+                            <div class="time">{{item.time | formatFromNow}}</div>
+                        </div>
+                        <div class="content">
+                            {{item.content}}
+                        </div>
+                        <div class="footer">
+                            <span class="count fa fa-heart"
+                                  @click="handleSupport(item)">
+                                &nbsp;{{ item.supports}}人赞同
+                            </span>
 
-                                <span
-                                        @click="handleAreaChange(item,true)"
-                                        class="count fa fa-comments"
-                                        style="margin-left: 10px">
-                            {{ item.replys}}
-                        </span>
+                            <span class="count fa fa-comments"
+                                  @click="handleAreaChange(true,item)"
+                                  style="margin-left: 10px">
+                                &nbsp;{{ item.replys}}人回复
+                            </span>
 
-                                <span @click="reply(item)"
-                                      class="count fa fa-reply"
-                                      style="margin-left: 10px"> 回复
-                        </span>
-                            </div>
+                            <span class="count fa fa-reply"
+                                  @click="reply(item)"
+                                  style="margin-left: 10px">
+                                &nbsp;回复
+                            </span>
                         </div>
                     </div>
-                </vue-scrollbar>
-            </div>
+                </div>
+            </vue-scrollbar>
         </div>
+
         <!--发送-->
         <div class="control"
              ref="commentSend">
@@ -274,95 +285,98 @@
     $primaryColor: #409EFF;
     $borderColor: #e5dddd;
     .comments {
-        .questionHeader {
-            font-size: 14px;
-            padding: 10px;
-            border-bottom: 1px solid $borderColor;
-        }
-        height: 100%;
+        min-width: 300px;
         width: 100%;
+        height: 100%;
         display: flex;
         flex-direction: column;
         border: 1px solid $borderColor;
         background-color: #eeeeee;
+        .commentsHeader {
+            font-size: 14px;
+            padding: 10px;
+            border-bottom: 1px solid $borderColor;
+        }
         .my-scrollbar {
             height: 100%;
             width: 100%;
             flex-grow: 1;
             background-color: #eeeeee;
-            //问题的列表
-            .commentsContent {
-                width: 100%;
-                height: 100%;
+        }
+
+        /*评论/回复的item*/
+        .item {
+            width: 88%;
+            padding: 10px 10px;
+            margin-bottom: 20px;
+            background-color: white;
+            box-shadow: 1px 1px 5px 1px #b3b3b3;
+            .header {
                 display: flex;
-                box-sizing: border-box;
-                flex-direction: column;
                 align-items: center;
-                padding: 10px 0;
-                color: #000000;
-                /*问题的item*/
-                .item {
-                    width: 265px;
-                    padding: 10px 10px;
-                    margin-bottom: 20px;
-                    background-color: white;
-                    box-shadow: 1px 1px 5px 1px #b3b3b3;
-                    .head {
-                        display: flex;
-                        align-items: center;
-                        position: relative;
-                        border-radius: 4px 4px 0 0;
-                        img {
-                            width: 30px;
-                            height: 30px;
-                            border-radius: 50%;
-                            z-index: 2;
-                        }
-                        .name {
-                            margin-left: 8px;
-                            font-size: 15px;
-                            font-weight: 700;
-                            color: $primaryColor;
-                        }
-                        .tag {
-                            padding: 2px 4px;
-                            margin-left: 10px;
-                            background: #409eff;
-                            font-size: 12px;
-                            font-weight: bold;
-                            color: #ffffff;
-                            border-radius: 3px;
-                        }
-                        .time {
-                            font-size: 12px;
-                            color: #9E9E9E;
-                            margin-left: 10px;
-                        }
-                    }
-                    .content {
-                        font-size: 15px;
-                        /*强制英文断词*/
-                        word-break: break-all;
-                        padding-top: 5px;
-                        padding-bottom: 10px;
-                    }
-                    .footer {
-                        display: flex;
-                        align-items: center;
-                        cursor: pointer;
-                        span {
-                            color: #9E9E9E;
-                            font-size: 12px;
-                            &:hover {
-                                color: #b5b5b5;
-                            }
-                        }
+                position: relative;
+                border-radius: 4px 4px 0 0;
+                img {
+                    width: 30px;
+                    height: 30px;
+                    border-radius: 50%;
+                    z-index: 2;
+                }
+                .name {
+                    margin-left: 8px;
+                    font-size: 16px;
+                    font-weight: 700;
+                    color: $primaryColor;
+                }
+                .tag {
+                    padding: 2px 4px;
+                    margin-left: 10px;
+                    background: #409eff;
+                    font-size: 12px;
+                    font-weight: bold;
+                    color: #ffffff;
+                    border-radius: 3px;
+                }
+                .time {
+                    font-size: 12px;
+                    color: #9E9E9E;
+                    margin-left: 10px;
+                }
+            }
+            .content {
+                font-size: 15px;
+                /*强制英文断词*/
+                word-break: break-all;
+                padding-top: 5px;
+                padding-bottom: 10px;
+            }
+            .footer {
+                display: flex;
+                align-items: center;
+                cursor: pointer;
+                span {
+                    color: #9E9E9E;
+                    font-size: 12px;
+                    &:hover {
+                        color: #b5b5b5;
                     }
                 }
             }
         }
-        /*回答的列表*/
-        .commentList {
+
+        //评论的列表
+        .commentsList {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            box-sizing: border-box;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px 0;
+            color: #000000;
+        }
+        /*回复的列表*/
+        .replysList {
             height: 1%;
             flex-grow: 1;
             position: relative;
@@ -379,6 +393,8 @@
                 .home {
                     margin-left: 20px;
                     font-size: 18px;
+                    cursor: pointer;
+                    color: rgba(60, 60, 60, 0.61);
                 }
                 .info {
                     display: flex;
@@ -387,9 +403,12 @@
                     width: 100%;
                     flex-grow: 1;
                     .listName {
+                        color: $primaryColor;
+                        font-size: 18px;
                     }
                     .listAvatar {
-                        margin-left: 10px;
+                        margin: 5px 0;
+                        margin-right: 5px;
                         width: 25px;
                         height: 25px;
                         border-radius: 50%;
@@ -416,50 +435,19 @@
                     }
                 }
             }
-            .listItem {
-                height: 1%;
-                flex-grow: 1;
-                .itemsList {
+            .itemCount{
+                margin: 5px 15px;
+                color: #9e9e9e;
+                font-size: 13px;
+            }
+            .itemsList {
                     height: 100%;
                     .item {
                         margin: 5px 15px;
                         border-top: 1px solid #ddd5d5;
-                        .header {
-                            display: flex;
-                            justify-content: flex-start;
-                            align-items: center;
-                            padding-top: 10px;
-                            img {
-                                width: 30px;
-                                height: 30px;
-                                border-radius: 50%;
-                            }
-                            .name {
-                                margin-left: 10px;
-                            }
-                            .time {
-                                margin-left: 10px;
-                            }
-                        }
-                        .content {
-                            padding: 5px 0;
-                            font-size: 15px;
-                        }
-                        .footer {
-                            display: flex;
-                            align-items: center;
-                            cursor: pointer;
-                            span {
-                                color: #9E9E9E;
-                                font-size: 12px;
-                                &:hover {
-                                    color: #b5b5b5;
-                                }
-                            }
-                        }
+                        box-shadow: none;
                     }
                 }
-            }
         }
 
         .control {
