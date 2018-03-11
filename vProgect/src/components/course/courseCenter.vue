@@ -63,7 +63,7 @@
         components: {
             chapter:()=>import('./chapter.vue'),
             discuss:()=>import('../article/discuss.vue'),
-            comments:()=>import('../article/questions.vue'),
+            comments:()=>import('../article/comments.vue'),
             downLoad:()=>import('../resources/downLoad.vue')
         },
         methods: {

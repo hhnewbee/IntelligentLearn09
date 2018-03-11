@@ -2,22 +2,22 @@
     <div class="comments">
         <div class="questionHeader">
             <span class=" fa fa-question-circle-o" style="font-size: 15px;margin-left: 5px"></span>
-            &nbsp;123个问题
+            &nbsp;{{commentItems.length}}个问题
         </div>
-        <!--问题items-->
-        <vue-scrollbar
-                class="my-scrollbar"
-                v-show="!ifList">
+        <!--问题列表items-->
+        <vue-scrollbar v-show="!ifReplysList"
+                       class="my-scrollbar">
             <div class="commentsContent">
-                <div
-                        class="item"
-                        v-for="(comment,index) in commentItems" :key="index">
+                <div v-if="commentItems.length===0">暂无问题</div>
+                <div class="item"
+                     v-for="(comment,index) in commentItems"
+                     :key="index">
                     <div class="head">
-                        <img :src="comment.avatar">
+                        <img :src="comment.avatarUrl">
                         <div class="name">
-                            {{comment.name}}
+                            {{comment.nickName}}
                         </div>
-                        <div class="tag" v-if="comment.tag!=='normal'">
+                        <div class="tag" v-if="comment.tag!=='普通用户'">
                             {{comment.tag}}
                         </div>
                         <div class="time">
@@ -28,8 +28,10 @@
                         {{comment.content}}
                     </div>
                     <div class="footer">
-                        <span class="count fa fa-heart">
-                            {{ comment.likes}}人喜欢
+                        <span class="count fa fa-heart"
+                              :ref="comment.id"
+                              @click="handleSupport(comment)">
+                            {{comment.supports}}人喜欢
                         </span>
 
                         <span
@@ -40,7 +42,7 @@
                         </span>
 
                         <span
-                                @click="reply(comment.name)"
+                                @click="reply(comment)"
                                 class="count fa fa-reply"
                                 style="margin-left: 10px"> 回答
                         </span>
@@ -49,41 +51,42 @@
             </div>
         </vue-scrollbar>
         <!--回答列表items-->
-        <div
-                v-for="area in commentArea"
-                v-show="area.show"
-                :key="area.name"
-                class="commentList">
+        <div v-for="area in replysAreas"
+             v-show="area.show"
+             :key="area.id"
+             class="commentList">
             <div class="listHeader">
                 <div
                         @click="handleAreaChange(false)"
                         class="home fa fa-home"></div>
                 <div class="info">
-                    <div class="listName">{{area.name}}</div>
-                    <img class="listAvatar" :src="area.avatar">
+                    <div class="listName">{{area.nickName}}</div>
+                    <img class="listAvatar" :src="area.avatarUrl">
                 </div>
             </div>
             <div class="listContent">
                 {{area.content}}
-                <span class="cheart el-icon-time" style="color:#b5b9bc;left: 10px;bottom: 5px">&nbsp;2015-1-1 10:10</span>
+                <span class="cheart el-icon-time"
+                      style="color:#b5b9bc;left: 10px;bottom: 5px">&nbsp;2015-1-1 10:10</span>
                 <span class="cheart fa fa-heart">&nbsp;34</span>
             </div>
             <div class="listItem">
                 <vue-scrollbar class="my-scrollbar"
                                style="background-color: white">
-                    <div class="itemList">
-                        <div class="item" v-for="item in area.itemList">
+                    <div class="itemsList">
+                        <div class="item" v-for="item in area.itemsList">
                             <div class="header">
-                                <img :src="item.avatar"/>
-                                <div class="name">{{item.name}}</div>
+                                <img :src="item.avatarUrl"/>
+                                <div class="name">{{item.nickName}}</div>
                                 <div class="time">{{item.time | formatDate}}</div>
                             </div>
                             <div class="content">
                                 {{item.content}}
                             </div>
                             <div class="footer">
-                        <span class="count fa fa-heart">
-                            {{ item.likes}}
+                        <span class="count fa fa-heart"
+                              @click="handleSupport(item)">
+                            {{ item.supports}}
                         </span>
 
                                 <span
@@ -93,10 +96,9 @@
                             {{ item.replys}}
                         </span>
 
-                                <span
-                                        @click="reply(item.name)"
-                                        class="count fa fa-reply"
-                                        style="margin-left: 10px"> 回复
+                                <span @click="reply(item)"
+                                      class="count fa fa-reply"
+                                      style="margin-left: 10px"> 回复
                         </span>
                             </div>
                         </div>
@@ -105,7 +107,8 @@
             </div>
         </div>
         <!--发送-->
-        <div class="control">
+        <div class="control"
+             ref="commentSend">
             <el-input
                     resize="none"
                     type="textarea"
@@ -119,7 +122,8 @@
                     :disabled="buttonDis"
                     style="align-self: flex-end;margin-left: 10px"
                     @click="send">
-                评论</el-button>
+                评论
+            </el-button>
         </div>
     </div>
 </template>
@@ -130,155 +134,134 @@
 
     export default {
         created() {
-            //todo 获取评论
-//            this.$ajax.all([
-//                this.$ajax.get('getComments/' + "主题1" + "?pageIndex=1"),
-//            ]).then(this.$ajax.spread((resInfo) => {
-//                this.commentItems = resInfo.data;
-//            }))
-            this.areaNow=this.commentItems;
+            this.ajxaComments.get('getComments/' + this.commentsInfo.targetId + "?pageIndex=0").then((response) => {
+                this.itemsListNow = this.commentItems = response.data;
+            });
+            this.targetId=this.commentsInfo.targetId;
         },
-
+        //当前评论的基本信息
+        props: ['commentsInfo'],
         data() {
             return {
-                ifList: false,
-                commentItems: [
-                    {
-                        theme: 't1',
-                        name: 'newbee1',
-                        avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
-                        tag: 'auto',
-                        time: Date(),
-                        content: '这是个问题1',
-                        likes: '3',
-                        replys: '5',
-                        id: "1"
-                    },
-                    {
-                        theme: 't1',
-                        name: 'newbee2',
-                        avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
-                        tag: 'normal',
-                        time: Date(),
-                        content: '这是个问题2',
-                        likes: '3',
-                        replys: '5',
-                        id: '2'
-                    },
-                    {
-                        theme: 't1',
-                        name: 'newbee3',
-                        avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
-                        tag: 'auto',
-                        time: Date(),
-                        content: '这是个问题3',
-                        likes: '3',
-                        replys: '5',
-                        id: '3'
-                    },
-                    {
-                        theme: 't1',
-                        name: 'newbee3',
-                        avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
-                        tag: 'auto',
-                        time: Date(),
-                        content: '这是个问题3',
-                        likes: '3',
-                        replys: '5',
-                        id: '3'
-                    }
-                ],
-                commentArea: [],
-                areaNow:{},
-                sendData:''
+                //不能用全局的ajax实例，因为去全局的搜索等待是全页面显示的
+                ajxaComments: this.$ajax.create(),
+                //是否打开回复列表
+                ifReplysList: false,
+                //评论的列表
+                commentItems: [],
+                //不同的用户回复区
+                replysAreas: [],
+                //当前的回复/评论列表
+                itemsListNow: [],
+                //发送评论/回复的数据
+                sendData: '',
+                //当前评论区的id，用于回复的标识
+                targetId:''
             }
         },
 
         methods: {
-            handleAreaChange(ifList, userInfo) {
+            /**
+             * 切换评论区
+             * @param ifReplysList
+             * @param commentInfo
+             */
+            handleAreaChange(ifReplysList, commentInfo) {
                 //首先判断是否打开对话列表
-                this.ifList = ifList;
-                if (!ifList) {
-                    this.commentArea.forEach((item) => {
-                        item.show = false;
+                this.ifReplysList = ifReplysList;
+                //如果不是
+                if (!ifReplysList) {
+                    this.replysAreas.forEach((area) => {
+                        area.show = false;
                     });
-                    this.areaNow=this.commentItems;
+                    this.itemsListNow = this.commentItems;
+                    //切换回复的评论区id
+                    this.targetId=this.commentsInfo.targetId;
                 } else {
                     //列表的切换,判断当前列表是否打开过，如果已打开，复用，否则新添加
                     let ifAddN = false;
-                    this.commentArea.forEach((item) => {
-                        if (item.nickName === userInfo.nickName) {
-                            item.show = ifAddN = true;
+                    this.replysAreas.forEach((area) => {
+                        if (area.id === commentInfo.id) {
+                            area.show = ifAddN = true;
+                            this.itemsListNow = area.itemsList;
                         } else {
-                            item.show = false;
+                            area.show = false;
                         }
                     });
                     if (!ifAddN) {
-                        //todo 获取列表
-//                        this.$ajax.get('?id='+userInfo.id).then((response)=>{
-//                            this.commentArea.push({nickName:userInfo.nickName,show:true,itemList:response.data})
-//                        }
-                        let newList={
-                            ...userInfo, show: true, itemList: [
-                                {
-                                    theme: 't2',
-                                    name: 'newbee1',
-                                    avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
-                                    tag: '',
-                                    time: Date(),
-                                    content: '回复1',
-                                    likes: '3',
-                                    replys: '5',
-                                    id: "1"
-                                },
-                                {
-                                    theme: 't2',
-                                    name: 'newbee2',
-                                    avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
-                                    tag: '',
-                                    time: Date(),
-                                    content: '回复1',
-                                    likes: '3',
-                                    replys: '5',
-                                    id: '2'
-                                },
-                                {
-                                    theme: 't2',
-                                    name: 'newbee3',
-                                    avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
-                                    tag: 'auto',
-                                    time: Date(),
-                                    content: '回复1',
-                                    likes: '3',
-                                    replys: '5',
-                                    id: '3'
-                                }
-                            ]
-                        };
-                        this.commentArea.push(newList);
-                        this.areaNow=newList.itemList;
+                        this.$ajax.get('getComments/' + commentInfo.id+ "?pageIndex=0").then((response) => {
+                            let newArea = {...commentInfo, show: true, itemsList: response.data};
+                            this.replysAreas.push(newArea);
+                            this.itemsListNow = newArea.itemsList;
+                        });
                     }
+                    this.targetId=commentInfo.id;
                 }
             },
+            /**
+             * 发送评论
+             */
             send() {
-                this.areaNow.unshift({
-                    avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
-                    name: 'newbee',
+                let data = {
+                    ...this.commentsInfo,
                     time: Date(),
-                    likes: 0,
-                    replys: 0,
-                    tag: "normal",
+                    replys:0,
+                    supports:0,
                     content: this.sendData
-                });
-                this.sendData= '';
+                };
+                //确定当前评论区的id
+                data.targetId=this.targetId;
+                //如果不是回复当前评论区的
+                if(this.$refs['commentSend'].targetId){
+                    data.targetId=this.$refs['commentSend'].targetId;
+                    //更新本地显示
+                    this.itemsListNow.forEach(item=>{
+                        if(item.id===data.targetId){
+                            item.replys++;
+                        }
+                    })
+                }
+                //本地添加数据
+                this.itemsListNow.unshift(data);
+                //发送数据
+                this.ajxaComments.post('addComments', data);
+                //清空发送的临时设置数据
+                this.sendData = '';
+                this.$refs['commentSend'].targetId=null;
             },
-            reply(name) {
-                this.sendData = "@" + name + " "
+            /**
+             * 回复
+             * @param comment
+             */
+            reply(comment) {
+                this.sendData = "@" + comment.nickName + " ";
+                this.$refs['commentSend'].targetId=comment.id;
+            },
+            /**
+             * 支持
+             * @param comment
+             */
+            handleSupport(comment){
+                let style=this.$refs[comment.id][0].style;
+                //判断是否已经点赞
+                if(style.color==='rgb(64, 158, 255)'){
+                    //本地显示更新
+                    style.color='#9E9E9E';
+                    comment.supports--;
+                    this.ajxaComments.delete('deleteSupporter/'+comment.id);
+                }else{
+                    style.color='#409EFF';
+                    comment.supports++;
+                    this.ajxaComments.post('addSupporter',{
+                        commentsId:comment.id,
+                        nickName:this.commentsInfo.nickName
+                    });
+                }
             }
         },
         computed: {
             buttonDis() {
-                return this.sendData=== "";
+                return this.sendData === "";
             }
         },
         components: {
@@ -288,10 +271,10 @@
 </script>
 
 <style scoped lang="scss">
-    $primaryColor:#409EFF;
+    $primaryColor: #409EFF;
     $borderColor: #e5dddd;
     .comments {
-        .questionHeader{
+        .questionHeader {
             font-size: 14px;
             padding: 10px;
             border-bottom: 1px solid $borderColor;
@@ -339,10 +322,10 @@
                             margin-left: 8px;
                             font-size: 15px;
                             font-weight: 700;
-                            color:$primaryColor;
+                            color: $primaryColor;
                         }
                         .tag {
-                            padding:2px 4px;
+                            padding: 2px 4px;
                             margin-left: 10px;
                             background: #409eff;
                             font-size: 12px;
@@ -421,22 +404,22 @@
                 position: relative;
                 font-size: 15px;
                 color: black;
-                .cheart{
+                .cheart {
                     cursor: pointer;
                     position: absolute;
                     right: 10px;
                     bottom: 5px;
                     color: #495a6c;
                     font-size: 12px;
-                    &:hover{
-                        color:#b5b5b5;
+                    &:hover {
+                        color: #b5b5b5;
                     }
                 }
             }
-            .listItem{
+            .listItem {
                 height: 1%;
                 flex-grow: 1;
-                .itemList{
+                .itemsList {
                     height: 100%;
                     .item {
                         margin: 5px 15px;
