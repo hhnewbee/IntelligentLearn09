@@ -135,7 +135,7 @@
         components: {
             'chapter': () => import('./chapter.vue'),
             'discuss': () => import('./discuss.vue'),
-            'questions': () => import('./questions.vue'),
+            'questions': () => import('./comments.vue'),
         },
     }
 </script>

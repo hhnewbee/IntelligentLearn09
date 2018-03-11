@@ -2,28 +2,8 @@ const Router = require('koa-router');
 //前端接口
 const apiGet = require('./controller/api');
 const upload = require('./controller/upload');
+const comments=require('./controller/comments');
 let router = new Router();
-
-router.get("/IL09api/getComments/:theme", async (ctx, next) => {
-    let pageIndex = ctx.request.query.pageIndex;
-    await apiGet.getAll(ctx, next, "comments", {
-            attributes: ["avatar", "name", "time", "auto", "likes", "replys", "content"],
-            offset: pageIndex === 1 ? 0 : (pageIndex - 1) * 10,
-            limit: pageIndex * 10,
-            order: [
-                [
-                    'time', 'DESC'
-                ]
-            ],
-            where: {theme: ctx.params.theme}
-        },
-    );
-});
-
-router.post("/IL09api/addComments/:theme", async (ctx, next) => {
-    let body = Object.assign(ctx.request.body, {title: ctx.params.title}, {add_time: Date()});
-    await apiGet.addAll(ctx, next, "comments", body);
-});
 
 /**
  * 添加文章
@@ -109,4 +89,31 @@ router.get("/IL09api/getAccount/:accountHashMap", async (ctx, next) => {
     );
 });
 
+/**
+ * 获取评论
+ */
+router.get("/IL09api/getComments/:targetId", async (ctx, next) => {
+    await comments.getComments(ctx, next);
+});
+
+/**
+ * 添加评论
+ */
+router.post("/IL09api/addComments", async (ctx, next) => {
+    await comments.addComments(ctx,next);
+});
+
+/**
+ * 添加支持者
+ */
+router.post("/IL09api/addSupporter", async (ctx, next) => {
+    await comments.addSupporter(ctx,next);
+});
+
+/**
+ * 删除支持者
+ */
+router.delete("/IL09api/deleteSupporter/:commentsId", async (ctx, next) => {
+    await comments.deleteSupporter(ctx,next);
+});
 module.exports = router;

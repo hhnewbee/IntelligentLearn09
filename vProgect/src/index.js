@@ -15,6 +15,7 @@ Vue.use(ElementUI);
 
 //时间出来组件
 import Moment from 'moment';
+Moment.locale('zh-cn');
 
 //导入axios
 import Axios from 'axios';
@@ -41,6 +42,14 @@ Axios.interceptors.response.use(function (config) {
 //vue的全局时间拦截器
 Vue.filter("formatDate", function (value) {
     return Moment(value).format("YYYY-MM-DD");
+});
+
+Vue.filter("formatDateTime", function (value) {
+    return Moment(value).format("YYYY-MM-DD HH:mm");
+});
+
+Vue.filter("formatFromNow", function (value) {
+    return Moment(value).fromNow();
 });
 
 //路由
