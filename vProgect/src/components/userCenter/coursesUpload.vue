@@ -13,7 +13,7 @@
                 课程上传
             </el-breadcrumb-item>
         </el-breadcrumb>
-        <div style="height:1%;flex-grow: 1;display: flex;justify-content: space-around;flex-wrap: nowrap;margin-bottom: 20px">
+        <div class="uploadContent">
             <div>
                 <div class="title item">
                     <div class="span">课程标题:</div>
@@ -82,7 +82,7 @@
                             :ref="'videoUpload'+index"
                             class="content"
                             list-type="text"
-                            :on-success="handleVideoSuccess"
+                            :on-success="handleVideoSuccess(index)"
                             :multiple="true"
                             :auto-upload="false">
                         <el-tag
@@ -100,6 +100,7 @@
                             action="http://localhost:3100/upload/file"
                             class="content"
                             list-type="text"
+                            :on-success="handleSourseSuccess"
                             :multiple="true"
                             :auto-upload="false">
                         <el-button size="small" type="primary">选择资料</el-button>
@@ -177,12 +178,13 @@
                     this.$message.error('标题和简介不能为空');
                     return;
                 }
-//                this.$ajax.post('',{courseTitle:this.courseTitle});
-//                this.$ajax.post('',{courseTitle:this.courseIntr});
-//                this.$refs.iconUpload.submit();
+                this.$ajax.post('',{courseTitle:this.courseTitle});
+                this.$ajax.post('',{courseIntro:this.courseIntr});
+                //icon上传
+                this.$refs.iconUpload.submit();
                 //视频上传
                 for(let i=0;i<this.videosUpload.length;i++){
-                    this.$refs['videoUpload'+i].submit();
+                    this.$refs['videoUpload'+i][0].submit();
                 }
                 //资料上传
                 this.$refs.sourceUpload.submit();
@@ -191,20 +193,25 @@
              * icon上传成功后
              */
             handleIconSuccess() {
-                this.$refs.videoUpload.submit();
             },
             /**
-             * 上传
+             * 视频上传成功后
              */
-            handleVideoSuccess(){
-                this.$refs.sourceUpload.submit();
+            handleVideoSuccess(index){
+//                this.$refs.sourceUpload.submit();
+                console.log(index);
+            },
+            /**
+             * 资源上传成功后
+             */
+            handleSourseSuccess(){
+
             },
             /**
              * 返回课程管理
              */
             handleBackManage(){
                 this.$router.push({path: '/userCenter/coursesManage/#coursesManage'});
-
             },
             /**
              * 添加章节
@@ -230,40 +237,49 @@
         flex-direction: column;
         padding: 20px;
         height: 100%;
-        .title {
-            .input {
-                width: 100%;
-            }
-        }
-        .icon {
-            .iconUpload {
-                width: 100%;
-            }
-        }
-        .intr {
-            .textare {
-                width: 100%;
-            }
-        }
-        .item{
-            width: 300px;
-            margin-top: 20px;
-            margin-left: 20px;
-        }
-        .span {
-            font-size: 16px;
-            font-weight: bold;
-        }
-        .sourceList{
+        .uploadContent{
+            height:1%;
+            flex-grow: 1;
             display: flex;
-            flex-direction: column;
-        }
-        .content{
-            margin-left: 20px;
-            margin-top:10px;
-            width: 250px;
+            justify-content: space-around;
+            flex-wrap: nowrap;
+            margin-bottom: 20px;
+            .title {
+                .input {
+                    width: 100%;
+                }
+            }
+            .icon {
+                .iconUpload {
+                    width: 100%;
+                }
+            }
+            .intr {
+                .textare {
+                    width: 100%;
+                }
+            }
+            .item{
+                width: 300px;
+                margin-top: 20px;
+                margin-left: 20px;
+            }
+            .span {
+                font-size: 16px;
+                font-weight: bold;
+            }
+            .sourceList{
+                display: flex;
+                flex-direction: column;
+            }
+            .content{
+                margin-left: 20px;
+                margin-top:10px;
+                width: 250px;
+            }
         }
         .uploadButton {
+            font-weight: bold;
             margin: 0 20px;
         }
     }
