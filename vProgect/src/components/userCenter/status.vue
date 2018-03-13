@@ -17,7 +17,7 @@
                     :value="item.value">
             </el-option>
         </el-select>
-        <hightChart style="padding: 40px;box-sizing: border-box" :chartData="chartData"></hightChart>
+        <hightChart :chartData="chartData"></hightChart>
     </div>
 </template>
 
@@ -33,7 +33,7 @@
         },
         data() {
             return {
-                selectValue:'以天为单位',
+                selectValue:'最近一周',
                 //改变图表的x轴参数
                 changeOptions: [
                     {value: '最近一周'},
@@ -50,9 +50,11 @@
              * @param value
              */
             handleChartChange(value) {
-                if (value === '以天为单位') {
-                    this.chartData.splice(0,1,['周一', '周二', '周三', '周四', '周五', '周六', '周日']);
-                }else if(value ==='以周为单位'){
+                if (value === '最近一周') {
+                    this.chartData[0]=['周一', '周二', '周三', '周四', '周五', '周六', '周日'];
+                    this.chartData.splice(1,1,[132,213,133,111,423,33,12]);
+                    this.chartData.splice(2,1,[12,13,13,31,43,33,22]);
+                }else if(value ==='最近一月'){
                     this.chartData.splice(0,1,['第一周', '第二周', '第三周', '第四周']);
                     this.chartData.splice(1,1,[132,213,133,111]);
                     this.chartData.splice(2,1,[12,13,13,31]);

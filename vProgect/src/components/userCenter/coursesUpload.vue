@@ -23,7 +23,7 @@
                             class="input content"></el-input>
                 </div>
                 <div class="intr item">
-                    <div class="span">简介:</div>
+                    <div class="span">课程简介:</div>
                     <el-input
                             type="textarea"
                             class="textare content"
@@ -32,6 +32,20 @@
                             placeholder="请输入内容"
                             v-model="courseIntr">
                     </el-input>
+                </div>
+                <div class="category item">
+                    <div class="span">课程类型:</div>
+                    <el-select v-model="categorys"
+                               style="width: 100%"
+                               class="content"
+                               multiple
+                               placeholder="请选择">
+                        <el-option v-for="item in filterType('全部')"
+                                   :key="item"
+                                   :label="item"
+                                   :value="item">
+                        </el-option>
+                    </el-select>
                 </div>
                 <div class="icon item">
                     <div class="span">课程图标:</div>
@@ -120,6 +134,8 @@
 
 <script>
     import {handleLimitFileType} from '../../static/venders/unitUpload';
+    import {mapGetters} from 'vuex'
+
     export default {
         mounted() {
             //upload组件自动添加的子元素的样式
@@ -137,12 +153,17 @@
                 chapterName:'',
                 //各个章节的视频
                 videosUpload:[],
+                //课程类型
+                categorys: [],
             };
         },
         computed: {
+            //判断章节是否为空
             chapterNameAdd(){
                 return this.chapterName==='';
-            }
+            },
+            //类型的过滤器
+            ...mapGetters(['filterType']),
         },
         methods: {
             /**
@@ -180,6 +201,7 @@
                 }
                 this.$ajax.post('',{courseTitle:this.courseTitle});
                 this.$ajax.post('',{courseIntro:this.courseIntr});
+                this.$ajax.post('',{courseCategory:this.categorys.join('/')});
                 //icon上传
                 this.$refs.iconUpload.submit();
                 //视频上传
@@ -261,12 +283,13 @@
             }
             .item{
                 width: 300px;
-                margin-top: 20px;
+                margin-top: 15px;
                 margin-left: 20px;
             }
             .span {
                 font-size: 16px;
                 font-weight: bold;
+                color: #606266;
             }
             .sourceList{
                 display: flex;
@@ -274,8 +297,7 @@
             }
             .content{
                 margin-left: 20px;
-                margin-top:10px;
-                width: 250px;
+                margin-top:8px;
             }
         }
         .uploadButton {

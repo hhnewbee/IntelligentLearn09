@@ -59,6 +59,7 @@ export default {
     },
     data(){
         return{
+            courseItems:[],
             articleItems:[]
         }
     },
@@ -121,6 +122,9 @@ export default {
         flex-direction: column;
         align-items: center;
         background-color: #f6f6f6;
+        a{
+            text-decoration: none;
+        }
         //轮播图
         .carousel{
             width: $cnntentWith;

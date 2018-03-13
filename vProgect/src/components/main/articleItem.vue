@@ -10,13 +10,22 @@
             <div class="time">时间：{{itemContent.time}}</div>
         </div>
         <div class="content">
+            <!--有图片时-->
             <img
                     v-if="itemContent.pic"
                     :src="itemContent.pic"
                     class="media">
+
+            <!--有视频时，实现预加载，但无播放控制相当于截图-->
+            <video v-if="itemContent.video"
+                   preload="auto">
+                <source :src="itemContent.video"/>
+            </video>
+
             <span
                     @click="handleIn"
-                    class="text">{{itemContent.content}}</span>
+                    class="text">{{itemContent.content}}<span>...</span>
+            </span>
         </div>
         <div class="info">
             <div class="likes fa fa-heart ic">&nbsp;{{itemContent.likes}}人喜欢</div>

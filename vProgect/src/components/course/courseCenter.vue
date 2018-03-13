@@ -18,6 +18,7 @@
                 <div class="op discuss" @click="handlerChange(2,$event)">
                     <em class="fa fa-comments-o"></em>
                     讨论
+
                 </div>
                 <div class="op question" @click="handlerChange(3,$event)">
                     <em class="fa fa-question-circle-o"></em>
@@ -29,7 +30,8 @@
                 </div>
             </div>
             <keep-alive>
-                <component :is="changePop">
+                <component :is="changePop"
+                           @changeUrl="changeVideoUrl">
                 </component>
             </keep-alive>
         </div>
@@ -37,37 +39,34 @@
 </template>
 
 <script>
-    import 'video.js/dist/video-js.min.css'
-    import 'videojs-flash/dist/videojs-flash.min.js'
     import 'video.js/dist/video.min.js'
+    import 'videojs-flash/dist/videojs-flash.min.js'
+    import 'video.js/dist/video-js.min.css'
 
     export default {
         created() {
-            //TODO 获取数据
-//            this.$ajax.get('').then((response)=>{
-//
-//            });
-            //todo 获取discuss的数据，discuss只做展现作用
-
         },
-        mounted(){
-//            this.initDom();
+        mounted() {
+            this.reloadVideo();
+            this.initDom();
         },
         data() {
             return {
-                changePop: 'downLoad',
-                reload:false,
-                discuss:{}
+                changePop: 'chapter',
+                discuss: {},
+                videoUrl: ''
             }
         },
         components: {
-            chapter:()=>import('./chapter.vue'),
-            discuss:()=>import('../article/discuss.vue'),
-            comments:()=>import('../article/comments.vue'),
-            downLoad:()=>import('../resources/downLoad.vue')
+            chapter: () => import('./chapter.vue'),
+            discuss: () => import('../article/discuss.vue'),
+            comments: () => import('../article/comments.vue'),
+            downLoad: () => import('../resources/downLoad.vue')
         },
         methods: {
-            //侧边选项的切换
+            /**
+             * 侧边的选择项
+             */
             handlerChange(tar, e) {
                 switch (tar) {
                     case 1: {
@@ -78,11 +77,11 @@
                         this.changePop = 'discuss';
                         break;
                     }
-                    case 3:{
+                    case 3: {
                         this.changePop = 'comments';
                         break;
                     }
-                    case 4:{
+                    case 4: {
                         this.changePop = 'downLoad';
                         break;
                     }
@@ -96,12 +95,33 @@
                     }
                 });
             },
-            initDom(){
-                if(!this.reload) {
-                    this.reload=true;
-                }
+            /**
+             * 刷新出videojs，不然无法生效
+             */
+            reloadVideo() {
+                //dom加载完毕的时候，该id还没有被附加，用js的事件循环机制放获取放到最后去
+                setTimeout(() => {
+                    //判断viedojs是否加载成功
+                    if (document.querySelector('.videoItem').childNodes[0].id !== 'vjs_video_3') {
+                        window.location.reload();
+                    }
+                }, 1)
+            },
+            /**
+             * 改变视频的链接，切换视频
+             * @param url
+             */
+            changeVideoUrl(url) {
+                this.videoUrl = url;
+            },
+            /**
+             * 初始化dom
+             */
+            initDom() {
+                document.querySelector('.op').style.backgroundColor = '#14191e';
             }
-        }
+        },
+
     }
 </script>
 

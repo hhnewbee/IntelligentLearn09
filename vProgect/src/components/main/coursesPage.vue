@@ -100,20 +100,20 @@
             margin-right: 100px;
         }
         .coursesContent {
-            /*很奇怪，该处的dislay后的高度无法有子元素撑开*/
-            /*display: flex;*/
-            /*justify-content: space-between;*/
-            /*align-items: center;*/
-            /*flex-wrap: wrap;*/
-            width: 74%;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            flex-shrink: 0;
+            flex-wrap: wrap;
+            width: 1100px;
             margin: 20px 60px;
-            padding: 15px 0 15px 49px;
+            padding: 15px ;
             box-shadow: 4px 4px 18px rgba(136, 136, 136, 0.588235);
             cursor: pointer;
             box-sizing: content-box;
             background-color: white;
             .courseItem{
-                margin-right: 49px;
+                margin: 25px;
             }
         }
 

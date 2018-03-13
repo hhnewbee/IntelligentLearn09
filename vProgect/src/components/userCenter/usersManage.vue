@@ -201,17 +201,18 @@
 
     export default {
         created() {
-            this.initData([
-                {
-                    date: '2016-05-03',
-                    account: '154091333',
-                    name: 'newbee',
-                    sex: '男',
-                    areaFocus: '金融',
-                    status: true,
-                    accessTimes: 40,
-                    useTime: 200,
-                }, {
+            this.initData(
+                [
+                    {
+                        date: '2016-05-03',
+                        account: '154091333',
+                        name: 'newbee',
+                        sex: '男',
+                        areaFocus: '金融',
+                        status: true,
+                        accessTimes: 40,
+                        useTime: 200,
+                    }, {
                     date: '2016-05-03',
                     account: '154091334',
                     name: 'newbee',
@@ -257,13 +258,15 @@
                     accessTimes: 90,
                     useTime: 181,
                 }
-            ], [{value: '学习记录'}, {value: '学习详情'}]);
+                ],
+                [{value: '学习记录'}, {value: '学习详情'}]
+            );
         },
-        data(){
-          return{
-              //用户类型选项值
-              userSelectV: '普通用户',
-          }
+        data() {
+            return {
+                //用户类型选项值
+                userSelectV: '普通用户',
+            }
         },
         methods: {
             /**

@@ -123,8 +123,11 @@
     .highchart {
         height: 100%;
         width: 100%;
+        padding: 40px;
         position: relative;
-        .highcharts-container {
+        display: flex;
+        align-items: center;
+        #highcharts-container {
             height: 100%;
             width: 100%;
         }

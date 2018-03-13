@@ -5,7 +5,7 @@
             <div class="info">
                 <img :src="articleData.avatar" style="width: 25px;height: 25px;border-radius: 50%"/>
                 <div style="margin: 0 10px">{{articleData.nickName}}</div>
-                <div style="margin-right: 10px">时间：{{articleData.time}}</div>
+                <div style="margin-right: 10px">时间：{{articleData.time|formatDateTime}}</div>
                 <div>类型：{{articleData.type}}</div>
 
                 <div style="position: absolute;right: 0">
@@ -74,16 +74,6 @@
              * 数据初始化
              */
             initData() {
-//                this.articleData = {
-//                    title: 'vue和webpack的用法',
-//                    avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
-//                    nickName: 'newbee1',
-//                    time: '2018-1-1',
-//                    type: '金融',
-//                    content: '这几天在修改 WPJAM 问答网站首页列表的时候，发现一个问题，就是有些问题的标题比较长，为了显示美观，我想将首页列表的标题都设置为1行，如果超出的在最后显示 …，开始的时候我使用 PHP 函数来计算文字个数，但是由于中英文字数算法和长度的问题，总是不能做.',
-//                    likes: '22',
-//                    collections: '22'
-//                }
             },
             /**
              * 初始dom

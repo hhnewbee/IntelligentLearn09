@@ -2,20 +2,26 @@
     <vue-scrollbar class="my-scrollbar" ref="Scrollbar">
         <div>
             <div class="title">
-                {{chapters.title}}
+                {{chapter.title}}
             </div>
             <div class="info">
                 <img src="http://localhost:3100/img/avatar/avatar.jpg">
-                <span>newbee</span>
-                <span>时间：2015-12-21</span>
+                <span>{{chapter.info.name}}</span>
+                <span>时间：{{chapter.info.time}}</span>
             </div>
             <div class="intro">
-                简介:{{chapters.intro}}
+                简介:{{chapter.intro}}
             </div>
-            <div class="catalog" v-for="(item1,index1) in chapters.chapter" :key="index1">
+            <div class="catalog"
+                 v-for="(item1,index1) in chapter.chapters"
+                 :key="index1">
                 <div>{{item1.t1}}</div>
-                <div class="fa fa-play" v-for="(item2,index2) in item1.t2" :key="index2">
-                    &nbsp;{{item2}}
+                <div class="fa fa-play"
+                     :key="item2.name"
+                     :ref="item2.name"
+                     @click="handleChapterChange(item2)"
+                     v-for="item2 in item1.t2">
+                    &nbsp;{{item2.name}}
                 </div>
             </div>
         </div>
@@ -27,26 +33,82 @@
     import "vue2-scrollbar/dist/style/vue2-scrollbar.css";
 
     export default {
+        created(){
+            this.initData();
+        },
+        mounted(){
+            this.initDom();
+        },
         data() {
             return {
-                chapters: {
+                //章节数组
+                chapter: {
                     title: 'vue和webpack下的学习',
                     intro: '大数据背景下，对我们的系统性能提出了更高的要求，包括我们的数据存储和应用，都提出了性能上的需求，尤其是对IO通信方面，更是成为了大数据通信下的瓶颈，为此，我们对系统进行相关的分布式改造。那么，如何进一步提升我们的系统IO性能呢？这里，就为大家介绍大数据时代构建高可用分布式系统的利器——Netty',
-                    chapter: [
+                    info: {name: 'newbee', time: '2015-1-1'},
+                    chapters: [
                         {
                             t1: ' 第1章 课程介绍 ',
-                            t2: [' 1-1 课程介绍 (06:47)', ' 1-2 课程介绍 (06:47)', ' 1-2 课程介绍 (06:47)']
+                            t2: [
+                                {name: ' 1-1 课程介绍 (06:47)', videoUrl: ''},
+                                {name: ' 1-2 课程介绍 (06:46)', videoUrl: ''}
+                            ]
                         },
                         {
                             t1: ' 第2章 课程介绍 ',
-                            t2: [' 2-1 课程介绍 (06:47)', ' 2-2 课程介绍 (06:47)', ' 2-2 课程介绍 (06:47)']
+                            t2: [
+                                {name: ' 2-1 课程介绍 (06:47)', videoUrl: ''},
+                                {name: ' 2-2 课程介绍 (06:46)', videoUrl: ''}
+                            ]
                         },
                         {
-                            t1: ' 第2章 课程介绍 ',
-                            t2: [' 2-1 课程介绍 (06:47)', ' 2-2 课程介绍 (06:47)', ' 2-2 课程介绍 (06:47)']
+                            t1: ' 第3章 课程介绍 ',
+                            t2: [
+                                {name: ' 3-1 课程介绍 (06:47)', videoUrl: ''},
+                                {name: ' 3-2 课程介绍 (06:46)', videoUrl: ''}
+                            ]
+                        },
+                        {
+                            t1: ' 第4章 课程介绍 ',
+                            t2: [
+                                {name: ' 4-1 课程介绍 (06:47)', videoUrl: ''},
+                                {name: ' 4-2 课程介绍 (06:46)', videoUrl: ''}
+                            ]
                         }
                     ],
                 },
+                //选择的章节状态保存
+                lastCh: ''
+            }
+        },
+        methods:{
+            /**
+             * 视频章节切换
+             * @param t2
+             */
+            handleChapterChange(t2){
+                //点击章节的状态改变
+                this.$refs[this.lastCh][0].style.color='#b5b9bc';
+                this.$refs[t2.name][0].style.color='#409EFF';
+                this.lastCh=t2.name;
+                //视频url的改变
+                this.$emit('changeUrl',t2.url);
+            },
+            /**
+             * 初始化数据
+             */
+            initData(){
+                //初始化第一个选择章节
+                let t2=((this.chapter.chapters)[0].t2)[0];
+                this.lastCh=t2.name;
+                //初始化视的url
+                this.$emit('changeUrl',t2.url);
+            },
+            /**
+             * 初始化dom
+             */
+            initDom(){
+                this.$refs[this.lastCh][0].style.color='#409EFF';
             }
         },
         components: {
@@ -67,23 +129,23 @@
             font-size: 18px;
             font-weight: bold;
         }
-        .info{
+        .info {
             margin-left: 10px;
             display: flex;
             align-items: center;
             color: #3f4d5b;
-            img{
+            img {
                 width: 20px;
                 height: 20px;
                 border-radius: 50%;
             }
-            span{
+            span {
                 margin-left: 10px;
             }
-            span:nth-child(2){
+            span:nth-child(2) {
                 font-size: 14px;
             }
-            span:nth-child(3){
+            span:nth-child(3) {
                 font-size: 12px;
             }
         }

@@ -61,15 +61,19 @@
                     <div slot="tip" class="el-upload__tip">文件上传中</div>
                 </el-upload>
             </div>
-            <el-dialog title="提交" :visible.sync="form.dialogFormVisible">
-                <el-form :model="form">
-                    <el-form-item label-width="80px">
-                        <el-select v-model="category" placeholder="请选择类别">
-                            <el-option label="前端" value="前端"></el-option>
-                            <el-option label="后端" value="后端"></el-option>
-                        </el-select>
-                    </el-form-item>
-                </el-form>
+            <el-dialog title="提交"
+                       width="500px"
+                       :visible.sync="form.dialogFormVisible">
+                <el-select v-model="categorys"
+                           style="width: 250px;margin-left:105px"
+                           placeholder="请选择文章类别"
+                           multiple>
+                    <el-option v-for="item in filterType('全部')"
+                               :key="item"
+                               :label="item"
+                               :value="item">
+                    </el-option>
+                </el-select>
                 <div slot="footer" class="dialog-footer">
                     <el-button @click="form.dialogFormVisible = false">取 消</el-button>
                     <el-button type="primary" @click="publish" :disabled="form.buttonDisabled">确 定</el-button>
@@ -80,6 +84,8 @@
 </template>
 
 <script>
+    import {mapGetters} from 'vuex'
+
     export default {
         mounted() {
             this.initMountedData();
@@ -88,19 +94,19 @@
             return {
                 editarea: {},
                 muneData: [
-                    ["title", ["fa-header"],"标题"],
-                    ["bold", ["fa-bold"],"加粗"],
-                    ["line", ["fa-minus"],"分割线"],
-                    ["block", ["fa-quote-left"],"引用块"],
-                    ["link", ["fa-link"],"链接"],
-                    ["unlink", ["fa-chain-broken"],"取消链接"],
-                    ['removeFormat', ["fa-eraser"],"去除格式"],
-                    ["img", ["fa-picture-o"],"添加图片"],
-                    ["video", ["fa-youtube-play"],"添加视频"],
-                    ["file", ["fa-file-test"],"添加资料"],
-                    ["back", ["fa-undo"],"回退"],
-                    ["cancel", ["fa-times fontSize"],"取消全部编辑"],
-                    ["save", ["fa-floppy-o"],"保存"],
+                    ["title", ["fa-header"], "标题"],
+                    ["bold", ["fa-bold"], "加粗"],
+                    ["line", ["fa-minus"], "分割线"],
+                    ["block", ["fa-quote-left"], "引用块"],
+                    ["link", ["fa-link"], "链接"],
+                    ["unlink", ["fa-chain-broken"], "取消链接"],
+                    ['removeFormat', ["fa-eraser"], "去除格式"],
+                    ["img", ["fa-picture-o"], "添加图片"],
+                    ["video", ["fa-youtube-play"], "添加视频"],
+                    ["file", ["fa-file-text"], "添加资料"],
+                    ["back", ["fa-undo"], "回退"],
+                    ["cancel", ["fa-times fontSize"], "取消全部编辑"],
+                    ["save", ["fa-floppy-o"], "保存"],
                 ],
                 //鼠标选择的区域
                 editorSelec: {},
@@ -112,17 +118,20 @@
                 uploadType: '',
                 uploadFinish: 0,
                 ifsave: false,
-                theme:'请输入标题',
-                category: '',
+                theme: '请输入标题',
+                categorys: [],
                 form: {
-                    dialogFormVisible:false,
-                    buttonDisabled:true,
+                    dialogFormVisible: false,
+                    buttonDisabled: true,
                 },
                 //本文章的id
-                articleId:''
+                articleId: ''
             }
         },
-
+        computed: {
+            //类型的过滤器
+            ...mapGetters(['filterType']),
+        },
         methods: {
             /**
              * 创建并返回新的位置，之所以要创建新的，是因为当的位置是处于选项位置的
@@ -204,7 +213,7 @@
                 } else if (this.uploadType === 'video') {
                     tmp = 'fa-youtube-play'
                 } else {
-                    tmp = 'fa-file-test'
+                    tmp = 'fa-file-text'
                 }
                 newNode.innerHTML = ` <i class='fa ${tmp}'></i> : ${file.name} `;
 
@@ -361,37 +370,37 @@
             /**
              * 文章发布
              */
-            publish(){
-                this.$ajax.post("posts",{
-                    id:this.articleId,
-                    theme:this.theme,
-                    author:"name",
-                    category:this.category,
-                    content:this.editarea.innerHTML,
-                    time:Date()
-                }).then(()=>{
+            publish() {
+                this.$ajax.post("posts", {
+                    id: this.articleId,
+                    theme: this.theme,
+                    author: "name",
+                    categorys: this.categorys.join('/'),
+                    content: this.editarea.innerHTML,
+                    time: Date()
+                }).then(() => {
                     this.$message({
                         type: 'success',
                         message: '发表成功'
                     });
                     //清空编辑区和内存
-                    this.editarea.innerHTML ='';
+                    this.editarea.innerHTML = '';
                     localStorage.removeItem('editContent');
                     localStorage.removeItem('editContentId');
-                }).catch(()=>{
+                }).catch(() => {
                     this.$message({
                         type: 'error',
                         message: '网络异常，发表失败'
                     });
                 });
-                this.form.buttonDisabled=true;
-                this.form.dialogFormVisible=false;
+                this.form.buttonDisabled = true;
+                this.form.dialogFormVisible = false;
             },
 
             /**
              * 返回文章管理
              */
-            handleBackManage(){
+            handleBackManage() {
                 this.$router.push({path: '/userCenter/articlesManage/#articlesManage'});
             },
             /**
@@ -422,17 +431,17 @@
             /**
              * 初始化dom生成时的数据
              */
-            initMountedData(){
+            initMountedData() {
                 this.editarea = this.$refs.editarea;
                 //如果上次的还没有提交，则保存下来
                 if (localStorage.editContent) {
                     this.editarea.innerHTML = localStorage.editContent;
-                    this.articleId=localStorage.editContentId;
-                }else{
+                    this.articleId = localStorage.editContentId;
+                } else {
                     //新的文章id,一开始就注册是为了视频和图片上传的标识
-                    let editContentId=Date.now();
-                    this.articleId=editContentId;
-                    localStorage.editContentId=editContentId;
+                    let editContentId = Date.now();
+                    this.articleId = editContentId;
+                    localStorage.editContentId = editContentId;
                 }
                 //开始监听内容变化1
                 this.contentChange();
@@ -455,9 +464,9 @@
                         //获取创建的代表当前的新区块
                         let newRange = this.createRange(this.range);
                         //获取dom来判断是否h2
-                        if(newRange.startContainer.parentElement.nodeName==='H2'){
+                        if (newRange.startContainer.parentElement.nodeName === 'H2') {
                             document.execCommand('formatBlock', false, '<div>');
-                        }else{
+                        } else {
                             document.execCommand('formatBlock', false, '<h2>');
                         }
                         break;
@@ -472,9 +481,9 @@
                     }
                     case "block": {
                         let newRange = this.createRange(this.range);
-                        if(newRange.startContainer.parentElement.nodeName==='PRE'){
+                        if (newRange.startContainer.parentElement.nodeName === 'PRE') {
                             document.execCommand('formatBlock', false, '<DIV>');
-                        }else{
+                        } else {
                             document.execCommand('formatBlock', false, '<PRE>');
                         }
                         break;
@@ -486,14 +495,14 @@
                         }).then(({value}) => {
                             let a = document.createElement('a');
                             a.href = value;
-                            a.title=value;
+                            a.title = value;
                             let newRange = this.createRange(this.range);
-                            let content ='新建链接';
+                            let content = '新建链接';
                             //如果有选择到内容，则用选择的内容作为连接
                             if (!newRange.collapsed) {
                                 content = newRange.cloneContents().textContent;
                             }
-                            a.innerHTML='&nbsp;'+content+'&nbsp';
+                            a.innerHTML = '&nbsp;' + content + '&nbsp';
                             newRange.insertNode(a);
                             newRange.collapse(false);
                         });
@@ -507,7 +516,7 @@
                         document.execCommand('removeFormat');
                         break;
                     }
-                    case "back":{
+                    case "back": {
                         document.execCommand('undo');
                         break;
                     }
@@ -525,7 +534,7 @@
                             localStorage.removeItem("editContent");
                             localStorage.removeItem('editContentId');
                             //清空编辑区
-                            this.editarea.innerHTML ='<div><br></div>';
+                            this.editarea.innerHTML = '<div><br></div>';
                         }).catch(() => {
                             this.$message({
                                 type: 'info',
@@ -547,10 +556,10 @@
 
         },
 
-        watch:{
+        watch: {
             //监听类别是否选择，才可以激活上传按钮
-            category(){
-                this.form.buttonDisabled=false;
+            categorys() {
+                this.form.buttonDisabled = this.categorys.length === 0;
             }
         }
     }
@@ -561,7 +570,7 @@
         display: flex;
         flex-direction: column;
         height: 100%;
-        .content{
+        .content {
             display: flex;
             height: 1%;
             flex-grow: 1;
@@ -589,7 +598,7 @@
                 width: 100%;
                 padding: 10px 20px;
                 font-size: 20px;
-                color:#607D8B;
+                color: #607D8B;
                 overflow: hidden;
                 white-space: nowrap;
                 text-overflow: ellipsis;
@@ -701,7 +710,7 @@
                         border: 1px solid rgb(153, 153, 153);
                     }
                 }
-                h2{
+                h2 {
                     font-weight: normal;
                     border-bottom: 1px solid #ddd;
                     padding-bottom: 10px;
@@ -721,7 +730,7 @@
                     color: rgb(63, 135, 166);
                     cursor: text;
                 }
-                pre{
+                pre {
                     padding: 20px;
                     background-color: #f2f2f2;
                     border-left: 6px solid #b3b3b3;

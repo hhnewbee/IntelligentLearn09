@@ -17,10 +17,10 @@
             </questionItem>
         </div>
         <div class="right">
-            <el-button type="primary" style="width: 100%">我要提问</el-button>
+            <el-button type="primary" style="width: 100%;flex-shrink: 0">我要提问</el-button>
             <div class="rightItem">
                 <div class="itemName">
-                    分类
+                    问题分类
                 </div>
                 <el-radio-group
                         v-model="typeChoose"
@@ -33,69 +33,84 @@
                             class="chooseItem"></el-radio-button>
                 </el-radio-group>
             </div>
+            <rightItem
+                    style="flex-shrink: 0"
+                    :contents="constructionArticle"
+                    :option="{title:'问题推荐'}"></rightItem>
         </div>
     </div>
 </template>
 
 <script>
-    import questionItem from '../comments/questionItem.vue';
+    import questionItem from '../question/questionItem.vue';
+    import rightItem from './rightItem.vue';
     import {mapState} from 'vuex'
 
     export default {
-        created(){
+        created() {
             this.initPage();
         },
         data() {
             return {
                 choose: '最新',
                 typeChoose: '金融',
-                items:[]
+                items: [],
+                //推荐问题
+                constructionArticle: [],
             }
         },
-        computed:{
+        computed: {
             ...mapState(['type']),
         },
-        methods:{
+        methods: {
             /**
              * 初始化页面数据
              */
-            initPage(){
-                this.items=[
+            initPage() {
+                this.items = [
                     {
-                        avatar:'http://localhost:3100/img/avatar/avatar.jpg',
-                        nickname:'newbee1',
-                        time:'2018-1-1',
-                        pic:'',
-                        content:'这几天在修改 WPJAM 问答网站首页列表的时候，发现一个问题，就是有些问题的标题比较长，为了显示美观，我想将首页列表的标题都设置为1行，如果超出的在最后显示 …，开始的时候我使用 PHP 函数来计算文字个数，但是由于中英文字数算法和长度的问题，总是不能做.',
-                        likes:'22',
-                        answers:'22',
-                        collections:'22'
+                        avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
+                        nickname: 'newbee1',
+                        time: '2018-1-1',
+                        pic: '',
+                        content: '这几天在修改 WPJAM 问答网站首页列表的时候，发现一个问题，就是有些问题的标题比较长，为了显示美观，我想将首页列表的标题都设置为1行，如果超出的在最后显示 …，开始的时候我使用 PHP 函数来计算文字个数，但是由于中英文字数算法和长度的问题，总是不能做.',
+                        likes: '22',
+                        answers: '22',
+                        collections: '22'
                     },
                     {
-                        avatar:'http://localhost:3100/img/avatar/avatar.jpg',
-                        nickname:'newbee2',
-                        time:'2018-1-1',
-                        pic:'http://localhost:3100/img/avatar/avatar.jpg',
-                        content:'这几天在修改 WPJAM 问答网站首页列表的时候，发现一个问题，就是有些问题的标题比较长，为了显示美观，我想将首页列表的标题都设置为1行，如果超出的在最后显示 …，开始的时候我使用 PHP 函数来计算文字个数，但是由于中英文字数算法和长度的问题，总是不能做到很完美的效果，后来发现可以通过定义元素的 test-overflow 这个 CSS 属性实现文本溢出省略号。这几天在修改 WPJAM 问答网站首页列表的时候，发现一个问题，就是有些问题的标题比较长，为了显示美观，我想将首页列表的标题都设置为...',
-                        likes:'22',
-                        answers:'22',
-                        collections:'22'
+                        avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
+                        nickname: 'newbee2',
+                        time: '2018-1-1',
+                        pic: 'http://localhost:3100/img/avatar/avatar.jpg',
+                        content: '这几天在修改 WPJAM 问答网站首页列表的时候，发现一个问题，就是有些问题的标题比较长，为了显示美观，我想将首页列表的标题都设置为1行，如果超出的在最后显示开始的时候我使用 PHP 函数来计算文字个数，但是由于中英文字数算法和长度的问题，总是不能做到很完美的效果，后来发现可以通过定义元素的 test ...',
+                        likes: '22',
+                        answers: '22',
+                        collections: '22'
                     },
                     {
-                        avatar:'http://localhost:3100/img/avatar/avatar.jpg',
-                        nickname:'newbee3',
-                        time:'2018-1-1',
-                        pic:'http://localhost:3100/img/avatar/avatar.jpg',
-                        content:'这几天在修改 WPJAM 问答网站首页列表的时候，发现一个问题，就是有些问题的标题比较长，为了显示美观，我想将首页列表的标题都设置为1行，如果超出的在最后显示 …，开始的时候我使用 PHP 函数来计算文字个数，但是由于中英文字数算法和长度的问题，总是不能做到很完美的效果，后来发现可以通过定义元素的 test-overflow 这个 CSS 属性实现文本溢出省略号。这几天在修改 WPJAM 问答网站首页列表的时候，发现一个问题，就是有些问题的标题比较长，为了显示美观，我想将首页列表的标题都设置为...',
-                        likes:'22',
-                        answers:'22',
-                        collections:'22'
+                        avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
+                        nickname: 'newbee3',
+                        time: '2018-1-1',
+                        pic: 'http://localhost:3100/img/avatar/avatar.jpg',
+                        content: '这几天在修改 WPJAM 问答网站首页列表的时候，发现一个问题，就是有些问题的标题比较长，为了显示美观，我想将首页列表的标题都设置为1行，如果超出的在最后显示 …，开始的时候我使用 PHP 函数来计算文字个数，但是由于中英文字数算法和长度的问题，总是不能做到很完美的效果，后来发现可以通过定义元素的 test-overflow 这个 CSS 属性实现文本溢出省略号。这几天在修改 WPJAM 问答网站首页列表的时候，发现一个问题，就是有些问题的标题比较长，为了显示美观，我想将首页列表的标题都设置为...',
+                        likes: '22',
+                        answers: '22',
+                        collections: '22'
                     }
-                ]
+                ],
+                this.constructionArticle = [
+                        {content: '我的回答内容我的回答内容1我的回答内容我的回答内容1', time: '2013-11-11 22:33'},
+                        {content: '我的回答内容我的回答内容1我的回答内容我的回答内容1', time: '2013-13-23 22:33'},
+                        {content: '答内容我的回答内容1', time: '2013-12-3 22:33'},
+                        {content: '我的回答内容我的回答内容1我的回答内容我的回答内容1', time: '2013-1-4 22:33'},
+                        {content: '我的回答内容我的回答内容1我的回答内容我的回答内容1', time: '2013-12-23 22:33'}
+                    ]
             }
         },
         components: {
-            questionItem
+            questionItem,
+            rightItem
         }
     }
 </script>
@@ -124,6 +139,7 @@
             align-items: center;
             .rightItem {
                 margin-top: 20px;
+                flex-shrink: 0;
                 .itemName {
                     display: flex;
                     justify-content: center;

@@ -1,5 +1,5 @@
 <template>
-    <div class="question">
+    <div id="questionIL09">
         <div class="left">
             <!--问题信息-->
             <div class="autorDetail">
@@ -238,7 +238,7 @@
 </script>
 
 <style lang="scss">
-    .question {
+    #questionIL09 {
         display: flex;
         justify-content: center;
         /*align-items: flex-start;*/
@@ -353,6 +353,9 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            .el-dialog{
+                height: 80%;
+            }
         }
     }
 </style>

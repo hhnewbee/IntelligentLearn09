@@ -5,10 +5,13 @@
         </div>
         <div class="name">Vue+webpack</div>
         <div class="detail">
-            <span class="likes fa fa-heart">&nbsp;222</span>
-            <span class="learns fa fa-user" style="margin-left: 10px">&nbsp;222</span>
+            <span class="learns" style="margin-right: 15px">类型：金融</span>
+            <span class="likes fa fa-heart">&nbsp;22人喜欢</span>
         </div>
-    </div>
+        <div class="time detail el-icon-time">
+            &nbsp;2018-1-3
+        </div>
+        </div>
 </template>
 
 <script>
@@ -38,10 +41,14 @@
             margin: 12px 10px;
         }
         .detail{
+            width: 100%;
             align-self: flex-start;
             font-size: 13px;
-            margin: 0 10px;
+            padding: 0 10px;
             color: rgba(133, 135, 136, 0.61);
+        }
+        .time{
+            margin-top: 8px;
         }
     }
 </style>
