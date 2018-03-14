@@ -28,7 +28,7 @@
             </el-button>
             <el-select
                     @change="handleChartChange"
-                    style="width: 110px;position: absolute;right: 40px"
+                    style="width: 120px;position: absolute;right: 40px"
                     v-model="selectValue"
                     size="small"
                     placeholder="请选择">

@@ -89,7 +89,7 @@
                 </div>
                 <div style="overflow: auto;height: 1%;flex-grow: 1;margin-top: 10px;">
                     <el-upload
-                            action="http://localhost:3100/upload/video"
+                            :action='courseUrl'
                             v-for="(upload,index) in videosUpload"
                             :data="{chapter:upload.chapterName}"
                             :key="index"
@@ -110,8 +110,8 @@
                 <div class="span">资料上传:</div>
                 <div style="height:1%;flex-grow:1;overflow: auto">
                     <el-upload
+                            :action="sourseUrl"
                             ref="sourceUpload"
-                            action="http://localhost:3100/upload/file"
                             class="content"
                             list-type="text"
                             :on-success="handleSourseSuccess"
@@ -155,6 +155,12 @@
                 videosUpload:[],
                 //课程类型
                 categorys: [],
+                //iconUrl
+                iconUrl:'',
+                //courseUrl
+                courseUrl:'http://172.16.148.27/upload/videofile',
+                //sourseUrl
+                sourseUrl:'http://172.16.148.27/upload/officefile'
             };
         },
         computed: {
@@ -199,9 +205,12 @@
                     this.$message.error('标题和简介不能为空');
                     return;
                 }
-                this.$ajax.post('',{courseTitle:this.courseTitle});
-                this.$ajax.post('',{courseIntro:this.courseIntr});
-                this.$ajax.post('',{courseCategory:this.categorys.join('/')});
+//                this.$ajax.post('',{
+//
+//                    courseTitle:this.courseTitle,
+//                    courseIntro:this.courseIntr,
+//                    courseCategory:this.categorys.join('/')
+//                });
                 //icon上传
                 this.$refs.iconUpload.submit();
                 //视频上传

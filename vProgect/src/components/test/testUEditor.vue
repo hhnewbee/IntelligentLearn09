@@ -4,9 +4,9 @@
 
 <script>
     /* eslint-disable */
-    import '../../static/venders/ueditor-1.4.3.3/ueditor.config';
-    import '../../static/venders/ueditor-1.4.3.3/ueditor.all';
-    import './../static/venders/ueditor-1.4.3.3/lang/zh-cn/zh-cn';
+    import '../../static/venders/UEditor/ueditor.config.js';
+    import '../../static/venders/UEditor/ueditor.all.js';
+    import '../../static/venders/UEditor/lang/zh-cn/zh-cn.js';
 
     export default {
         data() {

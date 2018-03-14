@@ -13,7 +13,7 @@
                 {{notiContent}}
             </el-dialog>
             <div id="noticeInfoIL09">
-                <div v-for="item in notifications" @click="handleNotification(item)" >
+                <div v-for="item in notifications" @click="handleNotification(item)">
                     <p v-if="item.answer!==undefined" style="color: #14c1e9">{{item.user}}：{{item.answer}}</p>
                     <p v-else style="color: red">{{item.user}}：</p>
                     <p>{{item.content}}</p>
@@ -47,15 +47,16 @@
                     </div>
                 </div>
                 <div class="line2">
-                    <div class="fa fa-star-o item">
+                    <div class="fa fa-star-o item"
+                         @click="handleChoose('collection')">
                         &nbsp;我的收藏
                     </div>
-                    <div
-                            @click="handleChoose(2)"
-                            class="fa fa-file-text-o item">
+                    <div class="fa fa-file-text-o item"
+                         @click="handleChoose('record')">
                         &nbsp;学习记录
                     </div>
-                    <div class="fa fa-info-circle item">
+                    <div class="fa fa-info-circle item"
+                         @click="handleChoose('userInfo')">
                         &nbsp;个人信息
                     </div>
                 </div>
@@ -69,10 +70,9 @@
                     </div>
                 </div>
                 <div class="line4">
-                    <div
-                            style="font-weight: bold"
-                            class="fa fa-user item"
-                            @click="handleChoose(5)">
+                    <div class="fa fa-user item"
+                         style="font-weight: bold"
+                         @click="handleChoose('userInfo')">
                         &nbsp;个人中心
                     </div>
                     <div
@@ -90,35 +90,35 @@
 </template>
 
 <script>
-    import { mapMutations } from 'vuex';
+    import {mapMutations} from 'vuex';
     import {mapState} from 'vuex';
 
     export default {
-        created(){
+        created() {
             this.initData();
         },
-        data(){
-          return{
-              //记录的数据
-              records:[],
-              //通知的数据
-              notifications:[],
-              //通知信息的弹出框
-              dialogNotificationVisible:false,
-              //当前打开的通知的内容
-              notiContent:'',
-          }
+        data() {
+            return {
+                //记录的数据
+                records: [],
+                //通知的数据
+                notifications: [],
+                //通知信息的弹出框
+                dialogNotificationVisible: false,
+                //当前打开的通知的内容
+                notiContent: '',
+            }
         },
-        computed:{
-            ...mapState('info',[
+        computed: {
+            ...mapState('info', [
                 'accountHashMap'
             ])
         },
-        methods:{
+        methods: {
             /**
              * 设置用户信息
              */
-            ...mapMutations('info',[
+            ...mapMutations('info', [
                 'setAccountHashMap',
                 'setAvatar'
             ]),
@@ -126,49 +126,49 @@
              * 快捷选项跳转
              * @param tar
              */
-            handleChoose(tar){
-                switch (tar){
-                    case 2:{
-                        this.$router.push({ path: '/userCenter/record#record' });
-                        break;
-                    }
-                }
+            handleChoose(tar) {
+                this.$router.push({path: `/userCenter/${tar}#${tar}` });
             },
             /**
              * 退出登录
              */
-            handleOut(){
+            handleOut() {
                 localStorage.removeItem("ifLogin");
                 this.setAccountHashMap('');
-                window.location="http://localhost:3000";
+                window.location = "http://localhost:3000";
             },
             /**
              * 初始化数据
              */
-            initData(){
+            initData() {
                 //todo 模拟记录的数据
-                this.records=[
+                this.records = [
                     {content: '我的回答内容我的回答内容1我的回答内容我的回答内容1', time: '2013-11-11 22:33'},
                     {content: '我的回答内容我的回答内容1我的回答内容我的回答内容1', time: '2013-13-23 22:33'},
                     {content: '答内容我的回答内容1', time: '2013-12-3 22:33'},
                 ];
                 //todo 模拟通知的数据
-                this.notifications=[
-                    {user:'李敏',answer:'回答了你的问题',content:'泰国神级广告导演Thanonchai Sornsriwichai亲自操刀，马云大佬buff加持，然而不能改变我对这则广告很弱智的看法。难道我们现在对一个人的认识，不是注重个人对人接物的态度和自身良好的素养品德了吗？这则广告，在我看来就是在传达这么一个意思，有车有房才能结婚。广告的最后，才让人恍然醒悟，原来是滴滴出行，然而有啥关联吗？'},
-                    {user:'通知',content:'请开始学习"比特的原理"该文章'}
+                this.notifications = [
+                    {
+                        user: '李敏',
+                        answer: '回答了你的问题',
+                        content: '泰国神级广告导演Thanonchai Sornsriwichai亲自操刀，马云大佬buff加持，然而不能改变我对这则广告很弱智的看法。难道我们现在对一个人的认识，不是注重个人对人接物的态度和自身良好的素养品德了吗？这则广告，在我看来就是在传达这么一个意思，有车有房才能结婚。广告的最后，才让人恍然醒悟，原来是滴滴出行，然而有啥关联吗？'
+                    },
+                    {user: '通知', content: '请开始学习"比特的原理"该文章'}
                 ];
                 //todo 加载用户信息
 //                this.setAvatar=
                 //todo 加载推荐课程
                 //todo 加载推荐文章
             },
-            handleNotification(item){
-                if(item.answer===undefined){
-                    this.dialogNotificationVisible=true;
-                    this.notiContent=item.content;
+            handleNotification(item) {
+                if (item.answer === undefined) {
+                    this.dialogNotificationVisible = true;
+                    this.notiContent = item.content;
                 }
             }
-        },
+        }
+        ,
     }
 </script>
 
@@ -178,7 +178,7 @@
         justify-content: center;
         align-items: center;
         border-color: inherit;
-        .noticeIcon{
+        .noticeIcon {
             background-color: inherit;
             border-color: inherit;
             font-size: 16px;
@@ -192,28 +192,30 @@
             cursor: pointer
         }
     }
-    #noticeInfoIL09{
-        div{
+
+    #noticeInfoIL09 {
+        div {
             padding: 10px 10px 5px;
             border-bottom: 1px solid #eeeeee;
             border-radius: 4px;
             cursor: pointer;
-            p{
+            p {
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
             }
-            p:nth-child(1){
+            p:nth-child(1) {
 
             }
-            p:nth-child(2){
+            p:nth-child(2) {
                 margin-left: 20px;
             }
-            &:hover{
+            &:hover {
                 background-color: #eeeeee;
             }
         }
     }
+
     #avatarInfOpopper {
         .line1 {
             display: flex;
@@ -241,7 +243,7 @@
             align-items: center;
             margin: 15px 0;
         }
-        .line3{
+        .line3 {
             margin-bottom: 10px;
             overflow: hidden;
             .content {
@@ -267,7 +269,7 @@
                 }
             }
         }
-        .line4{
+        .line4 {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -278,13 +280,13 @@
             line-height: 36px;
             cursor: pointer;
             padding: 0 8px;
-            margin:0 5px;
+            margin: 0 5px;
             text-align: center;
             background-color: #F8FAFC;
             color: #4d555d;
             border-radius: 4px;
             box-sizing: border-box;
-            &:hover{
+            &:hover {
                 background-color: #d9dde1;
             }
         }

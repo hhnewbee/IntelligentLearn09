@@ -100,7 +100,7 @@ let router = new VueRouter(
             {
                 name: "test",
                 path: '/test',
-                component: () => import('../components/test/testDiscuss.vue'),
+                component: () => import('../components/test/testUEditor2.vue'),
             }
         ]
     }
