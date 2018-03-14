@@ -43,9 +43,6 @@ let router = new VueRouter(
                         path: 'articlePage/article/:articleId',
                         component: () => import('../components/article/article.vue'),
                     },
-                    // {   path: 'recommend/*',
-                    //     component: () => import(/* webpackChunkName: "recommend.vue" */ '../components/main/recommend.vue')
-                    // },
                 ]
             },
             {
@@ -103,7 +100,7 @@ let router = new VueRouter(
             {
                 name: "test",
                 path: '/test',
-                component: () => import('../components/test/testComments.vue'),
+                component: () => import('../components/test/testDiscuss.vue'),
             }
         ]
     }

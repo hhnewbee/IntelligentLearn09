@@ -11,12 +11,9 @@
 
 <script>
     import header_ from '../header/header.vue';
-    import footer_ from '../footer/footer.vue';
-
     export default {
         components: {
             header_,
-            footer_
         }
     }
 </script>
@@ -28,11 +25,13 @@
         flex-direction: column;
         .freeContent {
             height: 62px;
+            flex-shrink: 0;
         }
         .content{
             height: 1%;
             flex-grow: 1;
             overflow: auto;
+            flex-shrink: 0;
         }
     }
 </style>

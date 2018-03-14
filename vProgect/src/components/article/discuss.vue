@@ -331,6 +331,7 @@
     .discuss {
         height: 100%;
         width: 100%;
+        max-width: 500px;
         display: flex;
         flex-direction: column;
         background-color: #f0f4f7;
@@ -449,6 +450,9 @@
                 padding: 15px;
                 padding-right: 20px;
                 .item {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: flex-start;
                     .info {
                         display: flex;
                         align-items: center;
@@ -469,6 +473,7 @@
                     }
                     .content {
                         min-width: 50px;
+                        max-width: 80%;
                         max-height: 280px;
                         padding: 10px;
                         margin-bottom: 16px;
@@ -490,8 +495,6 @@
                     }
                 }
                 .item-right {
-                    display: flex;
-                    flex-direction: column;
                     align-items: flex-end;
                     .info {
                         display: block;

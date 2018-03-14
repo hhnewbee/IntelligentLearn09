@@ -15,13 +15,13 @@
             <div class="catalog"
                  v-for="(item1,index1) in chapter.chapters"
                  :key="index1">
-                <div>{{item1.t1}}</div>
+                <div>{{'第'+ ++index1+'章&nbsp;'+item1.t1}}</div>
                 <div class="fa fa-play"
-                     :key="item2.name"
+                     v-for="(item2,index2) in item1.t2"
+                     :key="index2"
                      :ref="item2.name"
-                     @click="handleChapterChange(item2)"
-                     v-for="item2 in item1.t2">
-                    &nbsp;{{item2.name}}
+                     @click="handleChapterChange(item2)">
+                    {{index1+'-'+ ++index2}}&nbsp;&nbsp;{{item2.name}}
                 </div>
             </div>
         </div>
@@ -48,31 +48,31 @@
                     info: {name: 'newbee', time: '2015-1-1'},
                     chapters: [
                         {
-                            t1: ' 第1章 课程介绍 ',
+                            t1: '课程介绍 ',
                             t2: [
-                                {name: ' 1-1 课程介绍 (06:47)', videoUrl: ''},
-                                {name: ' 1-2 课程介绍 (06:46)', videoUrl: ''}
+                                {name: '课程介绍 (06:47)', videoUrl: ''},
+                                {name: '课程介绍 (06:46)', videoUrl: ''}
                             ]
                         },
                         {
-                            t1: ' 第2章 课程介绍 ',
+                            t1: '课程介绍 ',
                             t2: [
-                                {name: ' 2-1 课程介绍 (06:47)', videoUrl: ''},
-                                {name: ' 2-2 课程介绍 (06:46)', videoUrl: ''}
+                                {name: '课程介绍 (06:47)', videoUrl: ''},
+                                {name: '课程介绍 (06:46)', videoUrl: ''}
                             ]
                         },
                         {
-                            t1: ' 第3章 课程介绍 ',
+                            t1: '课程介绍 ',
                             t2: [
-                                {name: ' 3-1 课程介绍 (06:47)', videoUrl: ''},
-                                {name: ' 3-2 课程介绍 (06:46)', videoUrl: ''}
+                                {name: '课程介绍 (06:47)', videoUrl: ''},
+                                {name: '课程介绍 (06:46)', videoUrl: ''}
                             ]
                         },
                         {
-                            t1: ' 第4章 课程介绍 ',
+                            t1: '课程介绍 ',
                             t2: [
-                                {name: ' 4-1 课程介绍 (06:47)', videoUrl: ''},
-                                {name: ' 4-2 课程介绍 (06:46)', videoUrl: ''}
+                                {name: '课程介绍 (06:47)', videoUrl: ''},
+                                {name: '课程介绍 (06:46)', videoUrl: ''}
                             ]
                         }
                     ],

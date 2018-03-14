@@ -1,5 +1,6 @@
 <template>
     <div class="recommend">
+        <!--轮播图-->
         <el-carousel
                 type="card"
                 height="200px"
@@ -45,6 +46,8 @@
                     :total="1000">
             </el-pagination>
         </div>
+        <footer_></footer_>
+        <backHeader></backHeader>
     </div>
 </template>
 
@@ -52,13 +55,17 @@
 import course from './courseItem.vue';
 import articleItem from './articleItem.vue';
 import { mapState } from 'vuex';
+import footer_ from '../footer/footer.vue';
+import backHeader from '../header/backHeader.vue';
 
 export default {
     created(){
-        this.initPage();
+        this.initData();
     },
     data(){
         return{
+            //当前要滚动的页面dom
+            pageNow:{},
             courseItems:[],
             articleItems:[]
         }
@@ -70,7 +77,7 @@ export default {
         ])
     },
     methods:{
-        initPage(){
+        initData(){
             this.articleItems=[
                 {
                     title:'vue和webpack的使用',
@@ -110,7 +117,9 @@ export default {
     },
     components:{
         course,
-        articleItem
+        articleItem,
+        footer_,
+        backHeader
     }
 }
 </script>

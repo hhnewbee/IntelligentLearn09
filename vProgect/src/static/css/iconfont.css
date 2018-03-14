@@ -157,3 +157,6 @@
 .fa-sign-out:before {
     content: "\f08b";
 }
+.fa-arrow-up:before {
+    content: "\f062";
+}

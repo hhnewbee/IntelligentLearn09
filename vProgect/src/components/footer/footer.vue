@@ -14,9 +14,13 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        background-color: #2E3340;
+        /*background-color: #2E3340;*/
         cursor: pointer;
+        height: 100px;
+        width: 100%;
+        flex-shrink: 0;
         .text{
+            font-size: 14px;
             color: #b0bcd0;
             &:hover{
                 color: #d7e6fe;
