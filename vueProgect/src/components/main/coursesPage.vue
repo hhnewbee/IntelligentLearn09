@@ -40,12 +40,14 @@
                 layout="prev, pager, next"
                 :total="1000">
         </el-pagination>
+        <footer_></footer_>
     </div>
 </template>
 
 <script>
     import course from './courseItem.vue'
     import {mapState} from 'vuex'
+    import footer_ from '../footer/footer.vue';
     export default {
         data() {
             return {
@@ -58,7 +60,8 @@
             ...mapState(['type']),
         },
         components: {
-            course
+            course,
+            footer_,
         }
     }
 </script>
@@ -68,7 +71,8 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        padding: 40px 0 20px;
+        padding: 40px 0 10px;
+        background-color: $mainPageColor;
         .typeHeader {
             height: 50px;
             width: 90%;

@@ -97,11 +97,11 @@ let router = new VueRouter(
                     }
                 ]
             },
-            {
-                name: "test",
-                path: '/test',
-                component: () => import('../components/test/testUEditor2.vue'),
-            }
+            // {
+            //     name: "test",
+            //     path: '/test',
+            //     component: () => import('../components/test/testUEditor2.vue'),
+            // }
         ]
     }
 );

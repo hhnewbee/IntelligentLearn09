@@ -15,6 +15,12 @@
                     :key="item.nickname"
                     :itemContent="item">
             </questionItem>
+            <el-pagination
+                    style="flex-shrink: 0;align-self: center;margin-bottom: 20px"
+                    background
+                    layout="prev, pager, next"
+                    :total="1000">
+            </el-pagination>
         </div>
         <div class="right">
             <el-button type="primary"
@@ -139,7 +145,7 @@
         display: flex;
         justify-content: center;
         /*触发bfc，防止父元素的margin与子元素的折叠*/
-        overflow: hidden;
+        overflow: auto;
         background-color: #f6f6f6;
         padding: 20px 20px;
         .left {

@@ -1,5 +1,5 @@
 <template>
-    <div class="questionPage">
+    <div id="questionPageIL09">
         <div class="left">
             <div class="choose">
                 <el-radio-group
@@ -15,6 +15,12 @@
                     :key="item.nickname"
                     :itemContent="item">
             </articleItem>
+            <el-pagination
+                    style="flex-shrink: 0;align-self: center;margin-bottom: 20px"
+                    background
+                    layout="prev, pager, next"
+                    :total="1000">
+            </el-pagination>
         </div>
         <div class="right">
             <div class="rightItem">
@@ -129,7 +135,7 @@
 </script>
 
 <style lang="scss">
-    .questionPage {
+    #questionPageIL09 {
         display: flex;
         justify-content: center;
         background-color: #f6f6f6;

@@ -8,7 +8,7 @@
 <script>
     import discuss1 from '../article/discuss.vue';
     import discuss2 from '../article/discuss.vue';
-    import config from '../../config';
+    import config from '../../config/config';
     export default {
         data(){
             return{

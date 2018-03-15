@@ -14,9 +14,13 @@
             </el-dialog>
             <div id="noticeInfoIL09">
                 <div v-for="item in notifications" @click="handleNotification(item)">
-                    <p v-if="item.answer!==undefined" style="color: #14c1e9">{{item.user}}：{{item.answer}}</p>
+                    <p v-if="item.answer!==undefined"
+                       style="color: #14c1e9">
+                        {{item.user}}：{{item.answer}}
+                    </p>
                     <p v-else style="color: red">{{item.user}}：</p>
                     <p>{{item.content}}</p>
+                    <p class="el-icon-time">&nbsp;{{item.time}}</p>
                 </div>
             </div>
         </el-popover>
@@ -152,9 +156,10 @@
                     {
                         user: '李敏',
                         answer: '回答了你的问题',
-                        content: '泰国神级广告导演Thanonchai Sornsriwichai亲自操刀，马云大佬buff加持，然而不能改变我对这则广告很弱智的看法。难道我们现在对一个人的认识，不是注重个人对人接物的态度和自身良好的素养品德了吗？这则广告，在我看来就是在传达这么一个意思，有车有房才能结婚。广告的最后，才让人恍然醒悟，原来是滴滴出行，然而有啥关联吗？'
+                        content: '泰国神级广告导演Thanonchai Sornsriwichai亲自操刀，马云大佬buff加持，然而不能改变我对这则广告很弱智的看法。难道我们现在对一个人的认识，不是注重个人对人接物的态度和自身良好的素养品德了吗？这则广告，在我看来就是在传达这么一个意思，有车有房才能结婚。广告的最后，才让人恍然醒悟，原来是滴滴出行，然而有啥关联吗？',
+                        time: '2013-12-3 22:33'
                     },
-                    {user: '通知', content: '请开始学习"比特的原理"该文章'}
+                    {user: '通知', content: '请开始学习"比特的原理"该文章',time: '2013-12-3 22:33'}
                 ];
                 //todo 加载用户信息
 //                this.setAvatar=
@@ -203,12 +208,15 @@
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
-            }
-            p:nth-child(1) {
-
+                margin-top: 5px;
             }
             p:nth-child(2) {
                 margin-left: 20px;
+            }
+            p:nth-child(3) {
+                margin-left: 20px;
+                font-size: 12px;
+                color:#b0b0b0
             }
             &:hover {
                 background-color: #eeeeee;

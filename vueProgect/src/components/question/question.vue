@@ -52,6 +52,12 @@
                     <div class="comments fa fa-reply ic">&nbsp;回复</div>
                 </div>
             </div>
+            <el-pagination
+                    style="margin-top: 20px;align-self: center"
+                    background
+                    layout="prev, pager, next"
+                    :total="1000">
+            </el-pagination>
             <!--答案回复列表-->
             <el-dialog
                     :title="'回复：'+replyList.length+'条'"
@@ -113,12 +119,14 @@
                     :contents="similarityQuestion"
                     :option="{title:'相似问题'}"></rightItem>
         </div>
+        <footer_></footer_>
     </div>
 </template>
 
 <script>
     import rightItem from '../main/rightItem.vue';
     import myLearnerEditor from '../edit/myLearnerEditor.vue';
+    import footer_ from '../footer/footer.vue';
     export default {
         created() {
             this.initData();
@@ -230,7 +238,8 @@
         },
         components:{
             rightItem,
-            myLearnerEditor
+            myLearnerEditor,
+            footer_
         }
     }
 </script>
@@ -239,8 +248,8 @@
     #questionIL09 {
         display: flex;
         justify-content: center;
-        /*align-items: flex-start;*/
-        padding: 40px 20px;
+        flex-wrap: wrap;
+        padding: 40px 20px 0;
         background-color: #f6f6f6;
         .left {
             display: flex;

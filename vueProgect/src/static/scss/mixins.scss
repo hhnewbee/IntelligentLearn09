@@ -1,0 +1,24 @@
+//主轴水平垂直居中
+@mixin HHVcenter{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+//交叉轴水平垂直居中
+@mixin VHVcenter{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+//主轴垂直居中
+@mixin VHcenter{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+//交叉轴水平居中
+@mixin VHcenter{
+  display: flex;
+  align-items: center;
+}
