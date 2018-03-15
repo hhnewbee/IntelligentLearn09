@@ -42,15 +42,19 @@
                 <div slot="tip" class="el-upload__tip">文件上传中</div>
             </el-upload>
         </div>
-        <el-dialog title="提交" :visible.sync="form.dialogFormVisible">
-            <el-form :model="form">
-                <el-form-item label-width="80px">
-                    <el-select v-model="category" placeholder="请选择类别">
-                        <el-option label="前端" value="前端"></el-option>
-                        <el-option label="后端" value="后端"></el-option>
-                    </el-select>
-                </el-form-item>
-            </el-form>
+        <el-dialog title="提交"
+                   append-to-body
+                   :visible.sync="form.dialogFormVisible">
+            <el-select v-model="categorys"
+                       style="width: 250px;margin-left:105px"
+                       placeholder="请选择文章类别"
+                       multiple>
+                <el-option v-for="item in filterType('全部')"
+                           :key="item"
+                           :label="item"
+                           :value="item">
+                </el-option>
+            </el-select>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="form.dialogFormVisible = false">取 消</el-button>
                 <el-button type="primary" @click="publish" :disabled="form.buttonDisabled">确 定</el-button>
@@ -60,6 +64,7 @@
 </template>
 
 <script>
+    import {mapGetters} from 'vuex'
     export default {
         mounted(){
           this.initDom();
@@ -87,14 +92,17 @@
                 uploadUrl: '',
                 uploadType: '',
                 uploadFinish: 0,
-                category: '',
+                categorys: [],
                 form: {
                     dialogFormVisible:false,
                     buttonDisabled:true,
                 },
             }
         },
-
+        computed: {
+            //类型的过滤器
+            ...mapGetters(['filterType']),
+        },
         methods: {
             editCommand(type) {
                 if (type === 'img' | type === 'video' | type === 'file') {
@@ -242,18 +250,6 @@
                 this.addRange = newRange.cloneRange();//复制范围保存供下次使用
             },
 
-            createVideo(target, response) {
-                //展示时可以用video.js
-                let tem = ` <video
-                            class="video-js vjs-big-play-centered"
-                            controls
-                            preload="auto"
-                            data-setup='{"playbackRates": [0.7, 1, 1.5, 1.7, 2],"techOrder": ["html5","flash"]}'>
-                                <source src="${response.url}">
-                            </video>`;
-                target.innerHTML = tem;
-            },
-
             createImg(target, response) {
                 let tem = `<img src="${response.url}">`;
                 target.innerHTML = tem;
@@ -348,8 +344,6 @@
 
                     if (this.uploadType === 'img') {
                         this.createImg(div, response);
-                    } else {
-                        this.createVideo(div, response);
                     }
 
                     divC.appendChild(divCl);
@@ -402,8 +396,8 @@
             publish(){
                 this.$ajax.post("posts",{
                     author:"name",
-                    category:this.category,
                     content:this.editarea.innerHTML,
+                    categorys: this.categorys.join('/'),
                     time:Date()
                 }).then(()=>{
                     this.$message({
@@ -428,8 +422,9 @@
         },
 
         watch:{
-            category(){
-                this.form.buttonDisabled=false;
+            //监听类别是否选择，才可以激活上传按钮
+            categorys() {
+                this.form.buttonDisabled = this.categorys.length === 0;
             }
         }
     }

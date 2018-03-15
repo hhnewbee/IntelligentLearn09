@@ -89,9 +89,9 @@
                 </div>
                 <div style="overflow: auto;height: 1%;flex-grow: 1;margin-top: 10px;">
                     <el-upload
+                            :name='chapterName'
                             :action='courseUrl'
                             v-for="(upload,index) in videosUpload"
-                            :data="{chapter:upload.chapterName}"
                             :key="index"
                             :ref="'videoUpload'+index"
                             class="content"
@@ -158,9 +158,9 @@
                 //iconUrl
                 iconUrl:'',
                 //courseUrl
-                courseUrl:'http://172.16.148.27/upload/videofile',
+                courseUrl:'http://172.16.148.27:8080/upload/videofile',
                 //sourseUrl
-                sourseUrl:'http://172.16.148.27/upload/officefile'
+                sourseUrl:'http://172.16.148.27:8080/upload/officefile',
             };
         },
         computed: {

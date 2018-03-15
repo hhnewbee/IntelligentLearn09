@@ -32,9 +32,7 @@
                 </el-radio-group>
             </div>
             <!--答案列表-->
-            <div
-                    v-for="answer in answerList"
-                    class="article">
+            <div v-for="answer in answerList" class="article">
                 <div class="detail" style="position: relative">
                     <img
                             class="avatar"

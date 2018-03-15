@@ -1,5 +1,5 @@
 <template>
-    <div class="questionPage">
+    <div id="questionPageIL09">
         <div class="left">
             <div class="choose">
                 <el-radio-group
@@ -17,7 +17,16 @@
             </questionItem>
         </div>
         <div class="right">
-            <el-button type="primary" style="width: 100%;flex-shrink: 0">我要提问</el-button>
+            <el-button type="primary"
+                       @click='openEditor'
+                       style="width: 100%;flex-shrink: 0">
+                我要提问
+            </el-button>
+            <el-dialog
+                    title="编辑回答"
+                    :visible.sync="EditorVisible">
+                <myLearnerEditor></myLearnerEditor>
+            </el-dialog>
             <div class="rightItem">
                 <div class="itemName">
                     问题分类
@@ -44,6 +53,7 @@
 <script>
     import questionItem from '../question/questionItem.vue';
     import rightItem from './rightItem.vue';
+    import myLearnerEditor from '../edit/myLearnerEditor.vue';
     import {mapState} from 'vuex'
 
     export default {
@@ -57,6 +67,8 @@
                 items: [],
                 //推荐问题
                 constructionArticle: [],
+                //回答编辑区显示
+                EditorVisible:false
             }
         },
         computed: {
@@ -106,17 +118,24 @@
                         {content: '我的回答内容我的回答内容1我的回答内容我的回答内容1', time: '2013-1-4 22:33'},
                         {content: '我的回答内容我的回答内容1我的回答内容我的回答内容1', time: '2013-12-23 22:33'}
                     ]
+            },
+            /**
+             * 打开提问editor
+             */
+            openEditor(){
+                this.EditorVisible=true;
             }
         },
         components: {
             questionItem,
-            rightItem
+            rightItem,
+            myLearnerEditor
         }
     }
 </script>
 
 <style lang="scss">
-    .questionPage {
+    #questionPageIL09 {
         display: flex;
         justify-content: center;
         /*触发bfc，防止父元素的margin与子元素的折叠*/
@@ -137,6 +156,9 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            .el-dialog{
+                height: 80%;
+            }
             .rightItem {
                 margin-top: 20px;
                 flex-shrink: 0;
