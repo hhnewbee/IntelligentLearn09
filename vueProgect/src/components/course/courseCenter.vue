@@ -31,6 +31,8 @@
             </div>
             <keep-alive>
                 <component :is="changePop"
+                           :commentsInfo="commentsInfo"
+                           :discussInfo="discussInfo"
                            @changeUrl="changeVideoUrl">
                 </component>
             </keep-alive>
@@ -42,9 +44,11 @@
     import 'video.js/dist/video.min.js'
     import 'videojs-flash/dist/videojs-flash.min.js'
     import 'video.js/dist/video-js.min.css'
+    import {mapState} from 'vuex'
 
     export default {
         created() {
+            this.initData();
         },
         mounted() {
             this.reloadVideo();
@@ -54,8 +58,15 @@
             return {
                 changePop: 'chapter',
                 discuss: {},
-                videoUrl: ''
+                videoUrl: '',
+                //讨论的信息
+                discussInfo:{},
+                //评论的信息
+                commentsInfo:{}
             }
+        },
+        computed:{
+            ...mapState('info',['account,avatarUrl']),
         },
         components: {
             chapter: () => import('./chapter.vue'),
@@ -119,6 +130,22 @@
              */
             initDom() {
                 document.querySelector('.op').style.backgroundColor = '#14191e';
+            },
+            /**
+             * 初始化数据
+             */
+            initData(){
+                this.discussInfo={
+                    theme:'vue与webpack的学习',
+                    nickName:this.account,
+                    avatarUrl:this.avatarUrl
+                };
+                this.commentsInfo={
+                    nickName:this.account,
+                    avatarUrl:this.avatarUrl,
+                    targetId:'123',
+                    tag:'普通用户'
+                }
             }
         },
 

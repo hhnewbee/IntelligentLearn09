@@ -37,6 +37,8 @@
             <div class="sideBarContent">
                 <keep-alive>
                     <component
+                            :commentsInfo="commentsInfo"
+                            :discussInfo="discussInfo"
                             :headers="headers"
                             :is="changePop">
                     </component>
@@ -48,6 +50,8 @@
 </template>
 
 <script>
+    import {mapState} from 'vuex'
+
     export default {
         created() {
             this.initData();
@@ -67,13 +71,30 @@
                 //传递给目录的变量
                 headers:[],
                 //讨论的信息
+                discussInfo:{},
+                //评论的信息
+                commentsInfo:{}
             }
+        },
+        computed:{
+            ...mapState('info',['account,avatarUrl']),
         },
         methods: {
             /**
              * 数据初始化
              */
             initData() {
+                this.discussInfo={
+                    theme:'vue与webpack的学习',
+                    nickName:this.account,
+                    avatarUrl:this.avatarUrl
+                };
+                this.commentsInfo={
+                    nickName:this.account,
+                    avatarUrl:this.avatarUrl,
+                    targetId:'123',
+                    tag:'普通用户'
+                }
             },
             /**
              * 初始dom

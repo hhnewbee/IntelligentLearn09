@@ -229,7 +229,8 @@
                                 passwd: sha256(this.formDataLogin.passwd)
                             };
                             this.$ajax.post('login', data).then((response) => {
-                                if (!response.data) {//如果返回的是0
+                                //如果返回的是0
+                                if (!response.data) {
                                     this.$message({
                                         type: 'error',
                                         message: `账号或者密码错误`
@@ -242,12 +243,14 @@
                             data = {
                                 account: this.formDataSign.accountLogin,
                                 name: this.formDataSign.name,
-                                areaFocus: this.formDataSign.areaFocus.join('/'),//把数组切割成字符串
+                                //把数组切割成字符串
+                                areaFocus: this.formDataSign.areaFocus.join('/'),
                                 eMail: this.formDataSign.eMail,
                                 passwd: sha256(this.formDataSign.passwdLogin)
                             };
                             this.$ajax.post('sign', data).then((response) => {
-                                if(response.data.type==='error'){//如果是一些错误，如账号重复
+                                //如果是一些错误，如账号重复
+                                if(response.data.type==='error'){
                                     this.$message({
                                         type: 'error',
                                         message: `${response.data.message}`

@@ -51,7 +51,7 @@
                     <div class="span">课程图标:</div>
                     <el-upload
                             ref="iconUpload"
-                            action="http://localhost:3100/upload/img"
+                            :action=iconUrl
                             class="iconUpload content"
                             list-type="picture-card"
                             :auto-upload="false"
@@ -96,7 +96,7 @@
                             :ref="'videoUpload'+index"
                             class="content"
                             list-type="text"
-                            :on-success="handleVideoSuccess(index)"
+                            :on-success="handleVideoSuccess(upload)"
                             :multiple="true"
                             :auto-upload="false">
                         <el-tag
@@ -155,12 +155,16 @@
                 videosUpload:[],
                 //课程类型
                 categorys: [],
+                //infoUrl
+                infoUrl:'upload/course',
                 //iconUrl
-                iconUrl:'',
+                iconUrl:'http://172.16.148.27:8080/upload/icon',
                 //courseUrl
-                courseUrl:'http://172.16.148.27:8080/upload/videofile',
+                courseUrl:'http://172.16.148.27:8080/upload/videoFile',
                 //sourseUrl
-                sourseUrl:'http://172.16.148.27:8080/upload/officefile',
+                sourseUrl:'http://172.16.148.27:8080/upload/officeFile',
+                //资料上传成功的标志
+                sourseStatus:false
             };
         },
         computed: {
@@ -205,12 +209,6 @@
                     this.$message.error('标题和简介不能为空');
                     return;
                 }
-//                this.$ajax.post('',{
-//
-//                    courseTitle:this.courseTitle,
-//                    courseIntro:this.courseIntr,
-//                    courseCategory:this.categorys.join('/')
-//                });
                 //icon上传
                 this.$refs.iconUpload.submit();
                 //视频上传
@@ -228,15 +226,15 @@
             /**
              * 视频上传成功后
              */
-            handleVideoSuccess(index){
-//                this.$refs.sourceUpload.submit();
-                console.log(index);
+            handleVideoSuccess(upload){
+                upload.status=true;
+                this.successAll();
             },
             /**
              * 资源上传成功后
              */
             handleSourseSuccess(){
-
+                this.successAll();
             },
             /**
              * 返回课程管理
@@ -248,7 +246,7 @@
              * 添加章节
              */
             handleAddChapter(){
-                this.videosUpload.push({chapterName:this.chapterName})
+                this.videosUpload.push({chapterName:this.chapterName,status:false})
             },
             /**
              * 删除章节
@@ -257,6 +255,31 @@
             handleCloseChapter(tag) {
                 this.videosUpload.splice(this.videosUpload.indexOf(tag), 1);
             },
+            /**
+             * 全部上传成功
+             *
+             */
+            successAll(){
+                //资料上传是否成功
+                if(this.sourseStatus){
+                    //再判断视频是否全部上传成功
+                    this.videosUpload.forEach((uploadVideo)=>{
+                        if(!uploadVideo.status){
+                            return;
+                        }
+                    });
+                }
+                this.$ajaxJava.post(this.infoUrl,{
+                    user:'newbee',
+                    title:this.courseTitle,
+                    description:this.courseIntr,
+                    type:this.categorys.join('/')
+                });
+                this.$message({
+                    message: '上传完成',
+                    type: 'success'
+                });
+            }
 
         },
     }
