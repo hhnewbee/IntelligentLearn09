@@ -13,7 +13,8 @@
                 {{notiContent}}
             </el-dialog>
             <div id="noticeInfoIL09">
-                <div v-for="item in notifications" @click="handleNotification(item)">
+                <div v-for="item in notifications"
+                     @click="handleNotification(item)">
                     <p v-if="item.answer!==undefined"
                        style="color: #14c1e9">
                         {{item.user}}：{{item.answer}}
@@ -24,11 +25,10 @@
                 </div>
             </div>
         </el-popover>
-        <el-button
-                plain
-                size="mini"
-                icon="el-icon-message"
-                class="noticeIcon "
+        <el-button icon="el-icon-message"
+                   plain
+                    size="mini"
+                    class="noticeIcon "
                 v-popover:popover2>
         </el-button>
         <!--个人信息弹出框-->
