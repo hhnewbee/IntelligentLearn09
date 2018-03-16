@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="../node_modules/video.js/dist/video-js.min.css" rel="stylesheet" type="text/css">
+    <script src="../node_modules/video.js/dist/video.min.js"></script>
+    <script src="../node_modules/videojs-flash/dist/videojs-flash.min.js"></script>
+</head>
+<body>
+<div class="container">
+    <h3>通过DOM初始化</h3>
+    <hr />
+    <div id="box">
+        <video
+                class="video-js vjs-big-play-centered"
+                controls
+                preload="auto"
+                width="640"
+                height="264"
+                data-setup='{"playbackRates": [0.7, 1, 1.5, 1.7, 2]}'>
+            <source src="http://fms.cntv.lxdns.com/live/flv/channel96.flv">
+        </video>
+    </div>
+</div>
+</body>
+<script>
+//    document.addEventListener('click',function () {
+//        createVideo(document.getElementById('box'));
+//    });
+//    function createVideo(target, response) {
+//        let tem = `<video
+//                            id="video1"
+//                            class="video-js vjs-big-play-centered"
+//                            controls
+//                            preload="auto"
+//                            width="640"
+//                            height="264"
+//                            >
+//                            <source src="../koaProgect/assets/video/studySource/02_图文分享的思路.mp4">
+//                        </video>`;
+//        target.innerHTML = tem;
+//        videojs("video1",{"playbackRates": [0.7, 1, 1.5, 1.7, 2],"techOrder": ["html5","flash"]});
+//    }
+</script>
+</html>
