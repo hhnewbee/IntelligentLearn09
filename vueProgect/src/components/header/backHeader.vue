@@ -12,8 +12,7 @@
         mounted(){
             this.initDom();
         },
-        data(){
-            return{
+        data(){return{
                 //要滚动的目标页面
                 scrollTag:{},
                 //下拉时的定时器，用于动画效果

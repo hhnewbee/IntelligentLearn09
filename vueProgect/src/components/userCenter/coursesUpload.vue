@@ -57,7 +57,7 @@
                             :auto-upload="false"
                             :on-preview="handlePictureCardPreview"
                             :on-change="handleIconBefore"
-                            :before-upload="handleLimitFileType('image','只能上传文件')"
+                            :before-upload="handleLimitFileType('image','只能上传文件'),handleIconUpload"
                             :on-success="handleIconSuccess"
                             :on-remove="handleIconRemove">
                         <i class="el-icon-plus" v-show="iconAdd"></i>
@@ -96,7 +96,7 @@
                             :ref="'videoUpload'+index"
                             class="content"
                             list-type="text"
-                            :on-success="handleVideoSuccess(upload)"
+                            :on-success="handleVideoSuccess"
                             :multiple="true"
                             :auto-upload="false">
                         <el-tag
@@ -115,6 +115,7 @@
                             class="content"
                             list-type="text"
                             :on-success="handleSourseSuccess"
+                            :before-upload="handleSourseUpload"
                             :multiple="true"
                             :auto-upload="false">
                         <el-button size="small" type="primary">选择资料</el-button>
@@ -137,6 +138,9 @@
     import {mapGetters} from 'vuex'
 
     export default {
+        created(){
+            this.initData();
+        },
         mounted() {
             //upload组件自动添加的子元素的样式
             this.iconDivS = this.$refs.iconUpload.$el.lastChild.style;
@@ -158,13 +162,19 @@
                 //infoUrl
                 infoUrl:'upload/course',
                 //iconUrl
-                iconUrl:'http://172.16.148.27:8080/upload/icon',
+                iconUrl:'',
                 //courseUrl
-                courseUrl:'http://172.16.148.27:8080/upload/videoFile',
+                courseUrl:'',
                 //sourseUrl
-                sourseUrl:'http://172.16.148.27:8080/upload/officeFile',
-                //资料上传成功的标志
-                sourseStatus:false
+                sourseUrl:'',
+                //资料上传成功的标志，默认是不上传的
+                sourseStatus:true,
+                //图片上传成功的标志，默认是不上传的
+                iconStatus:true,
+                //url
+                url:'http://172.16.4.57:8080/',
+                //上传中的通知
+                uploadingMessage:{}
             };
         },
         computed: {
@@ -217,6 +227,12 @@
                 }
                 //资料上传
                 this.$refs.sourceUpload.submit();
+                this.uploadingMessage=this.$message({
+                    dangerouslyUseHTMLString:true,
+                    message: '<span class="el-icon-loading"></span>' + '<span style="margin-left: 10px">课程正在上传中<span>',
+                    type: 'warning',
+                    duration:0
+                });
             },
             /**
              * icon上传成功后
@@ -226,14 +242,16 @@
             /**
              * 视频上传成功后
              */
-            handleVideoSuccess(upload){
-                upload.status=true;
+            handleVideoSuccess(){
+                //每次上传成功都删除一个
+                this.videosUpload.splice(0,1);
                 this.successAll();
             },
             /**
              * 资源上传成功后
              */
             handleSourseSuccess(){
+                this.sourseStatus=true;
                 this.successAll();
             },
             /**
@@ -260,27 +278,47 @@
              *
              */
             successAll(){
-                //资料上传是否成功
-                if(this.sourseStatus){
-                    //再判断视频是否全部上传成功
-                    this.videosUpload.forEach((uploadVideo)=>{
-                        if(!uploadVideo.status){
-                            return;
+                //图标是否上传成功
+                if(this.iconStatus){
+                    //资料上传是否成功
+                    if(this.sourseStatus){
+                        //再判断视频是否全部上传成功
+                        if(this.videosUpload.length===0){
+                            this.$ajaxJava.post(this.infoUrl,{
+                                title:this.courseTitle,
+                                description:this.courseIntr,
+                                type:this.categorys.join('/')
+                            }).then(()=>{
+                                this.uploadingMessage.close();
+                                this.$message({
+                                    message: '上传完成',
+                                    type: 'success'
+                                });
+                            });
                         }
-                    });
+                    }
                 }
-                this.$ajaxJava.post(this.infoUrl,{
-                    user:'newbee',
-                    title:this.courseTitle,
-                    description:this.courseIntr,
-                    type:this.categorys.join('/')
-                });
-                this.$message({
-                    message: '上传完成',
-                    type: 'success'
-                });
+            },
+            /**
+             * 初始化数据
+             */
+            initData(){
+                this.iconUrl=this.url+'upload/icon';
+                this.courseUrl=this.url+'upload/videoFile';
+                this.sourseUrl=this.url+'upload/officeFile';
+            },
+            /**
+             * 是否上传资料
+             */
+            handleSourseUpload(){
+               this.sourseStatus=false;
+            },
+            /**
+             * 是否上传图标
+             */
+            handleIconUpload(){
+                this.iconStatus=false;
             }
-
         },
     }
 </script>

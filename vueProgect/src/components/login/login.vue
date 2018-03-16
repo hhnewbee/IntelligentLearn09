@@ -226,7 +226,7 @@
                         if (formName === 'loginForm') {
                             data = {
                                 account: this.formDataLogin.account,
-                                password: sha256(this.formDataLogin.passwd)
+                                password: this.formDataLogin.passwd
                             };
                             this.$ajaxJava.post('login', data).then((response) => {
                                 //如果返回的是0
@@ -246,7 +246,7 @@
                                 //把数组切割成字符串
 //                                areaFocus: this.formDataSign.areaFocus.join('/'),
 //                                eMail: this.formDataSign.eMail,
-                                password: sha256(this.formDataSign.passwdLogin)
+                                password: this.formDataSign.passwdLogin
                             };
                             this.$ajaxJava.post('register', data).then((response) => {
                                 //如果是一些错误，如账号重复
