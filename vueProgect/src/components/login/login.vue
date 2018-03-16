@@ -226,9 +226,9 @@
                         if (formName === 'loginForm') {
                             data = {
                                 account: this.formDataLogin.account,
-                                passwd: sha256(this.formDataLogin.passwd)
+                                password: sha256(this.formDataLogin.passwd)
                             };
-                            this.$ajax.post('login', data).then((response) => {
+                            this.$ajaxJava.post('login', data).then((response) => {
                                 //如果返回的是0
                                 if (!response.data) {
                                     this.$message({
@@ -242,13 +242,13 @@
                         } else {//注册
                             data = {
                                 account: this.formDataSign.accountLogin,
-                                name: this.formDataSign.name,
+                                trueName: this.formDataSign.name,
                                 //把数组切割成字符串
-                                areaFocus: this.formDataSign.areaFocus.join('/'),
-                                eMail: this.formDataSign.eMail,
-                                passwd: sha256(this.formDataSign.passwdLogin)
+//                                areaFocus: this.formDataSign.areaFocus.join('/'),
+//                                eMail: this.formDataSign.eMail,
+                                password: sha256(this.formDataSign.passwdLogin)
                             };
-                            this.$ajax.post('sign', data).then((response) => {
+                            this.$ajaxJava.post('register', data).then((response) => {
                                 //如果是一些错误，如账号重复
                                 if(response.data.type==='error'){
                                     this.$message({
