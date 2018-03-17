@@ -17,18 +17,20 @@ export default {
          * @param url - 加载内容的url
          */
         handleChangeArea(oldTar,tar,url){
-            //关闭之前的缓存
-            this.areas.oldTar.show=true;
+            //如果不是第一次请求，关闭之前的缓存
+            if(oldTar){
+                this.areas[oldTar].show=true;
+            }
             //判断该缓存是否已经存在
             if(tar in this.areas){
                 //如果存在了就复用，不重新加载
-                this.areas.tar.show=true;
-                this.listNow=this.area.tar.itemList;
+                this.areas[tar].show=true;
+                this.listNow=this.area[tar].itemList;
             }else{
                 //如果不存在，则从新加载
-                this.$ajax.get(url).then((res)=>{
+                this.$ajaxJava.get(url).then((res)=>{
                     this.listNow=res.data;
-                    this.areas.tar={
+                    this.areas[tar]={
                         show:true,
                         itemList:this.listNow
                     }

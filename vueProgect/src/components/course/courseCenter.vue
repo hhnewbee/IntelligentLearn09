@@ -56,6 +56,7 @@
         },
         data() {
             return {
+                fileUrl:'',
                 changePop: 'chapter',
                 discuss: {},
                 videoUrl: '',
@@ -135,6 +136,7 @@
              * 初始化数据
              */
             initData(){
+                this.fileUrl=this.$route.params.fileUrl;
                 this.discussInfo={
                     theme:'vue与webpack的学习',
                     nickName:this.account,

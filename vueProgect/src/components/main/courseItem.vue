@@ -1,21 +1,23 @@
 <template>
     <div class="course">
         <div class="pic">
-            <img src="../../static/imgs/avatar.jpg">
+            <img :src="data.icon">
         </div>
-        <div class="name">Vue+webpack</div>
+        <div class="name">{{data.title}}</div>
         <div class="detail">
-            <span class="learns" style="margin-right: 15px">类型：金融</span>
-            <span class="likes fa fa-heart">&nbsp;22人喜欢</span>
+            <span class="learns" style="margin-right: 15px">{{data.type}}</span>
+            <span class="likes fa fa-heart">&nbsp;{{data.liking}}</span>
         </div>
         <div class="time detail el-icon-time">
-            &nbsp;2018-1-3
+            &nbsp;{{data.creationTimestamp | formatDate}}
         </div>
         </div>
 </template>
 
 <script>
-
+    export default {
+        prop:['data'],
+    }
 </script>
 
 <style scoped lang="scss">
