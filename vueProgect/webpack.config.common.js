@@ -1,28 +1,30 @@
-'use strict';
 //这里面的路径都是以package.json文件为参考的
 const path = require('path');
 const webpack = require('webpack');
 const htmlWebpackPlugin = require('html-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
-//代码压缩工具，用来压缩代码和清除未使用的代码
-const uglifyJSPlugin=require('uglifyjs-webpack-plugin');
+
+//css文件解析的配置参数
+const styleParam = ['css-loader?minimize', 'autoprefixer-loader', 'sass-loader',];
+//生产环境时的css路径配置
+const cssPath = process.env.NODE_ENV !== 'production' ? null : 'static/css/';
+
 //样式文件代码分离
 const extractCSS = new ExtractTextPlugin({
-    filename: 'static/css/[name].[contenthash]-css.css',
+    filename: cssPath + '[name].[contenthash]-css.css',
     allChunks: true
 });
 
 const extractSCSS = new ExtractTextPlugin({
-    filename: 'static/css/[name].[contenthash]-scss.css',
+    filename: cssPath + '[name].[contenthash]-scss.css',
     allChunks: true
 });
 
 const extractVueSCSS = new ExtractTextPlugin({
-    filename: 'static/css/[name].[contenthash]-vuescss.css',
+    filename: cssPath + '[name].[contenthash]-vuescss.css',
     allChunks: true
 });
-
 module.exports = {
     entry: {
         main: './vueProgect/src',
@@ -45,9 +47,7 @@ module.exports = {
                 test: /\.scss$/,
                 use: extractSCSS.extract(
                     [
-                        'css-loader',
-                        'autoprefixer-loader',
-                        'sass-loader',
+                        ...styleParam,
                         {
                             loader: 'sass-resources-loader',
                             options: {
@@ -68,9 +68,7 @@ module.exports = {
                     loaders: {
                         scss: extractVueSCSS.extract({
                             use: [
-                                'css-loader',
-                                'autoprefixer-loader',
-                                'sass-loader',
+                                ...styleParam,
                                 //抽取出vue中scss的全局变量
                                 {
                                     loader: 'sass-resources-loader',
@@ -119,6 +117,7 @@ module.exports = {
         new CleanWebpackPlugin(['dist']),
         //让render的哈希值不随文件的增删改变
         new webpack.HashedModuleIdsPlugin(),
+        //抽取自定义公共块
         new webpack.optimize.CommonsChunkPlugin({
             name: 'vendor'
         }),
@@ -129,7 +128,5 @@ module.exports = {
         extractCSS,
         extractSCSS,
         extractVueSCSS,
-        //代码压缩
-        new uglifyJSPlugin()
     ],
 };
