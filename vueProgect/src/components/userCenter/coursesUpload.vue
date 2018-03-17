@@ -49,17 +49,17 @@
                 </div>
                 <div class="icon item">
                     <div class="span">课程图标:</div>
-                    <el-upload
-                            ref="iconUpload"
-                            :action=iconUrl
-                            class="iconUpload content"
-                            list-type="picture-card"
-                            :auto-upload="false"
-                            :on-preview="handlePictureCardPreview"
-                            :on-change="handleIconBefore"
-                            :before-upload="handleLimitFileType('image','只能上传文件'),handleIconUpload"
-                            :on-success="handleIconSuccess"
-                            :on-remove="handleIconRemove">
+                    <el-upload ref="iconUpload"
+                               :action=iconUrl
+                               class="iconUpload content"
+                               list-type="picture-card"
+                               :auto-upload="false"
+                               :on-preview="handlePictureCardPreview"
+                               :on-change="handleIconBefore"
+                               :before-upload="handleLimitFileType('image','只能上传文件'),handleIconUpload"
+                               :on-success="handleIconSuccess"
+                               :with-credentials="true"
+                               :on-remove="handleIconRemove">
                         <i class="el-icon-plus" v-show="iconAdd"></i>
                     </el-upload>
                     <!--visible是子组件的接收参数，sync是语法糖，即加sync的子组件参数可以通过子组显示的更改dialogVisible（父组件传递进来的值）-->
@@ -88,17 +88,17 @@
                     </el-button>
                 </div>
                 <div style="overflow: auto;height: 1%;flex-grow: 1;margin-top: 10px;">
-                    <el-upload
-                            :name='chapterName'
-                            :action='courseUrl'
-                            v-for="(upload,index) in videosUpload"
-                            :key="index"
-                            :ref="'videoUpload'+index"
-                            class="content"
-                            list-type="text"
-                            :on-success="handleVideoSuccess"
-                            :multiple="true"
-                            :auto-upload="false">
+                    <el-upload :name='chapterName'
+                               :action='courseUrl'
+                               v-for="(upload,index) in videosUpload"
+                               :key="index"
+                               :ref="'videoUpload'+index"
+                               class="content"
+                               list-type="text"
+                               :on-success="handleVideoSuccess"
+                               :multiple="true"
+                               :with-credentials="true"
+                               :auto-upload="false">
                         <el-tag
                                 closable
                                 :disable-transitions="true"
@@ -109,15 +109,15 @@
             <div class="sourceList item">
                 <div class="span">资料上传:</div>
                 <div style="height:1%;flex-grow:1;overflow: auto">
-                    <el-upload
-                            :action="sourseUrl"
-                            ref="sourceUpload"
-                            class="content"
-                            list-type="text"
-                            :on-success="handleSourseSuccess"
-                            :before-upload="handleSourseUpload"
-                            :multiple="true"
-                            :auto-upload="false">
+                    <el-upload :action="sourseUrl"
+                               ref="sourceUpload"
+                               class="content"
+                               list-type="text"
+                               :on-success="handleSourseSuccess"
+                               :before-upload="handleSourseUpload"
+                               :multiple="true"
+                               :with-credentials="true"
+                               :auto-upload="false">
                         <el-button size="small" type="primary">选择资料</el-button>
                     </el-upload>
                 </div>
@@ -172,7 +172,7 @@
                 //图片上传成功的标志，默认是不上传的
                 iconStatus:true,
                 //url
-                url:'http://172.16.4.57:8080/',
+                url:'http://172.16.148.27:8080/',
                 //上传中的通知
                 uploadingMessage:{}
             };
