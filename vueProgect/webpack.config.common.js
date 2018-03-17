@@ -6,7 +6,7 @@ const htmlWebpackPlugin = require('html-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 //代码压缩工具，用来压缩代码和清除未使用的代码
-const uglifyJSPlugin = require('uglifyjs-webpack-plugin');
+const uglifyJSPlugin=require('uglifyjs-webpack-plugin');
 //样式文件代码分离
 const extractCSS = new ExtractTextPlugin({
     filename: 'static/css/[name].[contenthash]-css.css',
@@ -23,8 +23,6 @@ const extractVueSCSS = new ExtractTextPlugin({
     allChunks: true
 });
 
-//css文件解析的配置参数
-const styleParam = ['css-loader?minimize', 'autoprefixer-loader', 'sass-loader',]
 module.exports = {
     entry: {
         main: './vueProgect/src',
@@ -41,13 +39,15 @@ module.exports = {
         loaders: [
             {
                 test: /\.css$/,
-                use: extractCSS.extract(['css-loader?minimize', 'autoprefixer-loader']),
+                use: extractCSS.extract(['css-loader', 'autoprefixer-loader']),
             },
             {
                 test: /\.scss$/,
                 use: extractSCSS.extract(
                     [
-                        ...styleParam,
+                        'css-loader',
+                        'autoprefixer-loader',
+                        'sass-loader',
                         {
                             loader: 'sass-resources-loader',
                             options: {
@@ -68,7 +68,9 @@ module.exports = {
                     loaders: {
                         scss: extractVueSCSS.extract({
                             use: [
-                                ...styleParam,
+                                'css-loader',
+                                'autoprefixer-loader',
+                                'sass-loader',
                                 //抽取出vue中scss的全局变量
                                 {
                                     loader: 'sass-resources-loader',
@@ -128,28 +130,6 @@ module.exports = {
         extractSCSS,
         extractVueSCSS,
         //代码压缩
-        new uglifyJSPlugin({
-            // 最紧凑的输出
-            beautify: false,
-            // 删除所有的注释
-            comments: false,
-            compress: {
-                // 在UglifyJs删除没有用到的代码时不输出警告
-                warnings: false,
-                // 删除所有的 `console` 语句
-                // 还可以兼容ie浏览器
-                drop_console: true,
-                // 内嵌定义了但是只用到一次的变量
-                collapse_vars: true,
-                // 提取出出现多次但是没有定义成变量去引用的静态值
-                reduce_vars: true,
-            }
-        }),
+        new uglifyJSPlugin()
     ],
-    devServer: {
-        contentBase: './dist',
-        port: 3000,
-        host: "0.0.0.0"
-    },
-    devtool: '#eval-source-map',
 };
