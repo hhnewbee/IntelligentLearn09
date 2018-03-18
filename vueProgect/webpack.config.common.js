@@ -8,7 +8,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 //css文件解析的配置参数
 const styleParam = ['css-loader?minimize', 'autoprefixer-loader', 'sass-loader',];
 //生产环境时的css路径配置
-const cssPath = process.env.NODE_ENV !== 'production' ? null : 'static/css/';
+const cssPath = '';
 
 //样式文件代码分离
 const extractCSS = new ExtractTextPlugin({
@@ -29,7 +29,9 @@ module.exports = {
     entry: {
         main: './vueProgect/src',
         vendor: [
-            './vueProgect/src/static/venders/unitUpload.js'
+            './vueProgect/src/static/venders/unitUpload.js',
+            './vueProgect/src/router/router.js',
+            './vueProgect/src/config/axiosConfig.js',
         ],
     },
     output: {
@@ -117,9 +119,9 @@ module.exports = {
         new CleanWebpackPlugin(['dist']),
         //让render的哈希值不随文件的增删改变
         new webpack.HashedModuleIdsPlugin(),
-        //抽取自定义公共块
+        //抽取第三方库以及公共模块
         new webpack.optimize.CommonsChunkPlugin({
-            name: 'vendor'
+            names: ['vender']
         }),
         //抽取公共块
         new webpack.optimize.CommonsChunkPlugin({

@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "devServer": "webpack-dev-server --config ./vueProgect/webpack.config.dev.js",
-    "devBuild": "webpack --config ./vueProgect/webpack.config.dev.js"
+    "devBuild": "webpack --config ./vueProgect/webpack.config.dev.js",
+    "proBuild": "webpack --env.production --config ./vueProgect/webpack.config.pro.js"
   },
   "repository": {
     "type": "git",
@@ -67,6 +68,7 @@
     "extract-text-webpack-plugin": "^3.0.2",
     "file-loader": "^1.1.6",
     "html-webpack-plugin": "^2.30.1",
+    "image-webpack-loader": "^4.2.0",
     "imagemin-webpack-plugin": "^2.1.0",
     "less": "^2.7.3",
     "less-loader": "^4.0.5",

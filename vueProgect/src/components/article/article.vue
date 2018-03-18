@@ -144,9 +144,9 @@
             }
         },
         components: {
-            'chapter': () => import('./chapter.vue'),
-            'discuss': () => import('./discuss.vue'),
-            'questions': () => import('./comments.vue'),
+            'chapter': () => import(/* webpackChunkName: "chapter.vue" */ './chapter.vue'),
+            'discuss': () => import(/* webpackChunkName: "discuss.vue" */ './discuss.vue'),
+            'questions': () => import(/* webpackChunkName: "comments.vue" */ './comments.vue'),
         },
     }
 </script>

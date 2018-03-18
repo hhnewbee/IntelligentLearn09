@@ -1,14 +1,13 @@
 const merge = require('webpack-merge');
-const common = require('./webpack.config.common');
-//代码压缩工具，用来压缩代码和清除未使用的代码
-const uglifyJSPlugin = require('uglifyjs-webpack-plugin');
+const common = require('./webpack.config.common.js');
+const webpack=require('webpack');
 //图片压缩
 const ImageminPlugin = require('imagemin-webpack-plugin').default;
 
 module.exports = merge(common, {
     plugins: [
         //代码压缩
-        new uglifyJSPlugin({
+        new webpack.optimize.UglifyJsPlugin({
             // 最紧凑的输出
             beautify: false,
             // 删除所有的注释
@@ -27,9 +26,8 @@ module.exports = merge(common, {
         }),
         //图片压缩配置
         new ImageminPlugin({
-            pngquant: {
-                quality: '95-100'
-            }
+            test: './vueProgect/src/static/imgs/**' ,
+            destination: 'static/images'
         }),
         //指定生产环境
         new webpack.DefinePlugin({
