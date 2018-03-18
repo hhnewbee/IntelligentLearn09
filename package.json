@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "devServer": "webpack-dev-server --config ./vueProgect/webpack.config.dev.js",
     "devBuild": "webpack --config ./vueProgect/webpack.config.dev.js",
-    "proBuild": "webpack --env.production --config ./vueProgect/webpack.config.pro.js"
+    "proBuild": "webpack --env.production --config ./vueProgect/webpack.config.pro.js --profile --json > stats.json"
   },
   "repository": {
     "type": "git",
