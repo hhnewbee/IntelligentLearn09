@@ -174,7 +174,9 @@
                 //url
                 url:'http://172.16.148.27:8080/',
                 //上传中的通知
-                uploadingMessage:{}
+                uploadingMessage:{},
+                //上传的消抖时间变量
+                successTime:0
             };
         },
         computed: {
@@ -283,19 +285,25 @@
                     //资料上传是否成功
                     if(this.sourseStatus){
                         //再判断视频是否全部上传成功
-                        if(this.videosUpload.length===0){
-                            this.$ajaxJava.post(this.infoUrl,{
-                                title:this.courseTitle,
-                                description:this.courseIntr,
-                                type:this.categorys.join('/')
-                            }).then(()=>{
-                                this.uploadingMessage.close();
-                                this.$message({
-                                    message: '上传完成',
-                                    type: 'success'
+                        //防止过快判断，重复上传
+                        clearTimeout(this.successTime);
+                        this.successTime=setTimeout(()=>{
+                            if(this.videosUpload.length===0){
+                                this.$ajaxJava.post(this.infoUrl,{
+                                    title:this.courseTitle,
+                                    description:this.courseIntr,
+                                    type:this.categorys.join('/')
+                                }).then(()=>{
+                                    this.uploadingMessage.close();
+                                    this.$message({
+                                        message: '上传完成',
+                                        type: 'success'
+                                    });
+                                    //刷新视图
+                                    this.$forceUpdate();
                                 });
-                            });
-                        }
+                            }
+                        },10);
                     }
                 }
             },

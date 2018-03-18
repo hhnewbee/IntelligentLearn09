@@ -7,7 +7,7 @@
                 mode="horizontal"
                 :router='true'>
             <div class="img" style="border-bottom: 2px solid transparent;">
-                <img src="../../static/imgs/avatar.jpg">
+                <img :src="softIconUrl">
             </div>
             <el-menu-item index="/main/recommend">首页</el-menu-item>
             <el-menu-item index="/main/coursesPage">课程</el-menu-item>
@@ -24,7 +24,13 @@
 <script>
     import avatarInfo from './info.vue';
     import searchItem from './search.vue';
+    import config from '../../config/config';
     export default {
+        data(){
+            return{
+                softIconUrl:config.softIconUrl
+            }
+        },
         components: {
             avatarInfo,
             searchItem
