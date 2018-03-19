@@ -62,7 +62,7 @@
 
     export default {
         created() {
-            this.initData();
+//            this.initData();
         },
         data() {
             return {
