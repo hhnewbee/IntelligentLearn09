@@ -226,7 +226,11 @@
                         if (formName === 'loginForm') {
                             data = {
                                 account: this.formDataLogin.account,
+<<<<<<< Updated upstream
                                 passwd: sha256(this.formDataLogin.passwd)
+=======
+                                password: sha256(this.formDataLogin.passwd)
+>>>>>>> Stashed changes
                             };
                             this.$ajax.post('login', data).then((response) => {
                                 //如果返回的是0
@@ -244,9 +248,17 @@
                                 account: this.formDataSign.accountLogin,
                                 name: this.formDataSign.name,
                                 //把数组切割成字符串
+<<<<<<< Updated upstream
                                 areaFocus: this.formDataSign.areaFocus.join('/'),
                                 eMail: this.formDataSign.eMail,
                                 passwd: sha256(this.formDataSign.passwdLogin)
+=======
+                                selfInformation: {
+                                    position: this.formDataSign.areaFocus.join('/'),
+                                    email: this.formDataSign.eMail
+                                },
+                                password: sha256(this.formDataSign.passwdLogin)
+>>>>>>> Stashed changes
                             };
                             this.$ajax.post('sign', data).then((response) => {
                                 //如果是一些错误，如账号重复
