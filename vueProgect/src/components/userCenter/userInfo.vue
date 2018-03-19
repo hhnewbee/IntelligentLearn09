@@ -14,8 +14,16 @@
                 <div>姓名：
                     <span>newbee</span>
                 </div>
-                <div>职位：
-                    <span>CEO</span>
+                <div>专注领域：
+                    <el-select v-model="areaFocus"
+                               multiple
+                               placeholder="请选择专注领域">
+                        <el-option v-for="item in filterType('全部')"
+                                   :key="item"
+                                   :label="item"
+                                   :value="item">
+                        </el-option>
+                    </el-select>
                 </div>
             </div>
 
@@ -26,16 +34,16 @@
         </div>
         <div class="item">
             <div class="item2">账号：
-                <span>1540913111</span>
-            </div>
-            <div class="item2">昵称：
-                <span ref="nickName" style="padding: 5px">CEO</span>
+                <span ref="account">1540913111</span>
                 <span
-                        @click="handleEditInfo('nickName',$event)"
+                        @click="handleEditInfo('account',$event)"
                         class="control">修改</span>
             </div>
-            <div class="item2">性别：
-                <span>男</span>
+            <div class="item2">姓名：
+                <span ref="name" style="padding: 5px">CEO</span>
+                <span
+                        @click="handleEditInfo('name',$event)"
+                        class="control">修改</span>
             </div>
             <div class="item2">邮箱：
                 <span ref="eMail" style="padding: 5px">1352905383@qq.com</span>
@@ -48,7 +56,16 @@
 </template>
 
 <script>
+    import {mapGetters} from 'vuex';
     export default {
+        data(){
+            return{
+                areaFocus:[]
+            }
+        },
+        computed: {
+            ...mapGetters(['filterType']),
+        },
         methods:{
             handleEditInfo(tar,e){
                 let target=e.currentTarget;
@@ -69,7 +86,7 @@
     }
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
     .userInfo {
         .item {
             margin: 20px 100px;
@@ -104,7 +121,10 @@
             justify-content: flex-start;
             align-items: center;
             font-size: 18px;
-            font-weight: bold
+            font-weight: bold;
+            .el-input__inner{
+                border:none
+            }
         }
     }
 

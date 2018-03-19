@@ -203,6 +203,7 @@
             }
             .chart {
                 width: 1%;
+                min-width: 920px;
                 flex-grow: 1;
                 padding: 20px;
             }
