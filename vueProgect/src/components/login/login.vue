@@ -237,7 +237,7 @@
                         if (formName === 'loginForm') {
                             data = {
                                 account: this.formDataLogin.account,
-                                password: this.formDataLogin.passwd
+                                password: sha256(this.formDataLogin.passwd)
                             };
                             this.$ajaxJava.post('login', data).then((response) => {
                                 //如果返回的是0
@@ -259,7 +259,7 @@
                                     position: this.formDataSign.areaFocus.join('/'),
                                     email: this.formDataSign.eMail
                                 },
-                                password: this.formDataSign.passwdLogin
+                                password: sha256(this.formDataSign.passwdLogin)
                             };
                             this.$ajaxJava.post('register', data).then((response) => {
                                 //不知道的错误
@@ -291,6 +291,7 @@
              */
             successhandle(data) {
                 localStorage["ifLogin"] = data.accountHashMap;//作为下次不用登录的依据
+                this.$router.push({path: '/main/recommend'});//跳转页面
                 window.location.reload();//刷新跳转到index.vue执行主页的逻辑
             }
         },

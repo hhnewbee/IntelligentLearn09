@@ -172,11 +172,11 @@
                 //图片上传成功的标志，默认是不上传的
                 iconStatus:true,
                 //url
-                url:'http://172.16.148.27:8080/',
+                url:'http://172.16.4.57:8080/',
                 //上传中的通知
                 uploadingMessage:{},
                 //上传的消抖时间变量
-                successTime:0
+                successTime:0,
             };
         },
         computed: {
@@ -240,12 +240,19 @@
              * icon上传成功后
              */
             handleIconSuccess() {
+                this.successAll();
             },
             /**
              * 视频上传成功后
              */
-            handleVideoSuccess(){
+            handleVideoSuccess(res,f,fileList){
                 //每次上传成功都删除一个
+                //这每个视频都判断一次的，不是单独判断一个视频
+                for(let i=0;i<fileList.length;i++){
+                    if(fileList[i].status!=='success') {
+                        return;
+                    }
+                }
                 this.videosUpload.splice(0,1);
                 this.successAll();
             },
@@ -286,8 +293,8 @@
                     if(this.sourseStatus){
                         //再判断视频是否全部上传成功
                         //防止过快判断，重复上传
-                        clearTimeout(this.successTime);
-                        this.successTime=setTimeout(()=>{
+//                        clearTimeout(this.successTime);
+//                        this.successTime=setTimeout(()=>{
                             if(this.videosUpload.length===0){
                                 this.$ajaxJava.post(this.infoUrl,{
                                     title:this.courseTitle,
@@ -303,7 +310,7 @@
                                     this.$forceUpdate();
                                 });
                             }
-                        },10);
+//                        },100);
                     }
                 }
             },

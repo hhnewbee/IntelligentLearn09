@@ -31,7 +31,6 @@
                         this.setAccount(res.data.account);
                         this.setAvatarUrl(res.data.avatarUrl);
                     });
-                    this.$router.push({path: '/main/recommend'});
                 } else {
                     this.$router.push({name: 'login'});
                 }
