@@ -7,19 +7,15 @@ Axios.defaults.baseURL = 'http://172.16.116.18:3100/IL09api/';
 
 //java后端的配置
 const axiosJava=Axios.create({
-<<<<<<< Updated upstream
     baseURL:'http://172.16.148.27:8080/',
-    // headers:{'Content-Type':'application/json;charset=UTF-8'},
-=======
-    baseURL:'http://172.16.4.57:8080/',
     withCredentials:true,
->>>>>>> Stashed changes
 });
 
 //java后端的上传配置配置
 const ajUpload=Axios.create({
     baseURL:'http://172.16.148.27:8080/'
 });
+
 ajUpload.interceptors.request.use(function (config) {
     //请求时显示加载中
     this.$message({
