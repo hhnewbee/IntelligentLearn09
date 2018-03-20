@@ -6,7 +6,7 @@ export default {
             //当前前缓存的信息
             areaInfoNow:{},
             //当前缓存的数据列表，用于添加新数据作用
-            listNow:[],
+            listNow:{},
         }
     },
     methods:{
@@ -33,7 +33,8 @@ export default {
                     this.areas[tar]={
                         show:true,
                         itemList:this.listNow
-                    }
+                    };
+                    console.log(this.listNow);
                 });
             }
             //设置当前缓冲区的信息

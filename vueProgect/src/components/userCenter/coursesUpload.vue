@@ -1,5 +1,6 @@
 <template>
-    <div class="upload">
+    <div class="upload"
+         :key="flashKey">
         <el-breadcrumb class="breadcrumb">
             <el-breadcrumb-item class="el-icon-setting">
                 &nbsp;后台管理
@@ -88,7 +89,7 @@
                     </el-button>
                 </div>
                 <div style="overflow: auto;height: 1%;flex-grow: 1;margin-top: 10px;">
-                    <el-upload :name='chapterName'
+                    <el-upload :name='upload.chapterName'
                                :action='courseUrl'
                                v-for="(upload,index) in videosUpload"
                                :key="index"
@@ -173,9 +174,11 @@
                 //图片上传成功的标志，默认是不上传的
                 iconStatus: true,
                 //url
-                url: 'http://172.16.4.57:8080/',
+                url: 'http://172.16.148.27:8080/',
                 //上传中的通知
                 uploadingMessage: {},
+                //强制刷新
+                flashKey:false
             };
         },
         computed: {
@@ -303,7 +306,7 @@
                                     type: 'success'
                                 });
                                 //刷新视图
-                                this.$forceUpdate();
+                                this.flashKey=!this.flashKey;
                             });
                         }
                     }

@@ -13,15 +13,15 @@
                 简介:{{chapter.intro}}
             </div>
             <div class="catalog"
-                 v-for="(item1,index1) in chapter.chapters"
-                 :key="index1">
-                <div>{{'第'+ ++index1+'章&nbsp;'+item1.t1}}</div>
+                 v-for="(item1,chapterName,index1) in chapter.chapters"
+                 :key="chapterName">
+                <div>{{'第'+ ++index1+'章&nbsp;'+chapterName}}</div>
                 <div class="fa fa-play"
-                     v-for="(item2,index2) in item1.t2"
+                     v-for="(item2,index2) in item1"
                      :key="index2"
-                     :ref="item2.name"
+                     :ref="item2.title"
                      @click="handleChapterChange(item2)">
-                    {{index1+'-'+ ++index2}}&nbsp;&nbsp;{{item2.name}}
+                    {{index1+'-'+ ++index2}}&nbsp;&nbsp;{{item2.title}}
                 </div>
             </div>
         </div>
@@ -46,36 +46,7 @@
                     title: 'vue和webpack下的学习',
                     intro: '大数据背景下，对我们的系统性能提出了更高的要求，包括我们的数据存储和应用，都提出了性能上的需求，尤其是对IO通信方面，更是成为了大数据通信下的瓶颈，为此，我们对系统进行相关的分布式改造。那么，如何进一步提升我们的系统IO性能呢？这里，就为大家介绍大数据时代构建高可用分布式系统的利器——Netty',
                     info: {name: 'newbee', time: '2015-1-1'},
-                    chapters: [
-                        {
-                            t1: '课程介绍 ',
-                            t2: [
-                                {name: '课程介绍 (06:47)', videoUrl: ''},
-                                {name: '课程介绍 (06:46)', videoUrl: ''}
-                            ]
-                        },
-                        {
-                            t1: '课程介绍 ',
-                            t2: [
-                                {name: '课程介绍 (06:47)', videoUrl: ''},
-                                {name: '课程介绍 (06:46)', videoUrl: ''}
-                            ]
-                        },
-                        {
-                            t1: '课程介绍 ',
-                            t2: [
-                                {name: '课程介绍 (06:47)', videoUrl: ''},
-                                {name: '课程介绍 (06:46)', videoUrl: ''}
-                            ]
-                        },
-                        {
-                            t1: '课程介绍 ',
-                            t2: [
-                                {name: '课程介绍 (06:47)', videoUrl: ''},
-                                {name: '课程介绍 (06:46)', videoUrl: ''}
-                            ]
-                        }
-                    ],
+                    chapters: {},
                 },
                 //选择的章节状态保存
                 lastCh: ''
@@ -92,23 +63,44 @@
                 this.$refs[t2.name][0].style.color='#409EFF';
                 this.lastCh=t2.name;
                 //视频url的改变
-                this.$emit('changeUrl',t2.url);
+                this.$emit('changeUrl',t2.videoUrl);
             },
             /**
              * 初始化数据
              */
             initData(){
-                //初始化第一个选择章节
-                let t2=((this.chapter.chapters)[0].t2)[0];
-                this.lastCh=t2.name;
-                //初始化视的url
-                this.$emit('changeUrl',t2.url);
+                this.initChapter();
             },
             /**
              * 初始化dom
              */
             initDom(){
                 this.$refs[this.lastCh][0].style.color='#409EFF';
+            },
+            /**
+             * 生成章节
+             */
+            initChapter(){
+                //初始化章节信息
+                let files=this.$route.params.files;
+                this.chapter.title=files.title;
+                this.chapter.intro=files.description;
+                this.info.name=files.user;
+                this.info.time=files.creationTimesTamp;
+                files.chapters.forEach((file,index)=>{
+                //判断是否是章节
+                if(file.chapter){
+                    this.chapters[file.chapter].push(
+                        {title: file.chapter.title, videoUrl: file.chapter.path}
+                    )
+                }
+                    //初始化第一个选择章节的内容
+                    if(index===1){
+                        this.lastCh=file.chapter.title;
+                        //初始化视的url
+                        this.$emit('changeUrl',file.chapter.path);
+                    }
+                })
             }
         },
         components: {

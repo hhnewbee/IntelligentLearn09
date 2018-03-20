@@ -17,9 +17,8 @@
                     <div class="ListType">课程推荐</div>
                     <div class="more">更多&nbsp;<span class="fa fa-chevron-right"></span></div>
                     <div class="courseList">
-                        <router-link :to="{name:'course',params: {fileUrl: item._links.file}}"
-                                     v-for="item in listNow"
-                                     v-if="item.type==='course'"
+                        <router-link :to="{name:'course',params: {file: item.file}}"
+                                     v-for="item in listNow.courses"
                                      :key="item.title">
                             <courseItem :data="item"></courseItem>
                         </router-link>
@@ -30,8 +29,7 @@
                     <div class="more">更多&nbsp;<span class="fa fa-chevron-right"></span></div>
                     <div class="articleList">
                         <router-link :to="{name:'article',params: { articleId: item.id }}"
-                                     v-for="item in listNow"
-                                     v-if="item.type==='article'"
+                                     v-for="item in listNow.articles"
                                      :key="item.title">
                             <articleItem
                                     :itemContent="item">
