@@ -102,7 +102,8 @@
                         <el-tag
                                 closable
                                 :disable-transitions="true"
-                                @close="handleCloseChapter(upload)">{{upload.chapterName}}</el-tag>
+                                @close="handleCloseChapter(upload)">{{upload.chapterName}}
+                        </el-tag>
                     </el-upload>
                 </div>
             </div>
@@ -138,7 +139,7 @@
     import {mapGetters} from 'vuex'
 
     export default {
-        created(){
+        created() {
             this.initData();
         },
         mounted() {
@@ -154,35 +155,33 @@
                 dialogImageUrl: '',
                 dialogVisible: false,
                 //章节名称
-                chapterName:'',
+                chapterName: '',
                 //各个章节的视频
-                videosUpload:[],
+                videosUpload: [],
                 //课程类型
                 categorys: [],
                 //infoUrl
-                infoUrl:'upload/course',
+                infoUrl: 'upload/course',
                 //iconUrl
-                iconUrl:'',
+                iconUrl: '',
                 //courseUrl
-                courseUrl:'',
+                courseUrl: '',
                 //sourseUrl
-                sourseUrl:'',
+                sourseUrl: '',
                 //资料上传成功的标志，默认是不上传的
-                sourseStatus:true,
+                sourseStatus: true,
                 //图片上传成功的标志，默认是不上传的
-                iconStatus:true,
+                iconStatus: true,
                 //url
-                url:'http://172.16.4.57:8080/',
+                url: 'http://172.16.4.57:8080/',
                 //上传中的通知
-                uploadingMessage:{},
-                //上传的消抖时间变量
-                successTime:0,
+                uploadingMessage: {},
             };
         },
         computed: {
             //判断章节是否为空
-            chapterNameAdd(){
-                return this.chapterName==='';
+            chapterNameAdd() {
+                return this.chapterName === '';
             },
             //类型的过滤器
             ...mapGetters(['filterType']),
@@ -198,7 +197,7 @@
             /**
              * 重新添加图标
              */
-            handleIconRemove(file, fileList) {
+            handleIconRemove() {
                 this.iconDivS.display = "block";
                 this.iconAdd = true;
             },
@@ -217,23 +216,23 @@
              * 上传
              */
             upload() {
-                if(!(this.courseTitle&&this.courseIntr)){
+                if (!(this.courseTitle && this.courseIntr)) {
                     this.$message.error('标题和简介不能为空');
                     return;
                 }
                 //icon上传
                 this.$refs.iconUpload.submit();
                 //视频上传
-                for(let i=0;i<this.videosUpload.length;i++){
-                    this.$refs['videoUpload'+i][0].submit();
+                for (let i = 0; i < this.videosUpload.length; i++) {
+                    this.$refs['videoUpload' + i][0].submit();
                 }
                 //资料上传
                 this.$refs.sourceUpload.submit();
-                this.uploadingMessage=this.$message({
-                    dangerouslyUseHTMLString:true,
+                this.uploadingMessage = this.$message({
+                    dangerouslyUseHTMLString: true,
                     message: '<span class="el-icon-loading"></span>' + '<span style="margin-left: 10px">课程正在上传中<span>',
                     type: 'warning',
-                    duration:0
+                    duration: 0
                 });
             },
             /**
@@ -245,35 +244,35 @@
             /**
              * 视频上传成功后
              */
-            handleVideoSuccess(res,f,fileList){
+            handleVideoSuccess(res, f, fileList) {
                 //每次上传成功都删除一个
                 //这每个视频都判断一次的，不是单独判断一个视频
-                for(let i=0;i<fileList.length;i++){
-                    if(fileList[i].status!=='success') {
+                for (let i = 0; i < fileList.length; i++) {
+                    if (fileList[i].status !== 'success') {
                         return;
                     }
                 }
-                this.videosUpload.splice(0,1);
+                this.videosUpload.splice(0, 1);
                 this.successAll();
             },
             /**
              * 资源上传成功后
              */
-            handleSourseSuccess(){
-                this.sourseStatus=true;
+            handleSourseSuccess() {
+                this.sourseStatus = true;
                 this.successAll();
             },
             /**
              * 返回课程管理
              */
-            handleBackManage(){
+            handleBackManage() {
                 this.$router.push({path: '/userCenter/coursesManage/#coursesManage'});
             },
             /**
              * 添加章节
              */
-            handleAddChapter(){
-                this.videosUpload.push({chapterName:this.chapterName,status:false})
+            handleAddChapter() {
+                this.videosUpload.push({chapterName: this.chapterName, status: false})
             },
             /**
              * 删除章节
@@ -286,53 +285,49 @@
              * 全部上传成功
              *
              */
-            successAll(){
+            successAll() {
                 //图标是否上传成功
-                if(this.iconStatus){
+                if (this.iconStatus) {
                     //资料上传是否成功
-                    if(this.sourseStatus){
+                    if (this.sourseStatus) {
                         //再判断视频是否全部上传成功
-                        //防止过快判断，重复上传
-//                        clearTimeout(this.successTime);
-//                        this.successTime=setTimeout(()=>{
-                            if(this.videosUpload.length===0){
-                                this.$ajaxJava.post(this.infoUrl,{
-                                    title:this.courseTitle,
-                                    description:this.courseIntr,
-                                    type:this.categorys.join('/')
-                                }).then(()=>{
-                                    this.uploadingMessage.close();
-                                    this.$message({
-                                        message: '上传完成',
-                                        type: 'success'
-                                    });
-                                    //刷新视图
-                                    this.$forceUpdate();
+                        if (this.videosUpload.length === 0) {
+                            this.$ajaxJava.post(this.infoUrl, {
+                                title: this.courseTitle,
+                                description: this.courseIntr,
+                                type: this.categorys.join('/')
+                            }).then(() => {
+                                this.uploadingMessage.close();
+                                this.$message({
+                                    message: '上传完成',
+                                    type: 'success'
                                 });
-                            }
-//                        },100);
+                                //刷新视图
+                                this.$forceUpdate();
+                            });
+                        }
                     }
                 }
             },
             /**
              * 初始化数据
              */
-            initData(){
-                this.iconUrl=this.url+'upload/icon';
-                this.courseUrl=this.url+'upload/videoFile';
-                this.sourseUrl=this.url+'upload/officeFile';
+            initData() {
+                this.iconUrl = this.url + 'upload/icon';
+                this.courseUrl = this.url + 'upload/videoFile';
+                this.sourseUrl = this.url + 'upload/officeFile';
             },
             /**
              * 是否上传资料
              */
-            handleSourseUpload(){
-               this.sourseStatus=false;
+            handleSourseUpload() {
+                this.sourseStatus = false;
             },
             /**
              * 是否上传图标
              */
-            handleIconUpload(){
-                this.iconStatus=false;
+            handleIconUpload() {
+                this.iconStatus = false;
             }
         },
     }
@@ -344,8 +339,8 @@
         flex-direction: column;
         padding: 20px;
         height: 100%;
-        .uploadContent{
-            height:1%;
+        .uploadContent {
+            height: 1%;
             flex-grow: 1;
             display: flex;
             justify-content: space-around;
@@ -366,7 +361,7 @@
                     width: 100%;
                 }
             }
-            .item{
+            .item {
                 width: 300px;
                 margin-top: 15px;
                 margin-left: 20px;
@@ -376,13 +371,13 @@
                 font-weight: bold;
                 color: #606266;
             }
-            .sourceList{
+            .sourceList {
                 display: flex;
                 flex-direction: column;
             }
-            .content{
+            .content {
                 margin-left: 20px;
-                margin-top:8px;
+                margin-top: 8px;
             }
         }
         .uploadButton {
