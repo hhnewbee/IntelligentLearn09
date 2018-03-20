@@ -1,5 +1,5 @@
 <template>
-    <div class="course">
+    <div class="courseItem">
         <div class="pic">
             <img :src="data.icon">
         </div>
@@ -21,7 +21,7 @@
 </script>
 
 <style scoped lang="scss">
-    .course{
+    .courseItem{
         width: 200px;
         margin: 20px 0;
         display: flex;

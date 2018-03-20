@@ -39,6 +39,24 @@
                 </el-option>
             </el-select>
         </div>
+        <div class="moreFun"
+             v-if='ifMoreFun'>
+            <el-button
+                    :disabled="ifDelect"
+                    @click="handleDelectRows"
+                    type="primary"
+                    size="small"
+                    icon="el-icon-delete">
+                批量删除
+            </el-button>
+            <el-button
+                    @click="handleDelectAll"
+                    type="danger"
+                    size="small"
+                    icon="el-icon-delete">
+                全部删除
+            </el-button>
+        </div>
         <div class="content">
             <el-table
                     v-show="ifTable"
