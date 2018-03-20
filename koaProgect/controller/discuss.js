@@ -59,7 +59,6 @@ wss.on('connection', function (ws) {
             }
         }
     });
-
     //每个用户关闭监听
     ws.on('close', function () {
         //广播用户已近退出

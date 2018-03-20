@@ -1,5 +1,5 @@
 <template>
-    <div id="myEditor09IL">
+    <div id="myEditorLearner09IL">
         <div class="richEdit">
             <div class="command">
                 <div v-for="(item,index) in muneData"
@@ -431,7 +431,7 @@
 </script>
 
 <style lang="scss">
-    #myEditor09IL {
+    #myEditorLearner09IL {
         height: 100%;
         display: flex;
         .richEdit {

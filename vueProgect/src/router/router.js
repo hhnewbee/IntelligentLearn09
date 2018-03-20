@@ -13,94 +13,94 @@ let router = new VueRouter(
             {
                 name: "login",
                 path: '/login',
-                component: () => import('../components/login/login.vue'),
+                component: () => import(/* webpackChunkName: "login.vue" */ '../components/login/login.vue'),
             },
             {
                 path: '/main',
-                component: () => import('../components/main/main.vue'),
+                component: () => import(/* webpackChunkName: "main.vue" */ '../components/main/main.vue'),
                 children: [
                     {
                         path: 'recommend',
-                        component: () => import('../components/main/recommend.vue'),
+                        component: () => import(/* webpackChunkName: "recommend.vue" */ '../components/main/recommend.vue'),
                     },
                     {
                         path: 'articlesPage',
-                        component: () => import('../components/main/articlesPage.vue'),
+                        component: () => import(/* webpackChunkName: "articlesPage.vue" */ '../components/main/articlesPage.vue'),
                     },
                     {
                         path: 'coursesPage',
-                        component: () => import('../components/main/coursesPage.vue'),
+                        component: () => import(/* webpackChunkName: "coursesPage.vue" */ '../components/main/coursesPage.vue'),
                     },
                     {
                         path: 'questionPage',
-                        component: () => import('../components/main/questionPage.vue'),
+                        component: () => import(/* webpackChunkName: "questionPage.vue" */ '../components/main/questionPage.vue'),
                     },
                     {
                         path: 'questionPage/question',
-                        component: () => import('../components/question/question.vue'),
+                        component: () => import(/* webpackChunkName: "question.vue" */ '../components/question/question.vue'),
                     },
                     {
                         path: 'articlePage/article/:articleId',
-                        component: () => import('../components/article/article.vue'),
+                        component: () => import(/* webpackChunkName: "article.vue" */ '../components/article/article.vue'),
                     },
                 ]
             },
             {
                 name: "course",
                 path: '/course',
-                component: () => import('../components/course/courseMain.vue'),
+                component: () => import(/* webpackChunkName: "courseMain.vue" */ '../components/course/courseMain.vue'),
             },
             {
                 name: "userCenter",
                 path: '/userCenter',
-                component: () => import('../components/userCenter/userCenter.vue'),
+                component: () => import(/* webpackChunkName: "userCenter.vue" */ '../components/userCenter/userCenter.vue'),
                 children: [
                     {
                         path: 'userInfo',
-                        component: () => import('../components/userCenter/userInfo.vue'),
+                        component: () => import(/* webpackChunkName: "userInfo.vue" */ '../components/userCenter/userInfo.vue'),
                     },
                     {
                         path: 'record',
-                        component: () => import('../components/userCenter/record.vue'),
+                        component: () => import(/* webpackChunkName: "record.vue" */ '../components/userCenter/record.vue'),
                     },
                     {
                         path: 'status',
-                        component: () => import('../components/userCenter/status.vue'),
+                        component: () => import(/* webpackChunkName: "status.vue" */ '../components/userCenter/status.vue'),
                     },
                     {
                         path: 'collection',
-                        component: () => import('../components/userCenter/collection.vue'),
+                        component: () => import(/* webpackChunkName: "collection.vue" */ '../components/userCenter/collection.vue'),
                     },
                     {
                         path: 'informationManage',
-                        component: () => import('../components/userCenter/informationManage.vue'),
+                        component: () => import(/* webpackChunkName: "informationManage.vue" */ '../components/userCenter/informationManage.vue'),
                     },
                     {
                         path: 'coursesManage',
-                        component: () => import('../components/userCenter/coursesManage.vue'),
+                        component: () => import(/* webpackChunkName: "coursesManage.vue" */ '../components/userCenter/coursesManage.vue'),
                     },
                     {
                         path: 'articlesManage',
-                        component: () => import('../components/userCenter/articlesManage.vue'),
+                        component: () => import(/* webpackChunkName: "articlesManage.vue" */'../components/userCenter/articlesManage.vue'),
                     },
                     {
                         path: 'usersManage',
-                        component: () => import('../components/userCenter/usersManage.vue'),
+                        component: () => import(/* webpackChunkName: "usersManage.vue" */ '../components/userCenter/usersManage.vue'),
                     },
                     {
                         path: 'articlesManage/articleEdit',
-                        component: () => import('../components/edit/myEditor.vue'),
+                        component: () => import(/* webpackChunkName: "myEditor.vue" */ '../components/edit/myEditor.vue'),
                     },
                     {
                         path: 'coursesManage/coursesUpload',
-                        component: () => import('../components/userCenter/coursesUpload.vue'),
+                        component: () => import(/* webpackChunkName: "coursesUpload.vue" */ '../components/userCenter/coursesUpload.vue'),
                     }
                 ]
             },
             // {
             //     name: "test",
             //     path: '/test',
-            //     component: () => import('../components/test/testUEditor2.vue'),
+            //     component: () => import(/* webpackChunkName: "testUEditor2.vue" */ '../components/test/testUEditor2.vue'),
             // }
         ]
     }

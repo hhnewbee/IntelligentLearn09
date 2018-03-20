@@ -129,10 +129,10 @@
 <style scoped lang="scss">
     $cnntentWith: 1200px;
     .fade-enter-active, .fade-leave-active {
-        transition: opacity .5s;
+        //transition: opacity .5s;
     }
     .fade-enter, .fade-leave-to {
-        opacity: 0;
+        //opacity: 0;
     }
     .recommend {
         display: flex;
