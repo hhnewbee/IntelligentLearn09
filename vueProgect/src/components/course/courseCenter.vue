@@ -70,10 +70,10 @@
             ...mapState('info',['account,avatarUrl']),
         },
         components: {
-            chapter: () => import('./chapter.vue'),
-            discuss: () => import('../article/discuss.vue'),
-            comments: () => import('../article/comments.vue'),
-            downLoad: () => import('../resources/downLoad.vue')
+            chapter: () => import(/* webpackChunkName: "chapter.vue" */ './chapter.vue'),
+            discuss: () => import(/* webpackChunkName: "discuss.vue" */ '../article/discuss.vue'),
+            comments: () => import(/* webpackChunkName: "comments.vue" */ '../article/comments.vue'),
+            downLoad: () => import(/* webpackChunkName: "downLoad.vue" */'../resources/downLoad.vue')
         },
         methods: {
             /**
