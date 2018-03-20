@@ -6,7 +6,7 @@
         <div class="name">Vue+webpack</div>
         <div class="detail">
             <span class="learns" style="margin-right: 15px">类型：金融</span>
-            <span class="likes fa fa-heart">&nbsp;22人喜欢</span>
+            <span class="likes fa fa-heart">&nbsp;0人喜欢</span>
         </div>
         <div class="time detail el-icon-time">
             &nbsp;2018-1-3
