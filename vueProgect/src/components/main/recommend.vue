@@ -21,12 +21,6 @@
                             <course></course>
                         </router-link>
                         <course></course>
-                        <course></course>
-                        <course></course>
-                        <course></course>
-                        <course></course>
-                        <course></course>
-                        <course></course>
                     </div>
                 </div>
                 <div class="article">
@@ -196,6 +190,7 @@
                 cursor: pointer;
             }
             .course {
+                width: 100%;
                 display: flex;
                 flex-direction: column;
                 align-items: center;
