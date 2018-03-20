@@ -17,16 +17,10 @@
                     <div class="ListType">课程推荐</div>
                     <div class="more">更多&nbsp;<span class="fa fa-chevron-right"></span></div>
                     <div class="courseList">
-                        <router-link :to="{name:'course'}">
+                        <router-link :to="{name:'course'}"
+                                     v-for="item in courseItems">
                             <course></course>
                         </router-link>
-                        <course></course>
-                        <course></course>
-                        <course></course>
-                        <course></course>
-                        <course></course>
-                        <course></course>
-                        <course></course>
                     </div>
                 </div>
                 <div class="article">
@@ -115,6 +109,7 @@
                         collections: '22'
                     }
                 ];
+                this.courseItems=[1,2,3,4,5,6,7,8]
             },
         },
         components: {
