@@ -6,7 +6,7 @@
         <div class="name">{{data.title}}</div>
         <div class="detail">
             <span class="learns" style="margin-right: 15px">类型：{{data.type}}</span>
-            <span class="likes fa fa-heart">&nbsp;{{data.liking}}&nbsp;喜欢</span>
+            <span class="likes fa fa-heart">&nbsp;{{data.liking}}&nbsp;人喜欢</span>
         </div>
         <div class="time detail el-icon-time">
             &nbsp;{{data.creationTimestamp | formatDate}}
