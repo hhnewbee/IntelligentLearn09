@@ -83,6 +83,7 @@
             initChapter(){
                 //初始化章节信息
                 let files=this.$route.params.files;
+                console.log(files);
                 this.chapter.title=files.title;
                 this.chapter.intro=files.description;
                 this.info.name=files.user;
