@@ -72,7 +72,7 @@
              */
             initChapter() {
                 //初始化章节信息
-                this.$ajaxJava.get(`courses/${this.$route.params[0]}`).then((res) => {
+                this.$ajaxJava.get(`course/${this.$route.params.courseId}`).then((res) => {
                     //设置课程标题
                     this.setCourseTitle(res.data.title);
                     //初始化章节数据
