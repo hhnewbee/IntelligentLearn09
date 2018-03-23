@@ -6,7 +6,7 @@
                 <img :src="articleData.userIconUrl" style="width: 25px;height: 25px;border-radius: 50%"/>
                 <div style="margin: 0 10px">{{articleData.userName}}</div>
                 <div style="margin-right: 10px">时间：{{articleData.creationTimestamp|formatDateTime}}</div>
-                <div>类型：{{articleData.type}}</div>
+                <div>类型：{{articleData.categorys}}</div>
 
                 <div style="position: absolute;right: 0">
                     <el-checkbox-group v-model="checkboxGroup" size="small">
@@ -101,7 +101,7 @@
              */
             initDom() {
                 //请求获取文章
-                this.$ajaxJava.get(`posts/${this.$route.params.articleId}`).then((response) => {
+                this.$ajaxJava.get(`forum/${this.$route.params.articleId}`).then((response) => {
                     this.articleData = response.data;
                     //设置文章内容
                     this.$refs.content.innerHTML = this.articleData.content;

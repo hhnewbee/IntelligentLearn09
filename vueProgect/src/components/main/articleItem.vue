@@ -65,7 +65,6 @@
                 let src=null;
                 //获取所有文本，图片，视频链接
                 this.itemContent.textContent=this.delHtmlTag(this.itemData.content);
-                console.log(this.delHtmlTag(this.itemData.content));
                     //如果图片存在的话
                     if(src=this.itemData.content.match(/<img.*?(?:>|\/>)/)){
                         this.itemContent.img=src[0].match(/src=[\'\"]?([^\'\"]*)[\'\"]?/)[1];
