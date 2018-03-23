@@ -10,7 +10,6 @@
 
         <!--评论列表items-->
         <vue-scrollbar v-show="!ifReplysList"
-                       :onMaxScroll="handleMaxScroll"
                        class="my-scrollbar">
             <div class="commentsList">
                 <div v-if="commentItems.length===0">暂无问题</div>
@@ -52,12 +51,14 @@
                                 style="margin-left: 10px"> 回答
                         </span>
                     </div>
-                    <!--加载内容中-->
-                    <div v-if="loadDown.ifLongding" class="el-icon-loading">&nbsp;加载中</div>
-                    <div v-if="loadDown.ifNothing">已近全部加载</div>
                 </div>
+                <!--加载内容中-->
+                <div v-if="loadDown.ifLongding" class="el-icon-loading">&nbsp;加载中</div>
+                <div v-if="loadDown.ifNothing">已经全部加载</div>
+                <div v-else @click="handleLoadMore">加载更多</div>
             </div>
         </vue-scrollbar>
+
         <!--回复列表items-->
         <div v-for="area in replysAreas"
              v-show="area.show"
@@ -151,7 +152,7 @@
             this.ajxaComments.get('getComments/' + this.commentsInfo.targetId + "?pageIndex=0").then((response) => {
                 this.itemsListNow = this.commentItems = response.data;
             });
-            this.targetId=this.commentsInfo.targetId;
+            this.targetId = this.commentsInfo.targetId;
         },
         //当前评论的基本信息
         props: ['commentsInfo'],
@@ -170,15 +171,15 @@
                 //发送评论/回复的数据
                 sendData: '',
                 //当前评论区的id，用于回复的标识
-                targetId:'',
+                targetId: '',
                 //下拉加载跟多
-                loadDown:{
+                loadDown: {
                     //是否正在加载
-                    ifLongding:false,
+                    ifLongding: false,
                     //是否没有内容了
-                    ifNothing:false,
+                    ifNothing: false,
                     //下拉加载的axios
-                    ajax:{}
+                    ajax: {}
                 },
             }
         },
@@ -199,7 +200,7 @@
                     });
                     this.itemsListNow = this.commentItems;
                     //切换回复的评论区id
-                    this.targetId=this.commentsInfo.targetId;
+                    this.targetId = this.commentsInfo.targetId;
                 } else {
                     //列表的切换,判断当前列表是否打开过，如果已打开，复用，否则新添加
                     let ifAddN = false;
@@ -212,13 +213,13 @@
                         }
                     });
                     if (!ifAddN) {
-                        this.$ajax.get('getComments/' + commentInfo.id+ "?pageIndex=0").then((response) => {
+                        this.$ajax.get('getComments/' + commentInfo.id + "?pageIndex=0").then((response) => {
                             let newArea = {...commentInfo, show: true, itemsList: response.data};
                             this.replysAreas.push(newArea);
                             this.itemsListNow = newArea.itemsList;
                         });
                     }
-                    this.targetId=commentInfo.id;
+                    this.targetId = commentInfo.id;
                 }
             },
             /**
@@ -228,18 +229,18 @@
                 let data = {
                     ...this.commentsInfo,
                     time: Date(),
-                    replys:0,
-                    supports:0,
+                    replys: 0,
+                    supports: 0,
                     content: this.sendData
                 };
                 //确定当前评论区的id
-                data.targetId=this.targetId;
+                data.targetId = this.targetId;
                 //如果不是回复当前评论区的
-                if(this.$refs['commentSend'].targetId){
-                    data.targetId=this.$refs['commentSend'].targetId;
+                if (this.$refs['commentSend'].targetId) {
+                    data.targetId = this.$refs['commentSend'].targetId;
                     //更新本地显示
-                    this.itemsListNow.forEach(item=>{
-                        if(item.id===data.targetId){
+                    this.itemsListNow.forEach(item => {
+                        if (item.id === data.targetId) {
                             item.replys++;
                         }
                     })
@@ -250,7 +251,7 @@
                 this.ajxaComments.post('addComments', data);
                 //清空发送的临时设置数据
                 this.sendData = '';
-                this.$refs['commentSend'].targetId=null;
+                this.$refs['commentSend'].targetId = null;
             },
             /**
              * 回复
@@ -258,26 +259,26 @@
              */
             reply(comment) {
                 this.sendData = "@" + comment.nickName + " ";
-                this.$refs['commentSend'].targetId=comment.id;
+                this.$refs['commentSend'].targetId = comment.id;
             },
             /**
              * 支持
              * @param comment
              */
-            handleSupport(comment){
-                let style=this.$refs[comment.id][0].style;
+            handleSupport(comment) {
+                let style = this.$refs[comment.id][0].style;
                 //判断是否已经点赞
-                if(style.color==='rgb(64, 158, 255)'){
+                if (style.color === 'rgb(64, 158, 255)') {
                     //本地显示更新
-                    style.color='#9E9E9E';
+                    style.color = '#9E9E9E';
                     comment.supports--;
-                    this.ajxaComments.delete('deleteSupporter/'+comment.id);
-                }else{
-                    style.color='#409EFF';
+                    this.ajxaComments.delete('deleteSupporter/' + comment.id);
+                } else {
+                    style.color = '#409EFF';
                     comment.supports++;
-                    this.ajxaComments.post('addSupporter',{
-                        commentsId:comment.id,
-                        nickName:this.commentsInfo.nickName
+                    this.ajxaComments.post('addSupporter', {
+                        commentsId: comment.id,
+                        nickName: this.commentsInfo.nickName
                     });
                 }
             },
@@ -285,33 +286,31 @@
              * 下拉加载
              * @param direction
              */
-            handleMaxScroll(direction) {
-                if(direction.bottom){
-                    this.loadDown.ajax.get('',(res)=>{
-                        //是否有新的数据
-                        if(res.data.length===0){
-                            this.loadDown.ifNothing=true;
-                        }else{
-                            this.loadDown.ifNothing=false;
-                            this.commentItems.push(...(res.data));
-                        }
-                    });
-                }
-                console.log(direction);
+            handleLoadMore() {
+                //todo 下拉加载
+                this.loadDown.ajax.get('', (res) => {
+                    //是否有新的数据
+                    if (res.data.length === 0) {
+                        this.loadDown.ifNothing = true;
+                    } else {
+                        this.loadDown.ifNothing = false;
+                        this.commentItems.push(...(res.data));
+                    }
+                });
             },
             /**
              * 初始化数据
              */
-            initData(){
+            initData() {
                 //创建讨论加载ajax
-                this.loadDown.ajax=this.$ajax.create();
+                this.loadDown.ajax = this.$ajax.create();
                 //加载讨论的拦截器
-                this.loadDown.ajax.interceptors.request.use((config)=>{
-                    this.loadDown.ifLongding=true;
+                this.loadDown.ajax.interceptors.request.use((config) => {
+                    this.loadDown.ifLongding = true;
                     return config;
                 });
-                this.loadDown.ajax.interceptors.response.use((res)=>{
-                    this.loadDown.ifLongding=false;
+                this.loadDown.ajax.interceptors.response.use((res) => {
+                    this.loadDown.ifLongding = false;
                     return res;
                 });
 
@@ -482,19 +481,19 @@
                     }
                 }
             }
-            .itemCount{
+            .itemCount {
                 margin: 5px 15px;
                 color: #9e9e9e;
                 font-size: 13px;
             }
             .itemsList {
-                    height: 100%;
-                    .item {
-                        margin: 5px 15px;
-                        border-top: 1px solid #ddd5d5;
-                        box-shadow: none;
-                    }
+                height: 100%;
+                .item {
+                    margin: 5px 15px;
+                    border-top: 1px solid #ddd5d5;
+                    box-shadow: none;
                 }
+            }
         }
 
         .control {
