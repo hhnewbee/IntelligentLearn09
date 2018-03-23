@@ -29,7 +29,7 @@
                 我要提问
             </el-button>
             <el-dialog
-                    title="编辑回答"
+                    title="编辑提问"
                     :visible.sync="EditorVisible">
                 <myLearnerEditor></myLearnerEditor>
             </el-dialog>
@@ -69,7 +69,7 @@
         data() {
             return {
                 choose: '最新',
-                typeChoose: '金融',
+                typeChoose: '全部',
                 items: [],
                 //推荐问题
                 constructionArticle: [],
@@ -163,7 +163,11 @@
             flex-direction: column;
             align-items: center;
             .el-dialog{
+                min-width: 580px;
                 height: 80%;
+                .el-dialog__body{
+                    height: 90%;
+                }
             }
             .rightItem {
                 margin-top: 20px;

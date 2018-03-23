@@ -361,7 +361,11 @@
             flex-direction: column;
             align-items: center;
             .el-dialog{
+                min-width: 580px;
                 height: 80%;
+                .el-dialog__body{
+                    height: 90%;
+                }
             }
         }
     }

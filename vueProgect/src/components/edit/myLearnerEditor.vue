@@ -23,11 +23,14 @@
                     contenteditable="true"
                     @click="getSelection"
                     ref="editarea">
+                <div><br></div>
             </div>
         </div>
         <div class="uploadList" ref="uploadList">
             <el-upload
                     :action='uploadUrl'
+                    :name="uploadType"
+                    :with-credentials="true"
                     :before-remove="beforeRemove"
                     :before-upload='beforeUpload'
                     :on-success='upScuccess'
@@ -107,7 +110,8 @@
             editCommand(type) {
                 if (type === 'img' | type === 'video' | type === 'file') {
                     this.uploadType = type;
-                    this.uploadUrl = `http://localhost:3100/upload/${type}`;//设置上传地址
+                    //todo 设置上传地址
+                    this.uploadUrl = `http://172.16.148.27:8080/upload/forumFile`;
                     document.querySelector('#uploadButton').click();
                     return;
                 }
@@ -394,16 +398,17 @@
             },
 
             publish(){
+                //todo 发布
                 this.$ajax.post("posts",{
-                    author:"name",
-                    content:this.editarea.innerHTML,
                     categorys: this.categorys.join('/'),
-                    time:Date()
+                    content:this.editarea.innerHTML,
                 }).then(()=>{
                     this.$message({
                         type: 'success',
                         message: '发表成功'
                     });
+                    //清空内容
+                    this.editarea.innerHTML = '';
                 }).catch(()=>{
                     this.$message({
                         type: 'error',
@@ -494,10 +499,6 @@
                     cursor: default;
                     user-select: none;
                     img {
-                        height: 100%;
-                        width: 100%;
-                    }
-                    video {
                         height: 100%;
                         width: 100%;
                     }
