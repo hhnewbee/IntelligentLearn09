@@ -74,7 +74,7 @@
                 this.items=[
                     {
                         title:'vue和webpack的使用',
-                        avatar:'http://localhost:3100/img/avatar/avatar.jpg',
+                        avatar:'http://localhost:3100/img/avatar/softIcon.jpg',
                         nickname:'newbee1',
                         time:'2018-1-1',
                         pic:'',
@@ -85,7 +85,7 @@
                     },
                     {
                         title:'vue和webpack的使用',
-                        avatar:'http://localhost:3100/img/avatar/avatar.jpg',
+                        avatar:'http://localhost:3100/img/avatar/softIcon.jpg',
                         nickname:'newbee1',
                         time:'2018-1-1',
                         pic:'',
@@ -96,7 +96,7 @@
                     },
                     {
                         title:'vue和webpack的使用',
-                        avatar:'http://localhost:3100/img/avatar/avatar.jpg',
+                        avatar:'http://localhost:3100/img/avatar/softIcon.jpg',
                         nickname:'newbee1',
                         time:'2018-1-1',
                         pic:'',
@@ -107,7 +107,7 @@
                     },
                     {
                         title:'vue和webpack的使用',
-                        avatar:'http://localhost:3100/img/avatar/avatar.jpg',
+                        avatar:'http://localhost:3100/img/avatar/softIcon.jpg',
                         nickname:'newbee1',
                         time:'2018-1-1',
                         pic:'',

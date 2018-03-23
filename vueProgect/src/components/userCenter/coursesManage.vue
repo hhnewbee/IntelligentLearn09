@@ -166,6 +166,7 @@
 
 <script>
     import {manageMixin} from './manageMixin.js';
+
     export default {
         created() {
             this.initData([
@@ -193,7 +194,7 @@
                     type: '课程',
                     category: '金融',
                     newDate: '2017-05-09',
-                    avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
+                    avatar: 'http://localhost:3100/img/avatar/softIcon.jpg',
                     nickName: 'newbee',
                     useTime: 90,
                     accessTimes: 10,
@@ -203,7 +204,7 @@
                     type: '课程',
                     category: '金融',
                     newDate: '2018-05-03',
-                    avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
+                    avatar: 'http://localhost:3100/img/avatar/softIcon.jpg',
                     nickName: 'newbee',
                     useTime: 30,
                     accessTimes: 20,
@@ -213,7 +214,7 @@
                     type: '课程',
                     category: '金融',
                     newDate: '2018-05-03',
-                    avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
+                    avatar: 'http://localhost:3100/img/avatar/softIcon.jpg',
                     nickName: 'newbee',
                     useTime: 10,
                     accessTimes: 20,
@@ -223,7 +224,7 @@
                     type: '课程',
                     category: '金融',
                     newDate: '2018-05-03',
-                    avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
+                    avatar: 'http://localhost:3100/img/avatar/softIcon.jpg',
                     nickName: 'newbee',
                     useTime: 40,
                     accessTimes: 20,
@@ -266,9 +267,9 @@
             }
         },
         components: {
-            courseChart: () => import( './courseChart.vue'),
+            courseChart: () => import(/* webpackChunkName: "courseChart.vue" */ './courseChart.vue'),
         },
-        mixins:[manageMixin]
+        mixins: [manageMixin]
     }
 </script>
 

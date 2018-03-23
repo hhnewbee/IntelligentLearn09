@@ -168,7 +168,7 @@
                         type: '课程',
                         category: '金融',
                         newDate: '2016-05-03',
-                        avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
+                        avatar: 'http://localhost:3100/img/avatar/softIcon.jpg',
                         nickName: 'newbee',
                         useTime: 100,
                         accessTimes: 30,
@@ -178,7 +178,7 @@
                     type: '课程',
                     category: '金融',
                     newDate: '2017-05-03',
-                    avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
+                    avatar: 'http://localhost:3100/img/avatar/softIcon.jpg',
                     nickName: 'newbee',
                     useTime: 130,
                     accessTimes: 20,
@@ -188,7 +188,7 @@
                     type: '课程',
                     category: '金融',
                     newDate: '2017-05-09',
-                    avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
+                    avatar: 'http://localhost:3100/img/avatar/softIcon.jpg',
                     nickName: 'newbee',
                     useTime: 90,
                     accessTimes: 10,
@@ -198,7 +198,7 @@
                     type: '课程',
                     category: '金融',
                     newDate: '2018-05-03',
-                    avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
+                    avatar: 'http://localhost:3100/img/avatar/softIcon.jpg',
                     nickName: 'newbee',
                     useTime: 30,
                     accessTimes: 20,
@@ -208,7 +208,7 @@
                     type: '课程',
                     category: '金融',
                     newDate: '2018-05-03',
-                    avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
+                    avatar: 'http://localhost:3100/img/avatar/softIcon.jpg',
                     nickName: 'newbee',
                     useTime: 10,
                     accessTimes: 20,
@@ -218,7 +218,7 @@
                     type: '课程',
                     category: '金融',
                     newDate: '2018-05-03',
-                    avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
+                    avatar: 'http://localhost:3100/img/avatar/softIcon.jpg',
                     nickName: 'newbee',
                     useTime: 40,
                     accessTimes: 20,
@@ -228,7 +228,7 @@
             );
         },
         components: {
-            hightChart:()=>import( './hightChart.vue')
+            hightChart: () => import(/* webpackChunkName: "hightChart.vue" */ './hightChart.vue')
         },
         mixins: [manageMixin],
     }

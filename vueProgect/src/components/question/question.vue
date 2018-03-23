@@ -157,7 +157,7 @@
              */
             initData() {
                 this.question = {
-                    avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
+                    avatar: 'http://localhost:3100/img/avatar/softIcon.jpg',
                     nickname: 'newbee1',
                     time: '2018-1-1',
                     content: '这几天在修改 WPJAM 问答网站首页列表的时候，发现一个问题，就是有些问题的标题比较长，为了显示美观，我想将首页列表的标题都设置为1行，如果超出的在最后显示 …，开始的时候我使用 PHP 函数来计算文字个数，但是由于中英文字数算法和长度的问题，总是不能做.',
@@ -168,7 +168,7 @@
                 this.answerList = [
                     {
                         id:"1",
-                        avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
+                        avatar: 'http://localhost:3100/img/avatar/softIcon.jpg',
                         nickname: 'newbee1',
                         time: '2018-1-1',
                         content: '这几天在修改 WPJAM 问答网站首页列表的时候，发现一个问题，就是有些问题的标题比较长，为了显示美观，我想将首页列表的标题都设置为1行，如果超出的在最后显示 …，开始的时候我使用 PHP 函数来计算文字个数，但是由于中英文字数算法和长度的问题，总是不能做.',
@@ -177,7 +177,7 @@
                     },
                     {
                         id:"2",
-                        avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
+                        avatar: 'http://localhost:3100/img/avatar/softIcon.jpg',
                         nickname: 'newbee1',
                         time: '2018-1-1',
                         content: '这几天在修改 WPJAM 问答网站首页列表的时候，发现一个问题，就是有些问题的标题比较长，为了显示美观，我想将首页列表的标题都设置为1行，如果超出的在最后显示 …，开始的时候我使用 PHP 函数来计算文字个数，但是由于中英文字数算法和长度的问题，总是不能做.',
@@ -186,7 +186,7 @@
                     },
                     {
                         id:"3",
-                        avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
+                        avatar: 'http://localhost:3100/img/avatar/softIcon.jpg',
                         nickname: 'newbee1',
                         time: '2018-1-1',
                         content: '这几天在修改 WPJAM 问答网站首页列表的时候，发现一个问题，就是有些问题的标题比较长，为了显示美观，我想将首页列表的标题都设置为1行，如果超出的在最后显示 …，开始的时候我使用 PHP 函数来计算文字个数，但是由于中英文字数算法和长度的问题，总是不能做.',
@@ -210,7 +210,7 @@
                 this.replyList=[
                     {
                         id:"2",
-                        avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
+                        avatar: 'http://localhost:3100/img/avatar/softIcon.jpg',
                         nickname: 'newbee1',
                         time: '2018-1-1',
                         content: '这几天在修改 WPJAM 问答网站首页列表的时候，发现一个问题，就是有些问题的标题比较长，为了显示美观，我想将首页列表的标题都设置为1行，如果超出的在最后显示 …，开始的时候我使用 PHP 函数来计算文字个数，但是由于中英文字数算法和长度的问题，总是不能做.',
@@ -219,7 +219,7 @@
                     },
                     {
                         id:"3",
-                        avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
+                        avatar: 'http://localhost:3100/img/avatar/softIcon.jpg',
                         nickname: 'newbee1',
                         time: '2018-1-1',
                         content: '这几天在修改 WPJAM 问答网站首页列表的时候，发现一个问题，就是有些问题的标题比较长，为了显示美观，我想将首页列表的标题都设置为1行',

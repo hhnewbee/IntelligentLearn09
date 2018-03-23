@@ -1,7 +1,7 @@
 <template>
     <div class="courseItem">
         <div class="pic">
-            <img src="../../static/imgs/avatar.jpg">
+            <img src="../../static/imgs/softIcon.jpg">
         </div>
         <div class="name">Vue+webpack</div>
         <div class="detail">

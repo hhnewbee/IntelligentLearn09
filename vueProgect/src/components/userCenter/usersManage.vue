@@ -280,7 +280,7 @@
         },
         mixins: [manageMixin],
         components: {
-            hightChart: () => import('./hightChart.vue')
+            hightChart: () => import(/* webpackChunkName: "hightChart.vue" */ './hightChart.vue')
         }
     }
 </script>

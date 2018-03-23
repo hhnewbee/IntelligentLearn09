@@ -52,7 +52,7 @@ function addComments() {
     [
         {
             theme: '主题1',
-            avatar:'http://localhost:3100/img/avater/avatar.jpg',
+            avatar:'http://localhost:3100/img/avater/softIcon.jpg',
             name: 'newnew1',
             time: Date(),
             auto: 1,
@@ -63,7 +63,7 @@ function addComments() {
         },
         {
             theme: '主题1',
-            avatar:'http://localhost:3100/img/avater/avatar.jpg',
+            avatar:'http://localhost:3100/img/avater/softIcon.jpg',
             name: 'newnew2',
             time: Date(),
             auto: 0,
@@ -74,7 +74,7 @@ function addComments() {
         },
         {
             theme: '主题1',
-            avatar:'http://localhost:3100/img/avater/avatar.jpg',
+            avatar:'http://localhost:3100/img/avater/softIcon.jpg',
             name: 'newnew3',
             time: Date(),
             auto: 1,

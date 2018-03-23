@@ -40,7 +40,7 @@
                 trigger="hover">
             <div id="avatarInfOpopper">
                 <div class="line1">
-                    <img src="../../static/imgs/avatar.jpg"/>
+                    <img src="../../static/imgs/softIcon.jpg"/>
                     <div class="info">
                         <div class="name">
                             newbee
@@ -88,7 +88,7 @@
                 </div>
             </div>
         </el-popover>
-        <img src="../../static/imgs/avatar.jpg"
+        <img src="../../static/imgs/softIcon.jpg"
              v-popover:popover1>
     </div>
 </template>

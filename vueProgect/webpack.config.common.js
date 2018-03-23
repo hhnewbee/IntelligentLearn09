@@ -28,11 +28,10 @@ const extractVueSCSS = new ExtractTextPlugin({
 module.exports = {
     entry: {
         main: './vueProgect/src',
-        vendor: [
-            './vueProgect/src/static/venders/unitUpload.js',
-            './vueProgect/src/router/router.js',
-            './vueProgect/src/config/axiosConfig.js',
-        ],
+        indexVue:'./vueProgect/src/components/index.vue',
+        vendor1: ["vue",'element-ui'],
+        vendor2:["moment",'axios'],
+        vendor3:["video.js/dist/video.min.js"],
     },
     output: {
         path: path.join(__dirname, 'dist'),
@@ -114,14 +113,16 @@ module.exports = {
         new htmlWebpackPlugin({
             template: './vueProgect/src/index.html',
             filename: 'index.html',
-            favicon: './vueProgect/src/static/imgs/avatar.jpg'
+            favicon: './vueProgect/src/static/imgs/softIcon.jpg'
         }),
         new CleanWebpackPlugin(['dist']),
         //让render的哈希值不随文件的增删改变
         new webpack.HashedModuleIdsPlugin(),
         //抽取第三方库以及公共模块
         new webpack.optimize.CommonsChunkPlugin({
-            names: ['vender']
+            names: ['vendor1','vendor2','vendor3'],
+            //只有vendor的内容才能被打包进来
+            minChunks: Infinity,
         }),
         //抽取公共块
         new webpack.optimize.CommonsChunkPlugin({
