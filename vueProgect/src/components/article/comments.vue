@@ -10,6 +10,7 @@
 
         <!--评论列表items-->
         <vue-scrollbar v-show="!ifReplysList"
+                       :onMaxScroll="handleMaxScroll"
                        class="my-scrollbar">
             <div class="commentsList">
                 <div v-if="commentItems.length===0">暂无问题</div>
@@ -51,6 +52,9 @@
                                 style="margin-left: 10px"> 回答
                         </span>
                     </div>
+                    <!--加载内容中-->
+                    <div v-if="loadDown.ifLongding" class="el-icon-loading">&nbsp;加载中</div>
+                    <div v-if="loadDown.ifNothing">已近全部加载</div>
                 </div>
             </div>
         </vue-scrollbar>
@@ -141,7 +145,6 @@
 
 <script>
     import VueScrollbar from 'vue2-scrollbar'
-    import uuidv1 from 'uuid/v1';
 
     export default {
         created() {
@@ -167,7 +170,16 @@
                 //发送评论/回复的数据
                 sendData: '',
                 //当前评论区的id，用于回复的标识
-                targetId:''
+                targetId:'',
+                //下拉加载跟多
+                loadDown:{
+                    //是否正在加载
+                    ifLongding:false,
+                    //是否没有内容了
+                    ifNothing:false,
+                    //下拉加载的axios
+                    ajax:{}
+                },
             }
         },
 
@@ -268,6 +280,41 @@
                         nickName:this.commentsInfo.nickName
                     });
                 }
+            },
+            /**
+             * 下拉加载
+             * @param direction
+             */
+            handleMaxScroll(direction) {
+                if(direction.bottom){
+                    this.loadDown.ajax.get('',(res)=>{
+                        //是否有新的数据
+                        if(res.data.length===0){
+                            this.loadDown.ifNothing=true;
+                        }else{
+                            this.loadDown.ifNothing=false;
+                            this.commentItems.push(...(res.data));
+                        }
+                    });
+                }
+                console.log(direction);
+            },
+            /**
+             * 初始化数据
+             */
+            initData(){
+                //创建讨论加载ajax
+                this.loadDown.ajax=this.$ajax.create();
+                //加载讨论的拦截器
+                this.loadDown.ajax.interceptors.request.use((config)=>{
+                    this.loadDown.ifLongding=true;
+                    return config;
+                });
+                this.loadDown.ajax.interceptors.response.use((res)=>{
+                    this.loadDown.ifLongding=false;
+                    return res;
+                });
+
             }
         },
         computed: {
