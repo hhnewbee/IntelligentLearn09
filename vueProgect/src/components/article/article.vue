@@ -155,7 +155,7 @@
     #articleIL09 {
         display: flex;
         justify-content: center;
-        background-color: #f6f6f6;
+        background-color: $mainPageColor;
         .left {
             padding: 10px 20px;
             margin-left: 20px;

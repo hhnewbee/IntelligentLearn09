@@ -146,7 +146,7 @@
         justify-content: center;
         /*触发bfc，防止父元素的margin与子元素的折叠*/
         overflow: auto;
-        background-color: #f6f6f6;
+        background-color:$mainPageColor;
         padding: 20px 20px;
         .left {
             display: flex;

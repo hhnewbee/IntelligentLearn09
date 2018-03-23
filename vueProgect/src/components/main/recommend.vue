@@ -132,7 +132,7 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        background-color: #f6f6f6;
+        background-color: $mainPageColor;
         a {
             text-decoration: none;
         }
