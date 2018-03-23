@@ -1,11 +1,11 @@
 <template>
     <div id="articleIL09">
         <div class="left">
-            <div class="title">{{articleData.theme}}</div>
+            <div class="title">{{articleData.title}}</div>
             <div class="info">
-                <img :src="articleData.avatar" style="width: 25px;height: 25px;border-radius: 50%"/>
-                <div style="margin: 0 10px">{{articleData.nickName}}</div>
-                <div style="margin-right: 10px">时间：{{articleData.time|formatDateTime}}</div>
+                <img :src="articleData.userIconUrl" style="width: 25px;height: 25px;border-radius: 50%"/>
+                <div style="margin: 0 10px">{{articleData.userName}}</div>
+                <div style="margin-right: 10px">时间：{{articleData.creationTimestamp|formatDateTime}}</div>
                 <div>类型：{{articleData.type}}</div>
 
                 <div style="position: absolute;right: 0">
@@ -13,12 +13,12 @@
                         <el-checkbox-button
                                 label="likes"
                                 key="likes">
-                            {{articleData.likes}}&nbsp;喜欢
+                            {{articleData.liking}}&nbsp;喜欢
                         </el-checkbox-button>
                         <el-checkbox-button
                                 label="collections"
                                 key="collections">
-                            {{articleData.collections}}&nbsp;收藏
+                            {{0}}&nbsp;收藏
                         </el-checkbox-button>
                     </el-checkbox-group>
                 </div>
@@ -100,11 +100,9 @@
              * 初始dom
              */
             initDom() {
-                //从跳转的url中获取文章的id
-                let articleId = this.$route.params.articleId;
                 //请求获取文章
-                this.$ajax.get(`http://localhost:3100/IL09api/posts/${articleId}`).then((response) => {
-                    this.articleData = response.data[0];
+                this.$ajaxJava.get(`posts/${this.$route.params.articleId}`).then((response) => {
+                    this.articleData = response.data;
                     //设置文章内容
                     this.$refs.content.innerHTML = this.articleData.content;
                     //生成目录

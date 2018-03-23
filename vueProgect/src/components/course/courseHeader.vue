@@ -1,21 +1,13 @@
 <template>
     <div class="courseHeader">
         <div class="title">
-            <span title="vue与webpack的学习">
-                vue与webpack的学习
+            <span :title="courseTitle">
+                {{courseTitle}}
             </span>
-            <span title="第一节：vue的介绍">
-                第一节：vue的介绍
+            <span :title="chapterTitle">
+                {{chapterTitle}}
             </span>
         </div>
-        <!--<div class="detail">-->
-        <!--<span class="fa fa-user-o">-->
-        <!--&nbsp;{{learns}}已学习-->
-        <!--</span>-->
-        <!--<span class="fa fa-television">-->
-        <!--&nbsp;{{online}}在观看-->
-        <!--</span>-->
-        <!--</div>-->
         <div class="info">
             <el-checkbox-group
                     style="margin-right: 100px;"
@@ -41,25 +33,16 @@
 
 <script>
     import info from '../header/info.vue';
-
+    import {mapState} from 'vuex';
     export default {
-        created() {
-            //TODO 获取数据
-//        this.$ajax.get('').then((response)=>{
-//            this.info=response.data;
-//        })
-        },
-        props: [
-            'title1',
-            'title2',
-        ],
         data() {
             return {
-                learns: 122,
-                online: 12,
                 //喜欢和收藏的选择
                 checkboxGroup: []
             }
+        },
+        computed:{
+            ...mapState('course',['courseTitle','chapterTitle'])
         },
         components: {
             info

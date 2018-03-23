@@ -5,23 +5,22 @@
                 {{chapter.title}}
             </div>
             <div class="info">
-                <img src="http://localhost:3100/img/avatar/avatar.jpg">
-                <span>{{chapter.info.name}}</span>
-                <span>时间：{{chapter.info.time}}</span>
+                <span>上传者：{{chapter.name}}</span>
+                <span>时间：&nbsp;{{chapter.time | formatDateTime}}</span>
             </div>
             <div class="intro">
-                简介:{{chapter.intro}}
+                简介：&nbsp;{{chapter.intro}}
             </div>
             <div class="catalog"
                  v-for="(item1,chapterName,index1) in chapter.chapters"
                  :key="chapterName">
-                <div>{{'第'+ ++index1+'章&nbsp;'+chapterName}}</div>
+                <div>{{'第' + ++index1 + '章&nbsp;&nbsp;' + chapterName}}</div>
                 <div class="fa fa-play"
                      v-for="(item2,index2) in item1"
-                     :key="index2"
-                     :ref="item2.title"
-                     @click="handleChapterChange(item2)">
-                    {{index1+'-'+ ++index2}}&nbsp;&nbsp;{{item2.title}}
+                     :key="item2.title"
+                     :ref="index1+'to'+ ++index2"
+                     @click="handleChapterChange(item2.videoUrl,index1+'to'+index2,item2.title)">
+                    &nbsp;&nbsp;{{index1 + '-' + index2}}&nbsp;&nbsp;{{item2.title}}
                 </div>
             </div>
         </div>
@@ -31,77 +30,84 @@
 <script>
     import VueScrollbar from 'vue2-scrollbar'
     import "vue2-scrollbar/dist/style/vue2-scrollbar.css";
-
+    import { mapMutations } from 'vuex'
     export default {
-        created(){
+        created() {
             this.initData();
-        },
-        mounted(){
-            this.initDom();
         },
         data() {
             return {
                 //章节数组
-                chapter: {
-                    title: 'vue和webpack下的学习',
-                    intro: '大数据背景下，对我们的系统性能提出了更高的要求，包括我们的数据存储和应用，都提出了性能上的需求，尤其是对IO通信方面，更是成为了大数据通信下的瓶颈，为此，我们对系统进行相关的分布式改造。那么，如何进一步提升我们的系统IO性能呢？这里，就为大家介绍大数据时代构建高可用分布式系统的利器——Netty',
-                    info: {name: 'newbee', time: '2015-1-1'},
-                    chapters: {},
-                },
+                chapter: {},
                 //选择的章节状态保存
                 lastCh: ''
             }
         },
-        methods:{
+        methods: {
+            ...mapMutations('course',['setCourseTitle','setChapterTitle','setvideoUrl']),
             /**
              * 视频章节切换
-             * @param t2
+             * @param url
+             * @param index
+             * @param chapterName
              */
-            handleChapterChange(t2){
+            handleChapterChange(url, index,chapterName) {
                 //点击章节的状态改变
-                this.$refs[this.lastCh][0].style.color='#b5b9bc';
-                this.$refs[t2.name][0].style.color='#409EFF';
-                this.lastCh=t2.name;
+                this.$refs[this.lastCh][0].style.color = '#b5b9bc';
+                this.$refs[index][0].style.color = '#409EFF';
+                this.lastCh = index;
+                //设置章节名称
+                this.setChapterTitle(chapterName);
                 //视频url的改变
-                this.$emit('changeUrl',t2.videoUrl);
+                this.setvideoUrl(url);
             },
             /**
              * 初始化数据
              */
-            initData(){
+            initData() {
                 this.initChapter();
-            },
-            /**
-             * 初始化dom
-             */
-            initDom(){
-                this.$refs[this.lastCh][0].style.color='#409EFF';
             },
             /**
              * 生成章节
              */
-            initChapter(){
+            initChapter() {
                 //初始化章节信息
-                let files=this.$route.params.files;
-                console.log(files);
-                this.chapter.title=files.title;
-                this.chapter.intro=files.description;
-                this.info.name=files.user;
-                this.info.time=files.creationTimesTamp;
-                files.chapters.forEach((file,index)=>{
-                //判断是否是章节
-                if(file.chapter){
-                    this.chapters[file.chapter].push(
-                        {title: file.chapter.title, videoUrl: file.chapter.path}
-                    )
-                }
+                this.$ajaxJava.get(`courses/${this.$route.params[0]}`).then((res) => {
+                    //设置课程标题
+                    this.setCourseTitle(res.data.title);
+                    //初始化章节数据
+                    this.chapter = {
+                        title: res.data.title,
+                        intro: res.data.description,
+                        name: res.data.uploadUsername,
+                        time: res.data.creationTimestamp,
+                        chapters: {}
+                    };
+                    res.data.file.forEach((file) => {
+                        //判断是否是章节
+                        if (file.chapter) {
+                            //判断该章节数组是否存在
+                            if (!this.chapter.chapters[file.chapter]) {
+                                this.chapter.chapters[file.chapter] = [];
+                            }
+                            this.chapter.chapters[file.chapter].push(
+                                //切掉后缀名
+                                {
+                                    title: `${file.title.replace(`.${file.type}`, '')} (${file.totalTime})`,
+                                    videoUrl: file.path
+                                }
+                            )
+                        }
+                    });
                     //初始化第一个选择章节的内容
-                    if(index===1){
-                        this.lastCh=file.chapter.title;
-                        //初始化视的url
-                        this.$emit('changeUrl',file.chapter.path);
-                    }
-                })
+                    this.lastCh = '1to1';
+                    //初始化视频的url，等待数据加载完成在更新dom
+                    this.$nextTick(()=>{
+                        this.$refs[this.lastCh][0].click();
+                    });
+                    //todo 后端记录观看次数
+                    //this.$ajaxJava.get()
+                });
             }
         },
         components: {
@@ -127,18 +133,16 @@
             display: flex;
             align-items: center;
             color: #3f4d5b;
+            font-size: 13px;
             img {
                 width: 20px;
                 height: 20px;
                 border-radius: 50%;
             }
             span {
-                margin-left: 10px;
+                margin-left: 15px;
             }
-            span:nth-child(2) {
-                font-size: 14px;
-            }
-            span:nth-child(3) {
+            span:nth-child(2){
                 font-size: 12px;
             }
         }

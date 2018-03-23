@@ -47,7 +47,7 @@ let router = new VueRouter(
             },
             {
                 name: "course",
-                path: '/course',
+                path: '/course/:courseId',
                 component: () => import(/* webpackChunkName: "courseMain.vue" */ '../components/course/courseMain.vue'),
             },
             {

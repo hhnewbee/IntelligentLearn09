@@ -88,7 +88,7 @@
                 </div>
             </div>
         </el-popover>
-        <img src="../../static/imgs/avatar.jpg"
+        <img :src="avatarUrl"
              v-popover:popover1>
     </div>
 </template>
@@ -115,7 +115,7 @@
         },
         computed: {
             ...mapState('info', [
-                'accountHashMap'
+                'avatarUrl'
             ])
         },
         methods: {
@@ -124,7 +124,6 @@
              */
             ...mapMutations('info', [
                 'setAccountHashMap',
-                'setAvatar'
             ]),
             /**
              * 快捷选项跳转
@@ -139,7 +138,7 @@
             handleOut() {
                 localStorage.removeItem("ifLogin");
                 this.setAccountHashMap('');
-                window.location = "http://localhost:3000";
+                window.location.reload();
             },
             /**
              * 初始化数据
@@ -161,8 +160,6 @@
                     },
                     {user: '通知', content: '请开始学习"比特的原理"该文章',time: '2013-12-3 22:33'}
                 ];
-                //todo 加载用户信息
-//                this.setAvatar=
                 //todo 加载推荐课程
                 //todo 加载推荐文章
             },

@@ -17,24 +17,21 @@
                     <div class="ListType">课程推荐</div>
                     <div class="more">更多&nbsp;<span class="fa fa-chevron-right"></span></div>
                     <div class="courseList">
-                        <router-link :to="{name:'course',params: {file: item.file}}"
-                                     v-for="item in listNow.courses"
-                                     :key="item.title">
-                            <courseItem :data="item"></courseItem>
-                        </router-link>
+                        <courseItem v-for="item in listNow.courses"
+                                    :key="item.title"
+                                    :data="item">
+                        </courseItem>
                     </div>
                 </div>
                 <div class="article">
                     <div class="ListType">文章推荐</div>
                     <div class="more">更多&nbsp;<span class="fa fa-chevron-right"></span></div>
                     <div class="articleList">
-                        <router-link :to="{name:'article',params: { articleId: item.id }}"
-                                     v-for="item in listNow.articles"
-                                     :key="item.title">
-                            <articleItem
-                                    :itemContent="item">
-                            </articleItem>
-                        </router-link>
+                        <articleItem
+                                v-for="item in listNow.articles"
+                                :key="item.title"
+                                :itemData="item">
+                        </articleItem>
                     </div>
                 </div>
                 <el-pagination
@@ -57,6 +54,7 @@
     import footer_ from '../footer/footer.vue';
     import backHeader from '../header/backHeader.vue';
     import areaCaching from './areaCaching.js';
+
     export default {
         created() {
             this.initData();
@@ -75,7 +73,7 @@
         },
         methods: {
             initData() {
-                this.handleChangeArea(null,'p1','recommend');
+                this.handleChangeArea(null, 'p1', 'recommend');
             },
         },
         components: {
@@ -84,7 +82,7 @@
             footer_,
             backHeader
         },
-        mixins:[areaCaching]
+        mixins: [areaCaching]
     }
 </script>
 
@@ -93,9 +91,11 @@
     .fade-enter-active, .fade-leave-active {
         //transition: opacity .5s;
     }
+
     .fade-enter, .fade-leave-to {
         //opacity: 0;
     }
+
     .recommend {
         display: flex;
         flex-direction: column;

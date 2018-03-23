@@ -1,19 +1,19 @@
 <template>
     <div class="articleItem">
-        <div class="title">{{itemContent.title}}</div>
+        <div class="title">{{itemData.title}}</div>
         <div class="detail">
             <infoDetail
-                    :avatarUrl="itemContent.avatar"
+                    :avatarUrl="itemData.userIconUrl"
                     :classes="[avatarClass]">
             </infoDetail>
-            <div class="name">{{itemContent.nickname}}</div>
-            <div class="time">时间：{{itemContent.time}}</div>
+            <div class="name">{{itemData.userName}}</div>
+            <div class="time">时间：{{itemData.creationTimestamp|formatDate}}</div>
         </div>
-        <div class="content">
+        <div class="content" @click="handleIn(itemData.id)">
             <!--有图片时-->
             <img
-                    v-if="itemContent.pic"
-                    :src="itemContent.pic"
+                    v-if="itemContent.img"
+                    :src="itemContent.img"
                     class="media">
 
             <!--有视频时，实现预加载，但无播放控制相当于截图-->
@@ -22,15 +22,13 @@
                 <source :src="itemContent.video"/>
             </video>
 
-            <span
-                    @click="handleIn"
-                    class="text">{{itemContent.content}}<span>...</span>
+            <span class="text">{{itemContent.textContent}}<span>...</span>
             </span>
         </div>
         <div class="info">
-            <div class="likes fa fa-heart ic">&nbsp;{{itemContent.likes}}人喜欢</div>
-            <div class="comments fa fa-comments ic">&nbsp;{{itemContent.answers}}个问题</div>
-            <div class="collection fa fa-star ic">&nbsp;{{itemContent.collections}}个收藏</div>
+            <div class="likes fa fa-heart ic">&nbsp;{{itemData.liking}}人喜欢</div>
+            <div class="comments fa fa-comments ic">&nbsp;{{itemData.replies.length}}个问题</div>
+            <div class="collection fa fa-star ic">&nbsp;0个收藏</div>
         </div>
     </div>
 </template>
@@ -38,15 +36,60 @@
 <script>
     import infoDetail from '../userCenter/infoDetail.vue';
     export default{
-        props:['itemContent'],
+        props:['itemData'],
+        mounted(){
+            this.setContent();
+        },
         data(){
             return{
+                itemContent:{
+                    textContent:'',
+                    img:'',
+                    video:''
+                },
                 avatarClass: 'avatar',
             }
         },
         methods:{
-            handleIn(id){
-                window.open("http://localhost:3000/#/main/articlePage/article/1519225331783");
+            /**
+             * 进入文章
+             * @param articleId
+             */
+            handleIn(articleId){
+                window.open(`http://localhost:3000/#/main/articlePage/article/${articleId}`);
+            },
+            /**
+             * 设置获取的数据
+             */
+            setContent(){
+                let src=null;
+                //获取所有文本，图片，视频链接
+                this.itemContent.textContent=this.delHtmlTag(this.itemData.content);
+                console.log(this.delHtmlTag(this.itemData.content));
+                    //如果图片存在的话
+                    if(src=this.itemData.content.match(/<img.*?(?:>|\/>)/)){
+                        this.itemContent.img=src[0].match(/src=[\'\"]?([^\'\"]*)[\'\"]?/)[1];
+                        //否则用视频
+                    }else{
+                        if(src=this.itemData.content.match(/<sourse.*?(?:>|\/>)/)){
+                            this.itemContent.video=src[0].match(/src=[\'\"]?([^\'\"]*)[\'\"]?/)[1];
+                        }
+                    }
+                this.itemContent.video=this.itemData.content.match(/<sourse[^>]+src="[^"]+"[^>]*>/);
+
+            },
+            /**
+             * 去掉所有的html标记
+             * @param description
+             */
+            delHtmlTag(description){
+                description = description.replace(/(\n)/g, "");
+                description = description.replace(/(\t)/g, "");
+                description = description.replace(/(\r)/g, "");
+                description = description.replace(/<\/?[^>]*>/g, "");
+                description = description.replace(/\s*/g, "");
+                description = description.replace(/&nbsp;/ig,'');
+                return description;
             }
         },
         components:{

@@ -241,7 +241,7 @@
                             };
                             this.$ajaxJava.post('login', data).then((response) => {
                                 //如果返回的是0
-                                if (!response.data) {
+                                if (!response.data.accountHashMap) {
                                     this.$message({
                                         type: 'error',
                                         message: `账号或者密码错误`
@@ -284,15 +284,23 @@
              */
             ...mapMutations('info', [
                 'setAccountHashMap',
+                'setAccount',
+                'setAvatarUrl'
             ]),
 
             /**
              *当成功登录或者注册时的处理
              */
             successhandle(data) {
-                localStorage["ifLogin"] = data.accountHashMap;//作为下次不用登录的依据
-                this.$router.push({path: '/main/recommend'});//跳转页面
-                window.location.reload();//刷新跳转到index.vue执行主页的逻辑
+                //作为下次不用登录的依据
+                localStorage["ifLogin"] = data.accountHashMap;
+                //初始化页面信息
+                this.setAccountHashMap(data.accountHashMap);
+                this.setAccount(data.account);
+                this.setAvatarUrl(data.avatarUrl);
+                //跳转页面
+                this.$router.push({path: '/main/recommend'});
+
             }
         },
         components: {

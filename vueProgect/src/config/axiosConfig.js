@@ -5,12 +5,6 @@ import ElementUI from 'element-ui';
 //全局url配置
 Axios.defaults.baseURL = 'http://172.16.116.18:3100/IL09api/';
 
-//java后端的配置
-const axiosJava=Axios.create({
-    baseURL:'http://172.16.148.27:8080/',
-    withCredentials:true,
-});
-
 //java后端的上传配置配置
 const ajUpload=Axios.create({
     baseURL:'http://172.16.148.27:8080/'
@@ -53,6 +47,12 @@ Axios.interceptors.response.use(function (config) {
     //响应后关闭图标
     loadingInstance.close();
     return config;
+});
+
+//java后端的配置
+const axiosJava=Axios.create({
+    baseURL:'http://172.16.148.27:8080/',
+    withCredentials:true,
 });
 
 //在原型上添加，这样所有的vue对象都可以使用axios

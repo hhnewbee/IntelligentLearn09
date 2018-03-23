@@ -1,6 +1,6 @@
 <template>
     <div class="courseItem">
-        <div class="pic">
+        <div class="pic" @click="handleToCourse">
             <img :src="data.icon">
         </div>
         <div class="name">{{data.title}}</div>
@@ -17,6 +17,15 @@
 <script>
     export default {
         props:['data'],
+        methods:{
+            /**
+             * 进入课程页面传递的数据
+             */
+            handleToCourse() {
+                //不能用params，因为页面还要刷新呢
+                this.$router.push({path:`/course/${this.data.id}`});
+            }
+        }
     }
 </script>
 
@@ -29,6 +38,7 @@
         .pic{
             width: 100%;
             height: 120px;
+            cursor: pointer;
             img{
                 border-radius: 5px;
                 width: 100%;

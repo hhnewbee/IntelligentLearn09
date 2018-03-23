@@ -26,14 +26,10 @@
         </div>
 
         <div class="coursesContent">
-            <course class="courseItem"></course>
-            <course class="courseItem"></course>
-            <course class="courseItem"></course>
-            <course class="courseItem"></course>
-            <course class="courseItem"></course>
-            <course class="courseItem"></course>
-            <course class="courseItem"></course>
-            <course class="courseItem"></course>
+            <courseItem :data="item"
+                        v-for="item in listNow.courses"
+                        :key="item.title">
+            </courseItem>
         </div>
         <el-pagination
                 background
@@ -45,10 +41,15 @@
 </template>
 
 <script>
-    import course from './courseItem.vue'
+    import courseItem from './courseItem.vue'
     import {mapState} from 'vuex'
     import footer_ from '../footer/footer.vue';
+    import areaCaching from './areaCaching.js';
+
     export default {
+        created(){
+            this.iniData();
+        },
         data() {
             return {
                 choose:'最新',
@@ -56,13 +57,19 @@
                 typeChoose: "全部"
             }
         },
+        methods:{
+            iniData(){
+                this.handleChangeArea(null, 'allP1', 'coursePage');
+            }
+        },
         computed:{
             ...mapState(['type']),
         },
         components: {
-            course,
+            courseItem,
             footer_,
-        }
+        },
+        mixins: [areaCaching]
     }
 </script>
 

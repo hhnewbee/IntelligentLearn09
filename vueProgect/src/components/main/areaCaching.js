@@ -34,7 +34,6 @@ export default {
                         show:true,
                         itemList:this.listNow
                     };
-                    console.log(this.listNow);
                 });
             }
             //设置当前缓冲区的信息
