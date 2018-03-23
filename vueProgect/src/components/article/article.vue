@@ -153,7 +153,7 @@
     #articleIL09 {
         display: flex;
         justify-content: center;
-        background-color: #f6f6f6;
+        background-color: $mainPageColor;
         .left {
             padding: 10px 20px;
             margin-left: 20px;
@@ -191,6 +191,7 @@
                     position: relative;
                     cursor: default;
                     user-select: none;
+                    outline: none;
                     img {
                         height: 100%;
                         width: 100%;
@@ -268,7 +269,7 @@
                     border: 1px solid #00a0e9;
                     border-radius: 4px;
                     color: rgb(63, 135, 166);
-                    cursor: text;
+                    cursor: pointer;
                 }
                 pre {
                     padding: 20px;

@@ -250,7 +250,7 @@
         justify-content: center;
         flex-wrap: wrap;
         padding: 40px 20px 0;
-        background-color: #f6f6f6;
+        background-color: $mainPageColor;
         .left {
             display: flex;
             flex-direction: column;
