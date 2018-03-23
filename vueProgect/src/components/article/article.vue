@@ -193,6 +193,7 @@
                     position: relative;
                     cursor: default;
                     user-select: none;
+                    outline: none;
                     img {
                         height: 100%;
                         width: 100%;
@@ -270,7 +271,7 @@
                     border: 1px solid #00a0e9;
                     border-radius: 4px;
                     color: rgb(63, 135, 166);
-                    cursor: text;
+                    cursor: pointer;
                 }
                 pre {
                     padding: 20px;
