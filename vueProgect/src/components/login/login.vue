@@ -285,7 +285,8 @@
             ...mapMutations('info', [
                 'setAccountHashMap',
                 'setAccount',
-                'setAvatarUrl'
+                'setAvatarUrl',
+                'setAreaFocus'
             ]),
 
             /**
@@ -298,6 +299,7 @@
                 this.setAccountHashMap(data.accountHashMap);
                 this.setAccount(data.account);
                 this.setAvatarUrl(data.avatarUrl);
+                this.setAreaFocus(data.areaFocus);
                 //跳转页面
                 this.$router.push({path: '/main/recommend'});
 

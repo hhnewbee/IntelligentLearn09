@@ -15,7 +15,8 @@
             ...mapMutations('info', [
                 'setAccountHashMap',
                 'setAccount',
-                'setAvatarUrl'
+                'setAvatarUrl',
+                'setAreaFocus'
             ]),
             /**
              * 初始化vuex的数据
@@ -30,6 +31,7 @@
                         this.setAccountHashMap(res.data.accountHashMap);
                         this.setAccount(res.data.account);
                         this.setAvatarUrl(res.data.avatarUrl);
+                        this.setAreaFocus(res.data.areaFocus);
                     });
                 } else {
                     this.$router.push({name: 'login'});

@@ -40,13 +40,13 @@
                 trigger="hover">
             <div id="avatarInfOpopper">
                 <div class="line1">
-                    <img src="../../static/imgs/avatar.jpg"/>
+                    <img :src="avatarUrl"/>
                     <div class="info">
                         <div class="name">
-                            newbee
+                            {{account}}
                         </div>
                         <div class="position">
-                            前端工程师
+                            专注领域：{{areaFocus}}
                         </div>
                     </div>
                 </div>
@@ -115,7 +115,9 @@
         },
         computed: {
             ...mapState('info', [
-                'avatarUrl'
+                'account',
+                'avatarUrl',
+                'areaFocus'
             ])
         },
         methods: {
