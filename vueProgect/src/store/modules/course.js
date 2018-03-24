@@ -5,7 +5,9 @@ export const course = {
         chapterTitle:'',
         videoUrl:'http://172.16.148.27:8080/static/video/第一节/02_合并请求.mp4',
         likes:0,
-        collections:0
+        collections:0,
+        courseId:'',
+        courseData:{}
     },
     mutations: {
         setCourseTitle(state,newCourseTitle){
@@ -23,6 +25,12 @@ export const course = {
         setCollections(state,newCollection){
             state.collections=newCollection;
         },
+        setCourseId(state,newId){
+            state.courseId=newId;
+        },
+        setCourseData(state,newCourseData){
+            state.courseData=newCourseData;
+        }
     },
     actions: {
 

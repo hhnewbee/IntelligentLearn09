@@ -8,7 +8,7 @@
                     controls
                     preload="auto"
                     :src="videoUrl"
-                    data-setup='{"playbackRates": [0.7, 1, 1.5, 1.7, 2],"techOrder": ["html5","flash"]}'>
+                    data-setup='{"playbackRates": [0.7, 1, 1.5, 1.7, 2]}'>
                 <source :src="videoUrl"/>
             </video>
         </div>
@@ -44,7 +44,6 @@
 
 <script>
     import videojs from 'video.js/dist/video.min.js';
-    import 'videojs-flash/dist/videojs-flash.min.js'
     import 'video.js/dist/video-js.min.css'
     import {mapState} from 'vuex'
 
@@ -119,19 +118,6 @@
                     //判断viedojs是否加载成功
                     if (document.querySelector('.videoItem').childNodes[0].childNodes[0].id !== 'videojs_html5_api') {
                         window.location.reload();
-                    } else {
-                        //实例化vedio
-                        this.videoJs = videojs('videojs', {
-                            controlBar: {
-                                children: [
-                                    {
-                                        name: 'volumePanel',
-                                        inline: false,
-                                    },
-                                ]
-                            }
-
-                        });
                     }
                 }, 1)
             },

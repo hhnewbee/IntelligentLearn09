@@ -31,7 +31,7 @@
         <div class="info">
             <div class="likes fa fa-heart ic"
                  :ref="'liking'+itemData.id"
-                 @click="handleLikeACollect('liking',itemData)">
+                 @click="handleLikeAcollect('liking',itemData)">
                 &nbsp;{{itemData.liking}}人喜欢
             </div>
             <div class="comments fa fa-comments ic">
@@ -39,7 +39,7 @@
             </div>
             <div class="collection fa fa-star ic"
                  :ref="'collect'+itemData.id"
-                 @click="handleLikeACollect('collect',itemData)">
+                 @click="handleLikeAcollect('collect',itemData)">
                 &nbsp;0个收藏
             </div>
         </div>
@@ -49,12 +49,12 @@
 
 <script>
     import infoDetail from '../userCenter/infoDetail.vue';
-    import likeACollect from './likeACollect.js';
+    import {likeAcollect} from '../mixins.js';
 
     export default {
         props: ['itemData'],
         mounted() {
-            this.setContent(this.itemContent,this.itemData);
+            this.setContent(this.itemContent, this.itemData);
         },
         data() {
             return {
@@ -78,17 +78,17 @@
             /**
              * 设置获取的数据
              */
-            setContent(itemContent,itemData){
-                let src=null;
+            setContent(itemContent, itemData) {
+                let src = null;
                 //获取所有文本，图片，视频链接
-                itemContent.textContent=this.delHtmlTag(itemData.content);
+                itemContent.textContent = this.delHtmlTag(itemData.content);
                 //如果图片存在的话
-                if(src=itemData.content.match(/<img.*?(?:>|\/>)/)){
-                    itemContent.img=src[0].match(/src=[\'\"]?([^\'\"]*)[\'\"]?/)[1];
+                if (src = itemData.content.match(/<img.*?(?:>|\/>)/)) {
+                    itemContent.img = src[0].match(/src=[\'\"]?([^\'\"]*)[\'\"]?/)[1];
                     //否则用视频
-                }else{
-                    if(src=itemData.content.match(/<sourse.*?(?:>|\/>)/)){
-                        itemContent.video=src[0].match(/src=[\'\"]?([^\'\"]*)[\'\"]?/)[1];
+                } else {
+                    if (src = itemData.content.match(/<sourse.*?(?:>|\/>)/)) {
+                        itemContent.video = src[0].match(/src=[\'\"]?([^\'\"]*)[\'\"]?/)[1];
                     }
                 }
             },
@@ -96,20 +96,20 @@
              * 去掉所有的html标记
              * @param description
              */
-            delHtmlTag(description){
+            delHtmlTag(description) {
                 description = description.replace(/(\n)/g, "");
                 description = description.replace(/(\t)/g, "");
                 description = description.replace(/(\r)/g, "");
                 description = description.replace(/<\/?[^>]*>/g, "");
                 description = description.replace(/\s*/g, "");
-                description = description.replace(/&nbsp;/ig,'');
+                description = description.replace(/&nbsp;/ig, '');
                 return description;
-            }
+            },
         },
         components: {
             infoDetail
         },
-        mixins: [likeACollect]
+        mixins:[likeAcollect]
     }
 </script>
 

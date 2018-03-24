@@ -2,6 +2,9 @@ import Vue from 'vue';
 import Axios from 'axios';
 import ElementUI from 'element-ui';
 
+//全局url配置
+Axios.defaults.baseURL = 'http://172.16.116.18:3100/IL09api/';
+
 //java后端的配置
 const axiosJava=Axios.create({
     baseURL:'http://172.16.148.27:8080/',

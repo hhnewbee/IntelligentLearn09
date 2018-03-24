@@ -44,7 +44,7 @@
             }
         },
         methods: {
-            ...mapMutations('course',['setCourseTitle','setChapterTitle','setvideoUrl']),
+            ...mapMutations('course',['setCourseTitle','setChapterTitle','setvideoUrl','setCourseData']),
             /**
              * 视频章节切换
              * @param url
@@ -73,6 +73,8 @@
             initChapter() {
                 //初始化章节信息
                 this.$ajaxJava.get(`course/${this.$route.params.courseId}`).then((res) => {
+                    //设置整个课程的数据
+                    this.setCourseData(res.data);
                     //设置课程标题
                     this.setCourseTitle(res.data.title);
                     //初始化章节数据
@@ -105,8 +107,6 @@
                     this.$nextTick(()=>{
                         this.$refs[this.lastCh][0].click();
                     });
-                    //todo 后端记录观看次数
-                    //this.$ajaxJava.get()
                 });
             }
         },

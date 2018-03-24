@@ -10,20 +10,23 @@
         </div>
         <div class="info">
             <el-checkbox-group
+                    @change="handleLikeAcollect(checkboxValue,courseData)"
                     style="margin-right: 100px;"
                     v-model="checkboxGroup"
                     fill="#475669"
                     textColor="#409EFF"
                     size="small">
                 <el-checkbox-button
-                        label="likes"
-                        key="likes">
-                    23&nbsp;喜欢
+                        :true-label="checkboxValue"
+                        label="liking"
+                        key="liking">
+                    {{likes}}&nbsp;喜欢
                 </el-checkbox-button>
                 <el-checkbox-button
-                        label="collections"
-                        key="collections">
-                    22&nbsp;收藏
+                        :true-label="checkboxValue"
+                        label="collect"
+                        key="collect">
+                    0&nbsp;收藏
                 </el-checkbox-button>
             </el-checkbox-group>
             <info></info>
@@ -34,19 +37,21 @@
 <script>
     import info from '../header/info.vue';
     import {mapState} from 'vuex';
+    import {likeAcollect} from '../mixins.js';
     export default {
         data() {
             return {
                 //喜欢和收藏的选择
-                checkboxGroup: []
+                checkboxValue:''
             }
         },
         computed:{
-            ...mapState('course',['courseTitle','chapterTitle'])
+            ...mapState('course',['courseTitle','chapterTitle','courseData'])
         },
         components: {
             info
-        }
+        },
+        mixins:[likeAcollect]
     }
 </script>
 
