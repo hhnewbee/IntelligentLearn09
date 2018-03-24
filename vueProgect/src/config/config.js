@@ -1,3 +1,3 @@
 export default {
-    softIconUrl:'../static/imgs/softIcon.jpg',
+    softIconUrl:'http://172.16.116.18:3100/img/avatar/avatar.jpg',
 }

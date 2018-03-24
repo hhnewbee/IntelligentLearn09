@@ -121,6 +121,8 @@
 
 <style scoped lang="scss">
     .highchart {
+        max-height: 600px;
+        max-width: 1200px;
         height: 100%;
         width: 100%;
         padding: 40px;
