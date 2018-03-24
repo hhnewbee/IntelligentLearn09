@@ -12,7 +12,7 @@ export default {
         return{
             commentsInfo:{
                 nickName:'newbee',
-                avatarUrl:config.avatarUrl,
+                avatarUrl:config.softIconUrl,
                 targetId:'123',
                 tag:'普通用户'
             }

@@ -128,7 +128,7 @@
                     {
                         theme: 't1',
                         name: 'newbee1',
-                        avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
+                        avatar: 'http://localhost:3100/img/avatar/softIcon.jpg',
                         tag: 'auto',
                         time: Date(),
                         content: '这是个问题1',
@@ -139,7 +139,7 @@
                     {
                         theme: 't1',
                         name: 'newbee2',
-                        avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
+                        avatar: 'http://localhost:3100/img/avatar/softIcon.jpg',
                         tag: 'normal',
                         time: Date(),
                         content: '这是个问题2',
@@ -150,7 +150,7 @@
                     {
                         theme: 't1',
                         name: 'newbee3',
-                        avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
+                        avatar: 'http://localhost:3100/img/avatar/softIcon.jpg',
                         tag: 'auto',
                         time: Date(),
                         content: '这是个问题3',
@@ -161,7 +161,7 @@
                     {
                         theme: 't1',
                         name: 'newbee3',
-                        avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
+                        avatar: 'http://localhost:3100/img/avatar/softIcon.jpg',
                         tag: 'auto',
                         time: Date(),
                         content: '这是个问题3',
@@ -205,7 +205,7 @@
                                 {
                                     theme: 't2',
                                     name: 'newbee1',
-                                    avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
+                                    avatar: 'http://localhost:3100/img/avatar/softIcon.jpg',
                                     tag: '',
                                     time: Date(),
                                     content: '回复1',
@@ -216,7 +216,7 @@
                                 {
                                     theme: 't2',
                                     name: 'newbee2',
-                                    avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
+                                    avatar: 'http://localhost:3100/img/avatar/softIcon.jpg',
                                     tag: '',
                                     time: Date(),
                                     content: '回复1',
@@ -227,7 +227,7 @@
                                 {
                                     theme: 't2',
                                     name: 'newbee3',
-                                    avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
+                                    avatar: 'http://localhost:3100/img/avatar/softIcon.jpg',
                                     tag: 'auto',
                                     time: Date(),
                                     content: '回复1',
@@ -244,7 +244,7 @@
             },
             send() {
                 this.areaNow.unshift({
-                    avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
+                    avatar: 'http://localhost:3100/img/avatar/softIcon.jpg',
                     name: 'newbee',
                     time: Date(),
                     likes: 0,

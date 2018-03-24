@@ -11,11 +11,13 @@
                 <div style="position: absolute;right: 0">
                     <el-checkbox-group v-model="checkboxGroup" size="small">
                         <el-checkbox-button
+                                @click="handleLikeACollect('liking',articleData)"
                                 label="likes"
                                 key="likes">
                             {{articleData.liking}}&nbsp;喜欢
                         </el-checkbox-button>
                         <el-checkbox-button
+                                @click="handleLikeACollect('collect',articleData)"
                                 label="collections"
                                 key="collections">
                             {{0}}&nbsp;收藏
@@ -50,6 +52,7 @@
 </template>
 
 <script>
+    import likeACollect from '../main/likeACollect.js';
     import {mapState} from 'vuex'
     export default {
         created() {
@@ -138,13 +141,14 @@
                     header.id=hi;
                     this.headers.push({id:hi,label:header.textContent});
                 })
-            }
+            },
         },
         components: {
             'chapter': () => import(/* webpackChunkName: "chapter.vue" */ './chapter.vue'),
             'discuss': () => import(/* webpackChunkName: "discuss.vue" */ './discuss.vue'),
             'questions': () => import(/* webpackChunkName: "comments.vue" */ './comments.vue'),
         },
+        mixins:[likeACollect]
     }
 </script>
 

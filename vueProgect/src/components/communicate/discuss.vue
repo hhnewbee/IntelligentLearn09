@@ -112,9 +112,9 @@
             //防止用户名和房间名重复，所以用uuid做为房间名
             this.home={nickName:uuidv1(),avatarUrl:''};
             this.chats=[{nickName:this.home.nickName,show:true,messageItems:[
-                {nickName:'newbee1',avatarUrl:'http://localhost:3100/img/avatar/avatar.jpg',type:'left',content:'你好dewdwededawdawdewadeawdeawdaw'},
-                {nickName:'newbee2',avatarUrl:'http://localhost:3100/img/avatar/avatar.jpg',type:'left',content:'你好dewdwededawdawdewadeawdeawdaw'},
-                {nickName:'newbee3',avatarUrl:'http://localhost:3100/img/avatar/avatar.jpg',type:'right',content:'你好dewdwededawdawdewadeawdeawdaw'},
+                {nickName:'newbee1',avatarUrl:'http://localhost:3100/img/avatar/softIcon.jpg',type:'left',content:'你好dewdwededawdawdewadeawdeawdaw'},
+                {nickName:'newbee2',avatarUrl:'http://localhost:3100/img/avatar/softIcon.jpg',type:'left',content:'你好dewdwededawdawdewadeawdeawdaw'},
+                {nickName:'newbee3',avatarUrl:'http://localhost:3100/img/avatar/softIcon.jpg',type:'right',content:'你好dewdwededawdawdewadeawdeawdaw'},
             ]}];
             this.userInfo=this.home;
             this.messageItemsNow=this.chats[0].messageItems;
@@ -127,8 +127,8 @@
                 showUserList: false,
                 //用户列表
                 usersList:[
-                    {nickName:'newbee1',avatarUrl:'http://localhost:3100/img/avatar/avatar.jpg'},
-                    {nickName:'newbee2',avatarUrl:'http://localhost:3100/img/avatar/avatar.jpg'}
+                    {nickName:'newbee1',avatarUrl:'http://localhost:3100/img/avatar/softIcon.jpg'},
+                    {nickName:'newbee2',avatarUrl:'http://localhost:3100/img/avatar/softIcon.jpg'}
                 ],
                 //是否私聊
                 priChat: false,
@@ -186,7 +186,7 @@
              */
             handleSend(){
                 //本地信息的更新
-                this.messageItemsNow.push({nickName:'newbee1',avatarUrl:'http://localhost:3100/img/avatar/avatar.jpg',type:'right',content:'你好dewdwededawdawdewadeawdeawdaw'});
+                this.messageItemsNow.push({nickName:'newbee1',avatarUrl:'http://localhost:3100/img/avatar/softIcon.jpg',type:'right',content:'你好dewdwededawdawdewadeawdeawdaw'});
 
                 //下拉到最底部
                 this.messageScrollTo(this.$refs[this.userInfo.nickName][0]);

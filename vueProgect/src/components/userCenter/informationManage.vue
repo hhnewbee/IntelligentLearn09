@@ -156,7 +156,7 @@
                     date: '2016-05-03',
                     position: 'vue与webpack初步1',
                     type1: '我回答了',
-                    avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
+                    avatar: 'http://localhost:3100/img/avatar/softIcon.jpg',
                     nickName: 'newbee',
                     type2: '的问题',
                     content: '通常情况下，我们用空格键来打出多个空格，而在编写代码时，通过空格键、Tab键以及回车键打出的空格，都会被HTML（超文本标记语言）自动忽略。HTML将这样的键视为空白字符，并显示为单个空白间隔。尽管CSS提供了多种样式的空格和缩进，但是在HTML中也有一些工具可以让你自己定义空格。'
@@ -165,7 +165,7 @@
                     date: '2017-05-03',
                     position: 'vue与webpack初步2',
                     type1: '我向',
-                    avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
+                    avatar: 'http://localhost:3100/img/avatar/softIcon.jpg',
                     nickName: 'newbee1',
                     type2: '提问',
                     content: '插入一个非间断空格。一般来说，无论你按多少次空格键，HTML也只会在单词之间显示一个空白间隔。当你需要插入多个空格时，请输入&nbsp;或&#160;代码。[1] 它们名为“空格占位符”，你输入几个，就能在页面中显示几个空格。\n' +
@@ -174,7 +174,7 @@
                     date: '2018-05-03',
                     position: 'vue与webpack初步3',
                     type1: '',
-                    avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
+                    avatar: 'http://localhost:3100/img/avatar/softIcon.jpg',
                     nickName: 'newbee2',
                     type2: '回答了我的问题',
                     content: '插入一个非间断空格。一般来说，无论你按多少次空格键，HTML也只会在单词之间显示一个空白间隔。当你需要插入多个空格时，请输入&nbsp;或&#160;代码。[1] 它们名为“空格占位符”，你输入几个，就能在页面中显示几个空格。\n' +
@@ -182,7 +182,7 @@
                 }, {
                     date: '2016-05-03',
                     position: 'vue与webpack初步4',
-                    avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
+                    avatar: 'http://localhost:3100/img/avatar/softIcon.jpg',
                     nickName: 'newbee3',
                     type1: '',
                     type2: '向我提问',
@@ -191,14 +191,14 @@
                 }, {
                     date: '2016-09-03',
                     position: 'vue与webpack初步5',
-                    avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
+                    avatar: 'http://localhost:3100/img/avatar/softIcon.jpg',
                     nickName: '系统信息',
                     content: '插入一个非间断空格。一般来说，无论你按多少次空格键，HTML也只会在单词之间显示一个空白间隔。当你需要插入多个空格时，请输入&nbsp;或&#160;代码。[1] 它们名为“空格占位符”，你输入几个，就能在页面中显示几个空格。\n' +
                     '之所以称之为非间断空格，是因为这样不会产生换行符。如果你滥用这种空格，浏览器可能无法以整齐易读的方式插入换行符'
                 }, {
                     date: '2016-09-03',
                     position: 'vue与webpack初步6',
-                    avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
+                    avatar: 'http://localhost:3100/img/avatar/softIcon.jpg',
                     nickName: '通知信息',
                     content: '插入一个非间断空格。一般来说，无论你按多少次空格键，HTML也只会在单词之间显示一个空白间隔。当你需要插入多个空格时，请输入&nbsp;或&#160;代码。[1] 它们名为“空格占位符”，你输入几个，就能在页面中显示几个空格。\n' +
                     '之所以称之为非间断空格，是因为这样不会产生换行符。如果你滥用这种空格，浏览器可能无法以整齐易读的方式插入换行符'

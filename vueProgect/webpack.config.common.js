@@ -114,7 +114,7 @@ module.exports = {
         new htmlWebpackPlugin({
             template: './vueProgect/src/index.html',
             filename: 'index.html',
-            favicon: './vueProgect/src/static/imgs/avatar.jpg'
+            favicon: './vueProgect/src/static/imgs/softIcon.jpg'
         }),
         new CleanWebpackPlugin(['dist']),
         //让render的哈希值不随文件的增删改变
