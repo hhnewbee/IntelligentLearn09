@@ -7,12 +7,12 @@
         </el-breadcrumb>
         <div class="item item1">
             <div>
-                <img src="http://localhost:3100/img/avatar/avatar.jpg">
+                <img :src="avatarUrl">
                 <div></div>
             </div>
             <div style="margin: 0 30px">
-                <div>姓名：
-                    <span>newbee</span>
+                <div>账号：
+                    <span>{{account}}</span>
                 </div>
                 <div>专注领域：
                     <el-select v-model="areaFocus"
@@ -33,20 +33,14 @@
             </div>
         </div>
         <div class="item">
-            <div class="item2">账号：
-                <span ref="account">1540913111</span>
-                <span
-                        @click="handleEditInfo('account',$event)"
-                        class="control">修改</span>
-            </div>
             <div class="item2">姓名：
-                <span ref="name" style="padding: 5px">CEO</span>
+                <span ref="name" style="padding: 5px">{{name}}</span>
                 <span
                         @click="handleEditInfo('name',$event)"
                         class="control">修改</span>
             </div>
             <div class="item2">邮箱：
-                <span ref="eMail" style="padding: 5px">1352905383@qq.com</span>
+                <span ref="eMail" style="padding: 5px">{{eMail}}</span>
                 <span
                         @click="handleEditInfo('eMail',$event)"
                         class="control">修改</span>
@@ -56,8 +50,11 @@
 </template>
 
 <script>
-    import {mapGetters} from 'vuex';
+    import {mapGetters,mapState} from 'vuex';
     export default {
+        created(){
+          this.areaFocus.push(...this.areaFocus.split('/'));
+        },
         data(){
             return{
                 areaFocus:[]
@@ -65,6 +62,7 @@
         },
         computed: {
             ...mapGetters(['filterType']),
+            ...mapState('info',['account','avatarUrl','name','eMail','areaFocus'])
         },
         methods:{
             handleEditInfo(tar,e){
