@@ -53,9 +53,11 @@
                     </div>
                 </div>
                 <!--加载内容中-->
-                <div v-if="loadDown.ifLongding" class="el-icon-loading">&nbsp;加载中</div>
-                <div v-if="loadDown.ifNothing">已经全部加载</div>
-                <div v-else @click="handleLoadMore">加载更多</div>
+                <div v-if="loadDown.ifLongding" class="loadMore el-icon-loading">&nbsp;加载中</div>
+                <div v-else-if="commentItems.length!==0" class="loadMore">
+                    <div v-if="loadDown.ifNothing">已经全部加载</div>
+                    <div v-else @click="handleLoadMore">加载更多</div>
+                </div>
             </div>
         </vue-scrollbar>
 
@@ -420,6 +422,10 @@
             align-items: center;
             padding: 10px 0;
             color: #000000;
+            .loadMore{
+                font-size: 13px;
+                color: $secondaryText;
+            }
         }
         /*回复的列表*/
         .replysList {
