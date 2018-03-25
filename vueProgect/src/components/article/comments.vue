@@ -226,19 +226,13 @@
              * 发送评论
              */
             send() {
-                let data = {
-                    ...this.commentsInfo,
-                    time: Date(),
-                    replys:0,
-                    supports:0,
-                    content: this.sendData
-                };
+                this.commentsInfo.postData.content=this.sendData;
                 //确定当前评论区的id
-                data.targetId=this.targetId;
+//                data.targetId=this.targetId;
                 //如果不是回复当前评论区的
-                if(this.$refs['commentSend'].targetId){
-                    data.targetId=this.$refs['commentSend'].targetId;
-                    //更新本地显示
+                if(this.ajxaComments.targetId){
+//                    data.targetId=ajxaComments.targetId;
+                    //更新对应评论的回复显示数目
                     this.itemsListNow.forEach(item=>{
                         if(item.id===data.targetId){
                             item.replys++;
@@ -248,10 +242,10 @@
                 //本地添加数据
                 this.itemsListNow.unshift(data);
                 //发送数据
-                this.ajxaComments.post('addComments', data);
+                this.ajxaComments.post(this.commentsInfo.postCommentUrl, this.commentsInfo.postData);
                 //清空发送的临时设置数据
                 this.sendData = '';
-                this.$refs['commentSend'].targetId=null;
+                this.ajxaComments.targetId=null;
             },
             /**
              * 回复
@@ -259,7 +253,8 @@
              */
             reply(comment) {
                 this.sendData = "@" + comment.nickName + " ";
-                this.$refs['commentSend'].targetId=comment.id;
+                //每个评论的id
+                this.ajxaComments.targetId=comment.id;
             },
             /**
              * 支持
@@ -292,7 +287,22 @@
                     this.itemsListNow = this.commentItems = response.data;
                 });
                 this.targetId=this.commentsInfo.targetId;
-            }
+            },
+            /**
+             * 下拉加载
+             */
+            handleLoadMore() {
+                //todo 下拉加载
+                this.loadDown.ajax.get('', (res) => {
+                    //是否有新的数据
+                    if (res.data.length === 0) {
+                        this.loadDown.ifNothing = true;
+                    } else {
+                        this.loadDown.ifNothing = false;
+                        this.commentItems.push(...(res.data));
+                    }
+                });
+            },
         },
         computed: {
             buttonDis() {

@@ -97,7 +97,11 @@
                         this.commentsInfo = {
                             getCommentUrl:`course/${this.courseData.id}/video/${this.videoId}/page=`,
                             postCommentUrl:`course/comment`,
-                            postData:{course:{id:''},file:{id:''},content:''},
+                            postData:{
+                                course:{id:this.courseData.id},
+                                file:{id:this.videoId},
+                                content:''
+                            },
                             targetId:this.videoId,
                         };
                         this.changePop = 'comments';
