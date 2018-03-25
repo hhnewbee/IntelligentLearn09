@@ -48,9 +48,6 @@
     import {mapState} from 'vuex'
 
     export default {
-        created() {
-            this.initData();
-        },
         mounted() {
             this.reloadVideo();
             this.initDom();
@@ -69,7 +66,7 @@
         },
         computed:{
             ...mapState('info',['account,avatarUrl']),
-            ...mapState('course',['videoUrl']),
+            ...mapState('course',['videoUrl','courseData','videoId']),
         },
         components: {
             chapter: () => import(/* webpackChunkName: "chapter.vue" */ './chapter.vue'),
@@ -88,10 +85,21 @@
                         break;
                     }
                     case 2: {
+                        this.discussInfo = {
+                            theme: 'vue与webpack的学习',
+                            nickName: this.account,
+                            avatarUrl: this.avatarUrl
+                        };
                         this.changePop = 'discuss';
                         break;
                     }
                     case 3: {
+                        this.commentsInfo = {
+                            getCommentUrl:`course/${this.courseData.id}/video/${this.videoId}?page=`,
+                            postCommentUrl:`course/comment`,
+                            postData:{course:{id:''},file:{id:''},content:''},
+                            targetId:this.videoId,
+                        };
                         this.changePop = 'comments';
                         break;
                     }
@@ -126,22 +134,6 @@
              */
             initDom() {
                 document.querySelector('.op').style.backgroundColor = '#14191e';
-            },
-            /**
-             * 初始化数据
-             */
-            initData() {
-                this.discussInfo = {
-                    theme: 'vue与webpack的学习',
-                    nickName: this.account,
-                    avatarUrl: this.avatarUrl
-                };
-                this.commentsInfo = {
-                    nickName: this.account,
-                    avatarUrl: this.avatarUrl,
-                    targetId: '123',
-                    tag: '普通用户'
-                }
             },
         },
         watch: {

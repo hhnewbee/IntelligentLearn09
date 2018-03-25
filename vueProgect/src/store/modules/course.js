@@ -7,7 +7,8 @@ export const course = {
         likes:0,
         collections:0,
         courseId:'',
-        courseData:{}
+        courseData:{},
+        videoId:''
     },
     mutations: {
         setCourseTitle(state,newCourseTitle){
@@ -30,6 +31,9 @@ export const course = {
         },
         setCourseData(state,newCourseData){
             state.courseData=newCourseData;
+        },
+        setVideoId(state,newVideoId){
+            state.videoId=newVideoId;
         }
     },
     actions: {

@@ -35,7 +35,7 @@
                 &nbsp;{{itemData.liking}}人喜欢
             </div>
             <div class="comments fa fa-comments ic">
-                &nbsp;{{itemData.replies.length}}个问题
+                &nbsp;{{itemData.questions}}个问题
             </div>
             <div class="collection fa fa-star ic"
                  :ref="'collect'+itemData.id"

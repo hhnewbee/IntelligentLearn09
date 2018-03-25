@@ -19,7 +19,7 @@
                      v-for="(item2,index2) in item1"
                      :key="item2.title"
                      :ref="index1+'to'+ ++index2"
-                     @click="handleChapterChange(item2.videoUrl,index1+'to'+index2,item2.title)">
+                     @click="handleChapterChange(item2.videoUrl,index1+'to'+index2,item2.title,item2.id)">
                     &nbsp;&nbsp;{{index1 + '-' + index2}}&nbsp;&nbsp;{{item2.title}}
                 </div>
             </div>
@@ -44,14 +44,15 @@
             }
         },
         methods: {
-            ...mapMutations('course',['setCourseTitle','setChapterTitle','setvideoUrl','setCourseData']),
+            ...mapMutations('course',['setCourseTitle','setChapterTitle','setvideoUrl','setCourseData','setVideoId']),
             /**
              * 视频章节切换
              * @param url
              * @param index
              * @param chapterName
+             * @param fileId
              */
-            handleChapterChange(url, index,chapterName) {
+            handleChapterChange(url, index,chapterName,fileId) {
                 //点击章节的状态改变
                 this.$refs[this.lastCh][0].style.color = '#b5b9bc';
                 this.$refs[index][0].style.color = '#409EFF';
@@ -60,6 +61,8 @@
                 this.setChapterTitle(chapterName);
                 //视频url的改变
                 this.setvideoUrl(url);
+                //设置视频id，评论需要使用到
+                this.setVideoId(fileId);
             },
             /**
              * 初始化数据
@@ -96,7 +99,8 @@
                                 //切掉后缀名
                                 {
                                     title: `${file.title.replace(`.${file.type}`, '')} (${file.totalTime})`,
-                                    videoUrl: file.path
+                                    videoUrl: file.path,
+                                    id:file.id
                                 }
                             )
                         }

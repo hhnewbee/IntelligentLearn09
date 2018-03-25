@@ -21,7 +21,7 @@
                         <div class="name">
                             {{comment.nickName}}
                         </div>
-                        <div class="tag" v-if="comment.tag!=='普通用户'">
+                        <div class="tag" v-if="comment.tag">
                             {{comment.tag}}
                         </div>
                         <div class="time">
@@ -141,21 +141,17 @@
 
 <script>
     import VueScrollbar from 'vue2-scrollbar'
-    import uuidv1 from 'uuid/v1';
 
     export default {
         created() {
-            this.ajxaComments.get('getComments/' + this.commentsInfo.targetId + "?pageIndex=0").then((response) => {
-                this.itemsListNow = this.commentItems = response.data;
-            });
-            this.targetId=this.commentsInfo.targetId;
+            this.initData();
         },
         //当前评论的基本信息
         props: ['commentsInfo'],
         data() {
             return {
                 //不能用全局的ajax实例，因为去全局的搜索等待是全页面显示的
-                ajxaComments: this.$ajax.create(),
+                ajxaComments:{},
                 //是否打开回复列表
                 ifReplysList: false,
                 //评论的列表
@@ -167,7 +163,9 @@
                 //发送评论/回复的数据
                 sendData: '',
                 //当前评论区的id，用于回复的标识
-                targetId:''
+                targetId:'',
+                //评论的页数
+                pageComment:0
             }
         },
 
@@ -268,11 +266,37 @@
                         nickName:this.commentsInfo.nickName
                     });
                 }
+            },
+            /**
+             * 初始化数据
+             */
+            initData(){
+                //新的请求拦截器
+                this.ajxaComments=this.$ajax.create({withCredentials:true});
+                this.ajxaComments.get(this.commentsInfo.getCommentUrl+this.pageComment).then((response) => {
+                    this.itemsListNow = this.commentItems = response.data;
+                });
+                this.targetId=this.commentsInfo.targetId;
             }
         },
         computed: {
             buttonDis() {
                 return this.sendData === "";
+            }
+        },
+        watch:{
+            /**
+             * 监听章节的切换，对应的评论组
+             * @param newV
+             * @param oldV
+             */
+            commentsInfo(newV,oldV){
+                if(newV.targetId!==oldV.targetId){
+                    this.ajxaComments.get(this.commentsInfo.getCommentUrl+this.pageComment).then((response) => {
+                        this.itemsListNow = this.commentItems = response.data;
+                    });
+                    this.targetId=this.commentsInfo.targetId;
+                }
             }
         },
         components: {

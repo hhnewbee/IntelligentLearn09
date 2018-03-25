@@ -12,7 +12,6 @@
             <el-checkbox-group
                     @change="handleLikeAcollect(checkboxValue,courseData)"
                     style="margin-right: 100px;"
-                    v-model="checkboxGroup"
                     fill="#475669"
                     textColor="#409EFF"
                     size="small">
@@ -20,7 +19,7 @@
                         :true-label="checkboxValue"
                         label="liking"
                         key="liking">
-                    {{likes}}&nbsp;喜欢
+                    {{courseData.liking}}&nbsp;喜欢
                 </el-checkbox-button>
                 <el-checkbox-button
                         :true-label="checkboxValue"
