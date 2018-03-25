@@ -171,7 +171,16 @@
                 //当前评论区的id，用于回复的标识
                 targetId:'',
                 //评论的页数
-                pageComment:0
+                pageComment:0,
+                //下拉加载跟多
+                loadDown: {
+                    //是否正在加载
+                    ifLongding: false,
+                    //是否没有内容了
+                    ifNothing: false,
+                    //下拉加载的axios
+                    ajax: {}
+                },
             }
         },
 
