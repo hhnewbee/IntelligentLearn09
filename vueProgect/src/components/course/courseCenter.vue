@@ -95,7 +95,7 @@
                     }
                     case 3: {
                         this.commentsInfo = {
-                            getCommentUrl:`course/${this.courseData.id}/video/${this.videoId}?page=`,
+                            getCommentUrl:`course/${this.courseData.id}/video/${this.videoId}/page=`,
                             postCommentUrl:`course/comment`,
                             postData:{course:{id:''},file:{id:''},content:''},
                             targetId:this.videoId,
