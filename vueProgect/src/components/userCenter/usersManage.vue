@@ -193,6 +193,10 @@
                 layout="prev, pager, next"
                 :total="1000">
         </el-pagination>
+
+        <!--查看用户时的弹出框-->
+        <el-dialog :visible.sync="dialogUserVisible">
+        </el-dialog>
     </div>
 </template>
 
@@ -266,6 +270,8 @@
             return {
                 //用户类型选项值
                 userSelectV: '普通用户',
+                //查看用户弹出框
+                dialogUserVisible:false
             }
         },
         methods: {

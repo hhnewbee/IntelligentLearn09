@@ -228,35 +228,8 @@
                     useTime: 40,
                     accessTimes: 20,
                 }
-            ], [{value: '文章记录'}, {value: '文章详情'}]);
+            ], [{value: '课程记录'}, {value: '课程详情'}]);
         },
-        data() {
-            return {
-                //要删除的行
-                delectRows: [],
-                //批量删除按钮是否可用
-                ifDelect: true,
-                //当前列表要显示的数据
-                tableData: [],
-                //正常分页时显示的数据,
-                pageData: [],
-                //是否删除当前列表的所有数据
-                ifSelecttALl: false,
-                //显示搜索状态
-                ifSearch: false,
-                //搜索的字段
-                searchInput: '',
-                //类型选项的值
-                selectValue: '学习记录',
-                //图表类型切换
-                options: [{value: '学习记录'}, {value: '课程详情'}],
-                //图表与表格的切换
-                ifTable: true,
-                //图表的数据
-                chartData: [[], [], []],
-            }
-        },
-
         methods: {
             /**
              * 上传课程

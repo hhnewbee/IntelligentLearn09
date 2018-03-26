@@ -132,7 +132,7 @@
              * @param tar
              */
             handleChoose(tar) {
-                this.$router.push({path: `/userCenter/${tar}#${tar}` });
+                this.$router.push({path: `/userCenter/${tar}#${tar}`,query: { path: this.$route.path }});
             },
             /**
              * 退出登录

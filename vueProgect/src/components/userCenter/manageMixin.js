@@ -164,10 +164,29 @@ let manageMixin={
         },
         /**
          * 当个查看
-         * @param row
+         * @param type - 查看数据的类型
+         * @param target - 课程/文章的id/用户账号
          */
-        handleSee(row) {
-            console.log(row);
+        handleSee(type,target) {
+            //判断是什么类型的查看
+            switch(type){
+                case 'course':{
+                    this.$router.push({path:`/course/${target}`});
+                    break;
+                }
+                case 'article':{
+                    this.$router.push({path:`/course/${target}`});
+                    break;
+                }
+                case 'user':{
+                    this.dialogUserVisible=true;
+                    break;
+                }
+                case 'message':{
+                    // this.content=target.row.content;
+                    break;
+                }
+            }
         },
         /**
          * 设置图表数据

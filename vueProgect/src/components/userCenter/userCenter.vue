@@ -1,7 +1,7 @@
 <template>
     <div class="record" style="height: 100%">
         <div class="header">
-            <div class="back fa fa-angle-left"></div>
+            <div class="back fa fa-angle-left" @click="handlePageBack"></div>
             <div class="title">用户中心</div>
         </div>
         <div class="content">
@@ -111,8 +111,15 @@
                     this.$refs.menu.activeIndex = "usersManage";
                     break;
                 }
-            }
-
+            };
+            //是从哪里跳转过来的
+            this.originPath=this.$route.query.path;
+        },
+        data(){
+            return{
+                //跳转过来的路由路劲
+                originPath:""
+            };
         },
         methods: {
             /**
@@ -161,6 +168,12 @@
                         break;
                     }
                 }
+            },
+            /**
+             * 返回
+             */
+            handlePageBack(){
+                this.$router.push({path:this.originPath});
             }
         },
     }
@@ -176,11 +189,13 @@
             align-items: center;
             border-bottom: 1px solid #e6e6e6;
             height: 70px;
+            color: $secondaryText;
             .back {
                 font-size: 25px;
                 font-weight: bold;
                 padding-right: 30px;
-                padding-left: 20px;
+                padding-left: 30px;
+                cursor: pointer;
             }
             .title {
                 font-size: 22px;
@@ -197,7 +212,7 @@
                 .menu {
                     height: 100%;
                     .children{
-                        background-color: rgba(249, 249, 250, 0.65);
+                        background-color: rgba(236, 239, 243, 0.65);
                     }
                 }
             }

@@ -1,6 +1,7 @@
 <template>
     <div class="courseHeader">
         <div class="title">
+            <span class="back fa fa-angle-left" @click="handlePageBack"></span>
             <span :title="courseTitle">
                 {{courseTitle}}
             </span>
@@ -10,19 +11,19 @@
         </div>
         <div class="info">
             <el-checkbox-group
-                    @change="handleLikeAcollect(checkboxValue,courseData)"
-                    style="margin-right: 100px;"
+                    v-model="checkBoxGroup"
+                    style="margin-right: 100px;width: 140px"
                     fill="#475669"
                     textColor="#409EFF"
                     size="small">
                 <el-checkbox-button
-                        :true-label="checkboxValue"
+                        ref="like"
                         label="liking"
                         key="liking">
                     {{courseData.liking}}&nbsp;喜欢
                 </el-checkbox-button>
                 <el-checkbox-button
-                        :true-label="checkboxValue"
+                        ref="collect"
                         label="collect"
                         key="collect">
                     0&nbsp;收藏
@@ -36,12 +37,15 @@
 <script>
     import info from '../header/info.vue';
     import {mapState} from 'vuex';
-    import {likeAcollect} from '../mixins.js';
+    import {likeAcollect,pageBack} from '../mixins.js';
     export default {
+        mounted(){
+          this.handleGroup();
+        },
         data() {
             return {
-                //喜欢和收藏的选择
-                checkboxValue:''
+                //组件的选项数组
+                checkBoxGroup:[]
             }
         },
         computed:{
@@ -50,7 +54,7 @@
         components: {
             info
         },
-        mixins:[likeAcollect]
+        mixins:[likeAcollect,pageBack]
     }
 </script>
 
@@ -60,32 +64,31 @@
         justify-content: space-between;
         align-items: center;
         background-color: #2b3540;
+        color: $secondaryText;
         .title {
-            color: #b5b9bc;
-            margin-left: 80px;
-            span {
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                max-width: 180px;
-            }
+            margin-left: 60px;
+            max-width: 400px;
+            min-width: 400px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: flex;
+            align-items: center;
             span:nth-child(1) {
-                font-size: 18px;
+                font-size: 30px;
                 font-weight: bold;
-                margin-right: 15px;
+                margin-right: 20px;
+                cursor: pointer;
             }
             span:nth-child(2) {
+                font-size: 18px;
+                margin-right: 25px;
+            }
+            span:nth-child(3) {
                 font-size: 13px;
                 margin-right: 25px;
             }
         }
-        /*.detail {*/
-            /*color: #7f8286;*/
-            /*font-size: 13px;*/
-            /*span {*/
-                /*margin-left: 15px;*/
-            /*}*/
-        /*}*/
         .info {
             display: flex;
             align-items: center;
@@ -93,6 +96,10 @@
             .el-checkbox-button__inner{
                 background-color: #2b3540;
                 border-color: #475669;
+                color: $secondaryText;
+                &:hover{
+                    color:$primaryColor;
+                }
             }
         }
     }

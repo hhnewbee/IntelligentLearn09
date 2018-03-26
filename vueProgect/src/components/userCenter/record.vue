@@ -1,5 +1,6 @@
 <template>
     <div class="manageStyle">
+        <!--面包屑-->
         <el-breadcrumb class="breadcrumb">
             <el-breadcrumb-item class="el-icon-document"> 我的学习</el-breadcrumb-item>
             <el-breadcrumb-item>
@@ -19,7 +20,7 @@
                       @click="handleSearch"
                       class="el-icon-search searchIcon"></span>
             </el-input>
-            <!--更多功能-->
+            <!--更多功能切换-->
             <el-button type="primary"
                        size="small"
                        @click="handleShowMore"
@@ -27,6 +28,7 @@
                        title="更多功能"
                        icon="el-icon-menu">
             </el-button>
+            <!--图表类型选择-->
             <el-select
                     @change="handleChartChange"
                     style="width: 120px;position: absolute;right: 40px"
@@ -40,6 +42,7 @@
                 </el-option>
             </el-select>
         </div>
+        <!--更多功能-->
         <div class="moreFun"
              v-if='ifMoreFun'>
             <el-button
@@ -58,7 +61,9 @@
                 全部删除
             </el-button>
         </div>
+        <!--主体内容-->
         <div class="content">
+            <!--表格-->
             <el-table
                     height="100%"
                     v-show="ifTable"
@@ -91,9 +96,10 @@
                         label="上传传者"
                         :show-overflow-tooltip="true"
                         width="160">
-                    <div slot-scope="scope" style="display: flex;justify-content: center;align-items: center">
-                        <img :src="scope.row.avatar"
-                             style="width: 35px;height: 35px;border-radius: 50%;margin-right: 10px">
+                    <div slot-scope="scope"
+                         style="display: flex;justify-content: center;align-items: center;">
+                        <infoDetail :avatarUrl="scope.row.avatar"
+                                    style="width: 35px;height: 35px;border-radius: 50%;margin-right: 10px;cursor: pointer"></infoDetail>
                         <span>{{scope.row.nickName}}</span>
                     </div>
                 </el-table-column>
@@ -141,10 +147,12 @@
                     </template>
                 </el-table-column>
             </el-table>
+            <!--图表-->
             <hightChart
                     v-if="!ifTable"
                     :chartData="chartData"></hightChart>
         </div>
+        <!--分页-->
         <el-pagination
                 style="align-self: center"
                 @current-change="handlePage"
@@ -157,6 +165,7 @@
 
 <script>
     import {manageMixin} from './manageMixin.js';
+    import infoDetail from './infoDetail.vue';
 
     export default {
         created() {
@@ -228,7 +237,8 @@
             );
         },
         components: {
-            hightChart:()=>import( './hightChart.vue')
+            hightChart:()=>import( './hightChart.vue'),
+            infoDetail
         },
         mixins: [manageMixin],
     }

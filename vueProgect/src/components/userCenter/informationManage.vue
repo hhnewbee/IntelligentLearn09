@@ -94,12 +94,12 @@
                     <div
                             slot-scope="scope"
                             style="display: flex;align-items: center">
-                        <span>{{scope.row.type1}}&nbsp</span>
+                        <span>{{scope.row.type1}}&nbsp;</span>
                         <img
                                 :src="scope.row.avatar"
                                 style="width: 20px;height: 20px;border-radius: 50%;">
-                        <span>&nbsp<span style="color:#00abf9;">
-                            {{scope.row.nickName}}</span>&nbsp{{scope.row.type2}}
+                        <span>&nbsp;<span style="color:#00abf9;">
+                            {{scope.row.nickName}}</span>&nbsp;{{scope.row.type2}}
                         </span>
                     </div>
                 </el-table-column>
@@ -119,7 +119,7 @@
                         width="110">
                     <template slot-scope="scope">
                         <el-button
-                                @click="handleSee(scope)"
+                                @click="handleSee('message',scope)"
                                 type="text"
                                 size="small">
                             查看
@@ -217,7 +217,7 @@
         data() {
             return {
                 //副标题
-                subTitle: '全部信息'
+                subTitle: '全部信息',
             }
         },
 
@@ -244,7 +244,11 @@
     }
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
     @import './manageStyle.scss';
+    .el-tooltip__popper{
+        max-width: 30%;
+        line-height: 1.5em;
+    }
 </style>
 

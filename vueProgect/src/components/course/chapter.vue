@@ -136,7 +136,7 @@
             margin-left: 10px;
             display: flex;
             align-items: center;
-            color: #3f4d5b;
+            color: $secondaryText;
             font-size: 13px;
             img {
                 width: 20px;

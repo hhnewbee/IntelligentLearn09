@@ -4,14 +4,14 @@
                 ref="popover1"
                 placement="top"
                 trigger="click">
-            <div class="item">
-                <div class="item2">名称：
+            <div class="items">
+                <div>名称：
                     <span>打竞技</span>
                 </div>
-                <div class="item2">职位：
+                <div>专注领域：
                     <span>CEO</span>
                 </div>
-                <div class="item2">性别：
+                <div>邮箱：
                     <span>男</span>
                 </div>
             </div>
@@ -30,9 +30,9 @@
 </script>
 
 <style scoped lang="scss">
-    .item2{
+    .items > div{
         margin: 5px 0;
-        font-size: 15px;
+        font-size: 13px;
         font-weight: bold;
     }
 </style>

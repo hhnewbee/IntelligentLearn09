@@ -28,6 +28,18 @@ export let recordLearning = {
 export let likeAcollect = {
     methods: {
         /**
+         * 处理checkbox组件不能监听click事件的问题
+         */
+        handleGroup(){
+            this.$refs['like'].$el.querySelector('span').addEventListener('click',()=>{
+                this.handleLikeAcollect('liking',this.courseData);
+            });
+            this.$refs['collect'].$el.querySelector('span').addEventListener('click',()=>{
+                this.handleLikeAcollect('collect',this.courseData);
+            });
+
+        },
+        /**
          * 喜欢和收藏
          * @param lOc - 是喜欢还是收藏
          * @param data - 要操作的数据
@@ -38,7 +50,9 @@ export let likeAcollect = {
                 if (res.data.result === '0') {
                     this.$message({
                         message: lOc === 'liking' ? '已经点赞过' : '已经收藏过',
-                        type: 'warning'
+                        type: 'warning',
+                        duration:2000,
+                        showClose:true
                     });
                 } else {
                     if (this.$refs[lOc + data.id]) {
@@ -48,5 +62,14 @@ export let likeAcollect = {
                 }
             });
         }
+    }
+};
+//页面返回
+export let pageBack={
+    methods:{
+        handlePageBack(){
+            this.$router.go(-1);
+        }
+
     }
 };

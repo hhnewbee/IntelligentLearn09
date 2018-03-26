@@ -17,15 +17,15 @@
                      v-for="(comment,index) in commentItems"
                      :key="index">
                     <div class="header">
-                        <img :src="comment.avatarUrl">
+                        <img :src="comment.userIconUrl">
                         <div class="name">
-                            {{comment.nickName}}
+                            {{comment.username}}
                         </div>
                         <div class="tag" v-if="comment.tag">
                             {{comment.tag}}
                         </div>
                         <div class="time">
-                            {{comment.time | formatFromNow}}
+                            {{comment.creationTimestamp | formatFromNow}}
                         </div>
                     </div>
                     <div class="content">
@@ -35,20 +35,20 @@
                         <span class="count fa fa-heart"
                               :ref="comment.id"
                               @click="handleSupport(comment)">
-                            {{comment.supports}}人喜欢
+                            &nbsp;0人赞成
                         </span>
 
                         <span
                                 @click="handleAreaChange(true,comment)"
                                 class="count fa fa-comments"
                                 style="margin-left: 10px">
-                            {{ comment.replys}}人回答
+                            &nbsp;{{comment.repies}}人回答
                         </span>
 
                         <span
                                 @click="reply(comment)"
                                 class="count fa fa-reply"
-                                style="margin-left: 10px"> 回答
+                                style="margin-left: 10px">&nbsp;回答
                         </span>
                     </div>
                 </div>
@@ -69,23 +69,23 @@
                 <div class="home fa fa-home"
                      @click="handleAreaChange(false)"></div>
                 <div class="info">
-                    <img class="listAvatar" :src="area.avatarUrl">
-                    <div class="listName">{{area.nickName}}</div>
+                    <div class="listName">{{area.username}}</div>
+                    <img class="listAvatar" :src="area.userIconUrl">
                 </div>
             </div>
             <div class="listContent">
                 {{area.content}}
                 <span class="cheart el-icon-time"
                       style="color:#b5b9bc;left: 10px;bottom: 5px">
-                    &nbsp;{{area.time | formatDateTime}}
+                    &nbsp;{{area.creationTimestamp | formatDateTime}}
                 </span>
                 <span class="cheart fa fa-heart"
                       @click="handleSupport(area)">
-                    &nbsp;{{area.supports}}
+                    &nbsp;0
                 </span>
             </div>
             <div class="itemCount">
-                {{area.itemsList.length}}个回答
+                {{area.itemsList.length}}&nbsp;个回答
             </div>
             <vue-scrollbar class="my-scrollbar"
                            style="background-color: white">
@@ -93,9 +93,9 @@
                     <div class="item"
                          v-for="item in area.itemsList">
                         <div class="header">
-                            <img :src="item.avatarUrl"/>
-                            <div class="name">{{item.nickName}}</div>
-                            <div class="time">{{item.time | formatFromNow}}</div>
+                            <img :src="item.userIconUrl"/>
+                            <div class="name">{{item.username}}</div>
+                            <div class="time">{{item.creationTimestamp | formatFromNow}}</div>
                         </div>
                         <div class="content">
                             {{item.content}}
@@ -103,13 +103,13 @@
                         <div class="footer">
                             <span class="count fa fa-heart"
                                   @click="handleSupport(item)">
-                                &nbsp;{{ item.supports}}人赞同
+                                &nbsp;0人赞同
                             </span>
 
                             <span class="count fa fa-comments"
                                   @click="handleAreaChange(true,item)"
                                   style="margin-left: 10px">
-                                &nbsp;{{ item.replys}}人回复
+                                &nbsp;{{ item.repies}}人回复
                             </span>
 
                             <span class="count fa fa-reply"
@@ -147,7 +147,7 @@
 
 <script>
     import VueScrollbar from 'vue2-scrollbar'
-
+    import {mapState} from 'vuex'
     export default {
         created() {
             this.initData();
@@ -213,8 +213,8 @@
                         }
                     });
                     if (!ifAddN) {
-                        this.$ajax.get('getComments/' + commentInfo.id+ "?pageIndex=0").then((response) => {
-                            let newArea = {...commentInfo, show: true, itemsList: response.data};
+                        this.ajxaComments.get(`comment/${commentInfo.id}/page=0`).then((response) => {
+                            let newArea = {...commentInfo, show: true, itemsList: response.data,page:0};
                             this.replysAreas.push(newArea);
                             this.itemsListNow = newArea.itemsList;
                         });
@@ -226,23 +226,36 @@
              * 发送评论
              */
             send() {
-                this.commentsInfo.postData.content=this.sendData;
-                //确定当前评论区的id
-//                data.targetId=this.targetId;
+                //要发送的数据，防止对象内容重复
+                let data=this.commentsInfo.postData;
+                let url=this.commentsInfo.postCommentUrl;
+                data.content=this.sendData;
                 //如果不是回复当前评论区的
                 if(this.ajxaComments.targetId){
-//                    data.targetId=ajxaComments.targetId;
+                    //回复的数据封装
+                    data={};
+                    data.comment={id:this.ajxaComments.targetId};
+                    data.content=this.sendData;
+                    //回复的链接
+                    url='/reply';
                     //更新对应评论的回复显示数目
-                    this.itemsListNow.forEach(item=>{
-                        if(item.id===data.targetId){
-                            item.replys++;
+                    this.itemsListNow.forEach(comment=>{
+                        if(comment.id===data.comment.id){
+                            comment.repies++;
                         }
-                    })
+                    });
+
                 }
+                //本地显示的封装
+                let localData=Object.assign({},data);
+                localData.creationTimestamp=new Date();
+                localData.userIconUrl=this.avatarUrl;
+                localData.username=this.account;
+                localData.repies=0;
                 //本地添加数据
-                this.itemsListNow.unshift(data);
+                this.itemsListNow.unshift(localData);
                 //发送数据
-                this.ajxaComments.post(this.commentsInfo.postCommentUrl, this.commentsInfo.postData);
+                this.ajxaComments.post(url,data);
                 //清空发送的临时设置数据
                 this.sendData = '';
                 this.ajxaComments.targetId=null;
@@ -252,7 +265,7 @@
              * @param comment
              */
             reply(comment) {
-                this.sendData = "@" + comment.nickName + " ";
+                this.sendData = "@" + comment.username + " ";
                 //每个评论的id
                 this.ajxaComments.targetId=comment.id;
             },
@@ -305,6 +318,7 @@
             },
         },
         computed: {
+            ...mapState('info',['account','avatarUrl']),
             buttonDis() {
                 return this.sendData === "";
             }
@@ -453,11 +467,11 @@
                     flex-grow: 1;
                     .listName {
                         color: $primaryColor;
-                        font-size: 18px;
+                        font-size: 16px;
+                        margin-right: 5px;
                     }
                     .listAvatar {
                         margin: 5px 0;
-                        margin-right: 5px;
                         width: 25px;
                         height: 25px;
                         border-radius: 50%;
@@ -468,7 +482,7 @@
                 box-shadow: 1px 1px 4px #c4c4c4;
                 min-height: 100px;
                 margin: 10px 15px;
-                padding: 5px 10px;
+                padding: 8px 10px;
                 position: relative;
                 font-size: 15px;
                 color: black;
