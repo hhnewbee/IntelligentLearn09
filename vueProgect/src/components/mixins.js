@@ -5,10 +5,10 @@ export let recordLearning = {
          * 监视学习时长的心跳包
          * @constructor
          */
-        keepLearning(id) {
+        keepLearning(url) {
             setInterval(() => {
                 //todo 学习时长的心跳包
-                this.$ajaxJava.get(`/${id}`, (res) => {
+                this.$ajaxJava.get(url, (res) => {
 
                 });
             }, 1000)

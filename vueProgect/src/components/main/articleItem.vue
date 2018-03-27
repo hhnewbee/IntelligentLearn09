@@ -6,7 +6,7 @@
         <div class="detail">
             <infoDetail
                     :avatarUrl="itemData.userIconUrl"
-                    :classes="[avatarClass]">
+                    class="avatar">
             </infoDetail>
             <div class="name">{{itemData.userName}}</div>
             <div class="time">时间：{{itemData.creationTimestamp | formatDate}}</div>
@@ -64,7 +64,6 @@
                     img: null,
                     video: null
                 },
-                avatarClass: 'avatar',
             }
         },
         methods: {

@@ -31,6 +31,8 @@
     import VueScrollbar from 'vue2-scrollbar'
     import "vue2-scrollbar/dist/style/vue2-scrollbar.css";
     import { mapMutations } from 'vuex'
+    import {recordLearning} from '../mixins.js';
+
     export default {
         created() {
             this.initData();
@@ -111,12 +113,15 @@
                     this.$nextTick(()=>{
                         this.$refs[this.lastCh][0].click();
                     });
+                    //课程学习时长心跳包
+                    this.keepLearning(`/user/learnCourse/${res.data.id}`);
                 });
             }
         },
         components: {
             VueScrollbar
-        }
+        },
+        mixins:[recordLearning]
     }
 </script>
 

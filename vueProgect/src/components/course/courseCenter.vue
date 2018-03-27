@@ -1,14 +1,12 @@
 <template>
     <div id="courseCenterIL09">
         <div class="videoItem">
-            <video
-                    id="videojs"
-                    style="height: 100%;width: 100%"
-                    class="video-js vjs-big-play-centered"
-                    controls
-                    preload="auto"
-                    :src="videoUrl"
-                    data-setup='{"playbackRates": [0.7, 1, 1.5, 1.7, 2]}'>
+            <video style="height: 100%;width: 100%"
+                   class="video-js vjs-big-play-centered"
+                   controls
+                   preload="auto"
+                   :src="videoUrl"
+                   data-setup='{"playbackRates": [0.7, 1, 1.5, 1.7, 2]}'>
                 <source :src="videoUrl"/>
             </video>
         </div>
@@ -44,7 +42,7 @@
 </template>
 
 <script>
-    import videojs from 'video.js/dist/video.min.js';
+    import 'video.js/dist/video.min.js';
     import 'video.js/dist/video-js.min.css'
     import {mapState} from 'vuex'
 
@@ -154,7 +152,7 @@
                 //开始视频
                 this.videoJs.play();
             }
-        }
+        },
     }
 </script>
 

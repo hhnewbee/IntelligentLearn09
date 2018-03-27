@@ -91,6 +91,7 @@
                         min-width="120">
                 </el-table-column>
 
+                <!--上传者-->
                 <el-table-column
                         align='center'
                         label="上传传者"

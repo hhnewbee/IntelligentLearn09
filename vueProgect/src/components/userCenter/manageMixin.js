@@ -220,6 +220,19 @@ let manageMixin={
             this.options=tableOptions;
             this.selectValue=tableOptions[0].value;
         },
+        /**
+         * 根据屏幕判断item加载的数目
+         */
+        itemCount(){
+
+        },
+        /**
+         * 分页加载
+         */
+        pageLoad(){
+
+        }
+
     },
     watch: {
         //监听数据变化以更新视图

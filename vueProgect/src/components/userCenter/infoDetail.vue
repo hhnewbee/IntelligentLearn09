@@ -1,18 +1,18 @@
 <template>
-    <div :class="classes">
+    <div>
         <el-popover
                 ref="popover1"
                 placement="top"
                 trigger="click">
             <div class="items">
                 <div>名称：
-                    <span>打竞技</span>
+                    <span>{{name}}</span>
                 </div>
                 <div>专注领域：
-                    <span>CEO</span>
+                    <span>{{focusArea}}</span>
                 </div>
                 <div>邮箱：
-                    <span>男</span>
+                    <span>{{eMail}}</span>
                 </div>
             </div>
         </el-popover>
@@ -25,7 +25,22 @@
 
 <script>
     export default {
-        props:['classes','avatarUrl']
+        created(){
+            //todo 获取用户信息
+//            this.$ajaxJava.get().then((res)=>{
+//                this.name=res.name;
+//                this.focusArea=res.focusArea;
+//                this.eMail=res.eMail;
+//            })
+        },
+        props:['account','avatarUrl'],
+        data(){
+            return{
+                name:'',
+                focusArea:'',
+                eMail:''
+            }
+        }
     }
 </script>
 
