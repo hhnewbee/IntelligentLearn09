@@ -175,7 +175,7 @@ let manageMixin={
                     break;
                 }
                 case 'article':{
-                    this.$router.push({path:`/course/${target}`});
+                    this.$router.push({path:`/articlePage/article/${target}`});
                     break;
                 }
                 case 'user':{

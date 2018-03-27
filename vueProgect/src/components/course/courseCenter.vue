@@ -33,7 +33,8 @@
                 </div>
             </div>
             <keep-alive>
-                <component :is="changePop"
+                <component style="min-width: 300px"
+                           :is="changePop"
                            :commentsInfo="commentsInfo"
                            :discussInfo="discussInfo">
                 </component>
@@ -102,7 +103,7 @@
                                 file:{id:this.videoId},
                                 content:''
                             },
-                            targetId:this.videoId,
+                            targetId:'video-'+this.videoId,
                         };
                         this.changePop = 'comments';
                         break;

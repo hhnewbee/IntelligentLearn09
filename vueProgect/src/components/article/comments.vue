@@ -42,7 +42,7 @@
                                 @click="handleAreaChange(true,comment)"
                                 class="count fa fa-comments"
                                 style="margin-left: 10px">
-                            &nbsp;{{comment.repies}}人回答
+                            &nbsp;{{comment.replies}}人回答
                         </span>
 
                         <span
@@ -52,12 +52,16 @@
                         </span>
                     </div>
                 </div>
+
                 <!--加载内容中-->
-                <div v-if="loadDown.ifLongding" class="loadMore el-icon-loading">&nbsp;加载中</div>
+                <div v-if="loadDown.ifLongding" class="loadMore el-icon-loading">&nbsp;
+                    &nbsp;加载中
+                </div>
                 <div v-else-if="commentItems.length!==0" class="loadMore">
                     <div v-if="loadDown.ifNothing">已经全部加载</div>
                     <div v-else @click="handleLoadMore">加载更多</div>
                 </div>
+
             </div>
         </vue-scrollbar>
         <!--回复列表items-->
@@ -97,7 +101,7 @@
                             <div class="name">{{item.username}}</div>
                             <div class="time">{{item.creationTimestamp | formatFromNow}}</div>
                         </div>
-                        <div class="content">
+                        <div class="content" style="color:black">
                             {{item.content}}
                         </div>
                         <div class="footer">
@@ -109,7 +113,7 @@
                             <span class="count fa fa-comments"
                                   @click="handleAreaChange(true,item)"
                                   style="margin-left: 10px">
-                                &nbsp;{{ item.repies}}人回复
+                                &nbsp;{{item.replies}}人回复
                             </span>
 
                             <span class="count fa fa-reply"
@@ -122,7 +126,6 @@
                 </div>
             </vue-scrollbar>
         </div>
-
         <!--发送-->
         <div class="control"
              ref="commentSend">
@@ -142,12 +145,14 @@
                 评论
             </el-button>
         </div>
+
     </div>
 </template>
 
 <script>
     import VueScrollbar from 'vue2-scrollbar'
     import {mapState} from 'vuex'
+
     export default {
         created() {
             this.initData();
@@ -157,7 +162,7 @@
         data() {
             return {
                 //不能用全局的ajax实例，因为去全局的搜索等待是全页面显示的
-                ajxaComments:{},
+                ajxaComments: {},
                 //是否打开回复列表
                 ifReplysList: false,
                 //评论的列表
@@ -169,9 +174,9 @@
                 //发送评论/回复的数据
                 sendData: '',
                 //当前评论区的id，用于回复的标识
-                targetId:'',
+                targetId: '',
                 //评论的页数
-                pageComment:0,
+                pageComment: 0,
                 //下拉加载跟多
                 loadDown: {
                     //是否正在加载
@@ -200,10 +205,21 @@
                     });
                     this.itemsListNow = this.commentItems;
                     //切换回复的评论区id
-                    this.targetId=this.commentsInfo.targetId;
+                    this.targetId = this.commentsInfo.targetId;
                 } else {
                     //列表的切换,判断当前列表是否打开过，如果已打开，复用，否则新添加
                     let ifAddN = false;
+                    //加载的url
+                    let url='';
+                    //是获取评论的回复还是回复的回复
+                    //如果标识中有video就是获取评论的回复
+                    if(this.targetId.indexOf('video')!==-1){
+                        url=`comment/${commentInfo.id}/page=0`;
+                        this.targetId ='comment-'+commentInfo.id;
+                    }else{
+                        url=`reply/${commentInfo.id}/page=0`;
+                        this.targetId ='reply-'+commentInfo.id;
+                    }
                     this.replysAreas.forEach((area) => {
                         if (area.id === commentInfo.id) {
                             area.show = ifAddN = true;
@@ -213,52 +229,70 @@
                         }
                     });
                     if (!ifAddN) {
-                        this.ajxaComments.get(`comment/${commentInfo.id}/page=0`).then((response) => {
-                            let newArea = {...commentInfo, show: true, itemsList: response.data,page:0};
+                        this.ajxaComments.get(url).then((response) => {
+                            let newArea = {...commentInfo, show: true, itemsList: response.data, page: 0};
                             this.replysAreas.push(newArea);
                             this.itemsListNow = newArea.itemsList;
                         });
                     }
-                    this.targetId=commentInfo.id;
                 }
             },
             /**
              * 发送评论
              */
             send() {
-                //要发送的数据，防止对象内容重复
-                let data=this.commentsInfo.postData;
-                let url=this.commentsInfo.postCommentUrl;
-                data.content=this.sendData;
+                //发送的数据
+                let data = {};
+                //地址链接
+                let url = '';
                 //如果不是回复当前评论区的
-                if(this.ajxaComments.targetId){
-                    //回复的数据封装
-                    data={};
-                    data.comment={id:this.ajxaComments.targetId};
-                    data.content=this.sendData;
+                if (this.ajxaComments.targetId) {
                     //回复的链接
-                    url='/reply';
-                    //更新对应评论的回复显示数目
-                    this.itemsListNow.forEach(comment=>{
-                        if(comment.id===data.comment.id){
-                            comment.repies++;
+                    url = '/reply';
+                    //如果是回复评论的
+                    if(this.targetId.indexOf('video')!==-1){
+                        data.comment = {id:this.ajxaComments.targetId};
+                    //如果是回复回复的
+                    }else{
+                        data.parent = {id: this.ajxaComments.targetId};
+                    }
+                    this.itemsListNow.forEach(comment => {
+                        if (comment.id === this.ajxaComments.targetId) {
+                            comment.replies++;
                         }
                     });
 
+                    //如果是回复当前评论区的
+                } else {
+                    //如果是回复评论的
+                    if (this.targetId.indexOf('comment')!==-1) {
+                        data.comment = {id: this.targetId.replace('comment-','')};
+                        url = '/reply';
+                    //如果是评论的
+                    } else if(this.targetId.indexOf('video')!==-1){
+                        data = this.commentsInfo.postData;
+                        url = this.commentsInfo.postCommentUrl;
+                    //如果是回复回复的
+                    }else{
+                        data.parent = {id: this.targetId.replace('reply-','')};
+                        url = '/reply';
+                    }
                 }
+                //内容
+                data.content = this.sendData;
                 //本地显示的封装
-                let localData=Object.assign({},data);
-                localData.creationTimestamp=new Date();
-                localData.userIconUrl=this.avatarUrl;
-                localData.username=this.account;
-                localData.repies=0;
+                let localData = Object.assign({}, data);
+                localData.creationTimestamp = new Date();
+                localData.userIconUrl = this.avatarUrl;
+                localData.username = this.account;
+                localData.replies = 0;
                 //本地添加数据
                 this.itemsListNow.unshift(localData);
                 //发送数据
-                this.ajxaComments.post(url,data);
+                this.ajxaComments.post(url, data);
                 //清空发送的临时设置数据
                 this.sendData = '';
-                this.ajxaComments.targetId=null;
+                this.ajxaComments.targetId = null;
             },
             /**
              * 回复
@@ -267,74 +301,72 @@
             reply(comment) {
                 this.sendData = "@" + comment.username + " ";
                 //每个评论的id
-                this.ajxaComments.targetId=comment.id;
+                this.ajxaComments.targetId = comment.id;
             },
             /**
              * 支持
              * @param comment
              */
-            handleSupport(comment){
-                let style=this.$refs[comment.id][0].style;
+            handleSupport(comment) {
+                let style = this.$refs[comment.id][0].style;
                 //判断是否已经点赞
-                if(style.color==='rgb(64, 158, 255)'){
+                if (style.color === 'rgb(64, 158, 255)') {
                     //本地显示更新
-                    style.color='#9E9E9E';
+                    style.color = '#9E9E9E';
                     comment.supports--;
-                    this.ajxaComments.delete('deleteSupporter/'+comment.id);
-                }else{
-                    style.color='#409EFF';
+                    this.ajxaComments.delete('deleteSupporter/' + comment.id);
+                } else {
+                    style.color = '#409EFF';
                     comment.supports++;
-                    this.ajxaComments.post('addSupporter',{
-                        commentsId:comment.id,
-                        nickName:this.commentsInfo.nickName
+                    this.ajxaComments.post('addSupporter', {
+                        commentsId: comment.id,
+                        nickName: this.commentsInfo.nickName
                     });
                 }
             },
             /**
              * 初始化数据
              */
-            initData(){
+            initData() {
                 //新的请求拦截器
-                this.ajxaComments=this.$ajax.create({withCredentials:true});
-                this.ajxaComments.get(this.commentsInfo.getCommentUrl+this.pageComment).then((response) => {
+                this.ajxaComments = this.$ajax.create({withCredentials: true});
+                this.ajxaComments.get(this.commentsInfo.getCommentUrl + this.pageComment).then((response) => {
                     this.itemsListNow = this.commentItems = response.data;
                 });
-                this.targetId=this.commentsInfo.targetId;
+                this.targetId = this.commentsInfo.targetId;
+
+                //判断是否还有内容
+                this.ajxaComments.get(this.commentsInfo.getCommentUrl + (this.pageComment + 1)).then((response) => {
+                    this.loadDown.ifNothing = response.data.length === 0;
+                });
             },
             /**
-             * 下拉加载
+             * 加载更多
              */
             handleLoadMore() {
-                //todo 下拉加载
-                this.loadDown.ajax.get('', (res) => {
-                    //是否有新的数据
-                    if (res.data.length === 0) {
-                        this.loadDown.ifNothing = true;
-                    } else {
-                        this.loadDown.ifNothing = false;
-                        this.commentItems.push(...(res.data));
-                    }
+                this.ajxaComments.get(this.commentsInfo.getCommentUrl + ++this.pageComment, (res) => {
+                    this.commentItems.push(...(res.data));
                 });
             },
         },
         computed: {
-            ...mapState('info',['account','avatarUrl']),
+            ...mapState('info', ['account', 'avatarUrl']),
             buttonDis() {
                 return this.sendData === "";
             }
         },
-        watch:{
+        watch: {
             /**
              * 监听章节的切换，对应的评论组
              * @param newV
              * @param oldV
              */
-            commentsInfo(newV,oldV){
-                if(newV.targetId!==oldV.targetId){
-                    this.ajxaComments.get(this.commentsInfo.getCommentUrl+this.pageComment).then((response) => {
+            commentsInfo(newV, oldV) {
+                if (newV.targetId !== oldV.targetId) {
+                    this.ajxaComments.get(this.commentsInfo.getCommentUrl + this.pageComment).then((response) => {
                         this.itemsListNow = this.commentItems = response.data;
                     });
-                    this.targetId=this.commentsInfo.targetId;
+                    this.targetId = this.commentsInfo.targetId;
                 }
             }
         },
@@ -369,7 +401,7 @@
 
         /*评论/回复的item*/
         .item {
-            width: 88%;
+            width: 92%;
             padding: 10px 10px;
             margin-bottom: 20px;
             background-color: white;
@@ -437,6 +469,12 @@
             align-items: center;
             padding: 10px 0;
             color: #000000;
+            /*加载更多*/
+            .loadMore {
+                color: $secondaryText;
+                font-size: 13px;
+                cursor: pointer;
+            }
         }
         /*回复的列表*/
         .replysList {
@@ -498,19 +536,19 @@
                     }
                 }
             }
-            .itemCount{
+            .itemCount {
                 margin: 5px 15px;
                 color: #9e9e9e;
                 font-size: 13px;
             }
             .itemsList {
-                    height: 100%;
-                    .item {
-                        margin: 5px 15px;
-                        border-top: 1px solid #ddd5d5;
-                        box-shadow: none;
-                    }
+                height: 100%;
+                .item {
+                    margin: 5px 15px;
+                    border-top: 1px solid #ddd5d5;
+                    box-shadow: none;
                 }
+            }
         }
 
         .control {
