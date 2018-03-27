@@ -1,7 +1,8 @@
 <template>
     <div id="courseCenterIL09">
         <div class="videoItem">
-            <video style="height: 100%;width: 100%"
+            <video id="videojs"
+                   style="height: 100%;width: 100%"
                    class="video-js vjs-big-play-centered"
                    controls
                    preload="auto"
