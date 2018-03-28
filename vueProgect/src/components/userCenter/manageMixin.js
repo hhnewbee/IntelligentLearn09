@@ -32,7 +32,7 @@ let manageMixin={
             //每次获取的item条数
             itemCount:0,
             //当前页数
-            page:1
+            page:0
         }
     },
     methods: {
@@ -91,8 +91,9 @@ let manageMixin={
          * @param size
          */
         handlePage(size) {
+            let oldTag=this.page;
             this.page=size;
-            this.handleChangeArea(null,'p'+size,this.url);
+            this.handleChangeArea('p'+oldTag,'p'+size,this.url);
             this.tableData = this.pageData=this.listNow;
         },
         /**
@@ -190,8 +191,8 @@ let manageMixin={
             //获取加载item的条数
             this.setItemCount();
             //加载数据
-            this. handlePage(1);
-            //初始图表类型选项的值
+            this.handleChangeArea(null,'p0',this.url);
+            this.tableData = this.pageData=this.setDataFormat(this.listNow);              //初始图表类型选项的值
             this.options=tableOptions;
             this.selectValue=tableOptions[0].value;
         },
@@ -202,6 +203,36 @@ let manageMixin={
             //获取表格的高度，表头固定是48，每个单元固定是60
             this.itemCount=Math.floor((this.$refs['table'].$el.clientHeight-48)/60);
         },
+        /**
+         * 设置获取数据的格式
+         */
+        setDataFormat(resDatas){
+            let tableData=[];
+            resDatas.forEach((data)=>{
+                if(data.course){
+                    tableData.date=this.formatDate(data.createTime);
+                    tableData.name=data.course.title;
+                    tableData.type='课程';
+                    tableData.category=data.course.type;
+                    tableData.newDate=data.updateTime;
+                    tableData.avatar=data.course.userIconUrl;
+                    tableData.nickName=data.course.uploadUsername;
+                    tableData.useTime=this.formatMinutes(data.learnTime);
+                    tableData.accessTimes=data.visitTime;
+                }else{
+                    tableData.date=this.formatDate(data.createTime);
+                    tableData.name=data.forum.title;
+                    tableData.type='课程';
+                    tableData.category=data.forum.categorys;
+                    tableData.newDate=data.updateTime;
+                    tableData.avatar=data.forum.userIconUrl;
+                    tableData.nickName=data.forum.uploadUsername;
+                    tableData.useTime=this.formatMinutes(data.learnTime);
+                    tableData.accessTimes=data.visitTime;
+                }
+            });
+            return tableData;
+        }
     },
     watch: {
         //监听数据变化以更新视图

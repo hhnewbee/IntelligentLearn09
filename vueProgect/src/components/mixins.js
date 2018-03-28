@@ -44,18 +44,22 @@ export let areaCaching={
 };
 //学习记录
 export let recordLearning = {
+    data() {
+        return {
+            heartTime: ''
+        }
+    },
     methods: {
         /**
          * 监视学习时长的心跳包
          * @constructor
          */
         keepLearning(url) {
-            setInterval(() => {
+            this.heartTime=setInterval(() => {
                 //todo 学习时长的心跳包
                 this.$ajaxJava.get(url, (res) => {
-
                 });
-            }, 1000)
+            }, 2000);
         },
         /**
          * 该学习内容的访问次数

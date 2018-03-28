@@ -37,6 +37,10 @@
         created() {
             this.initData();
         },
+        deactivated(){
+            //清楚心跳包
+            clearInterval(this.heartTime);
+        },
         data() {
             return {
                 //章节数组

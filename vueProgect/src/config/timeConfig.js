@@ -16,3 +16,12 @@ Vue.filter("formatDateTime", function (value) {
 Vue.filter("formatFromNow", function (value) {
     return Moment(new Date(value)).fromNow();
 });
+
+//得到小时时间
+Vue.filter("formatHouse",function (value) {
+    return Moment.duration(value).asHours();
+});
+//得到分钟时间
+Vue.filter("formatMinutes",function (value) {
+    return Moment.duration(value).asMinutes();
+});

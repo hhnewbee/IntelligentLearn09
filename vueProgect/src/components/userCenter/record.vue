@@ -171,7 +171,7 @@
         },
         computed:{
             url(){
-                return `/user/history/page=${this.page}/count=${this.itemCount}`;
+                return `/user/history/page=${this.page}/size=${this.itemCount}`;
             }
         },
         mixins: [manageMixin],
