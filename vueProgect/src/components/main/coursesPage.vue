@@ -44,7 +44,7 @@
     import courseItem from './courseItem.vue'
     import {mapState} from 'vuex'
     import footer_ from '../footer/footer.vue';
-    import areaCaching from './areaCaching.js';
+    import {areaCaching} from '../mixins.js';
 
     export default {
         created(){

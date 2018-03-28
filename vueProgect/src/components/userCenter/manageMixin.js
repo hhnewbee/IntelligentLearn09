@@ -1,3 +1,5 @@
+import {areaCaching} from "../mixins";
+
 let manageMixin={
     data() {
         return {
@@ -26,7 +28,11 @@ let manageMixin={
             //显示更多功能
             ifMoreFun: false,
             //图标类型选择
-            options:''
+            options:'',
+            //每次获取的item条数
+            itemCount:0,
+            //当前页数
+            page:1
         }
     },
     methods: {
@@ -85,39 +91,9 @@ let manageMixin={
          * @param size
          */
         handlePage(size) {
-            this.pageData = [{
-                date: '2016-05-03',
-                name: 'vue与webpack初步7',
-                type: '课程',
-                category: '金融',
-                newDate: '2016-05-03',
-                avatar: 'http://localhost:3100/img/avatar/softIcon.jpg',
-                nickName: 'newbee',
-                useTime: 100,
-                accessTimes: 30,
-            }, {
-                date: '2016-05-03',
-                name: 'vue与webpack初步8',
-                type: '课程',
-                category: '金融',
-                newDate: '2017-05-03',
-                avatar: 'http://localhost:3100/img/avatar/softIcon.jpg',
-                nickName: 'newbee',
-                useTime: 130,
-                accessTimes: 20,
-            }, {
-                date: '2016-05-03',
-                name: 'vue与webpack初步9',
-                type: '课程',
-                category: '金融',
-                newDate: '2017-05-09',
-                avatar: 'http://localhost:3100/img/avatar/softIcon.jpg',
-                nickName: 'newbee',
-                useTime: 90,
-                accessTimes: 10,
-            }];
-            //先存入分页数据然后在赋予当前所展示的数据
-            this.tableData = this.pageData;
+            this.page=size;
+            this.handleChangeArea(null,'p'+size,this.url);
+            this.tableData = this.pageData=this.listNow;
         },
         /**
          * 判断是展示图表还是表格
@@ -209,13 +185,13 @@ let manageMixin={
         },
         /**
          * 表格初始化
-         * @param data
          * @param tableOptions - 表格类型选项
          */
-        initData(data,tableOptions) {
-            //todo 模拟初始化请求数据
-            this.pageData =data;
-            this.tableData = this.pageData;
+        initData(tableOptions) {
+            //获取加载item的条数
+            this.setItemCount();
+            //加载数据
+            this. handlePage(1);
             //初始图表类型选项的值
             this.options=tableOptions;
             this.selectValue=tableOptions[0].value;
@@ -223,16 +199,10 @@ let manageMixin={
         /**
          * 根据屏幕判断item加载的数目
          */
-        itemCount(){
-
+        setItemCount(){
+            //获取表格的高度，表头固定是48，每个单元固定是60
+            this.itemCount=Math.floor((this.$refs['table'].$el.clientHeight-48)/60);
         },
-        /**
-         * 分页加载
-         */
-        pageLoad(){
-
-        }
-
     },
     watch: {
         //监听数据变化以更新视图
@@ -244,10 +214,7 @@ let manageMixin={
         delectRows() {
             this.ifDelect = this.delectRows.length === 0;
         },
-        //监听路由变化
-        routerPath() {
-            this.$router.push(this.routerPath);
-        },
     },
+    mixins:[areaCaching]
 };
 export {manageMixin};

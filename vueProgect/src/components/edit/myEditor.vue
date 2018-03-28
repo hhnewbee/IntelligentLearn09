@@ -413,7 +413,7 @@
                             class="video-js vjs-big-play-centered"
                             controls
                             preload="auto"
-                            data-setup='{"playbackRates": [0.7, 1, 1.5, 1.7, 2],"techOrder": ["html5","flash"]}'>
+                            data-setup='{"playbackRates": [0.7, 1, 1.5, 1.7, 2]}'>
                                 <source src="${response.url}">
                             </video>`;
                 target.innerHTML = tem;

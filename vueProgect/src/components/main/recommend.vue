@@ -50,10 +50,9 @@
 <script>
     import courseItem from './courseItem.vue';
     import articleItem from './articleItem.vue';
-    import {mapState} from 'vuex';
     import footer_ from '../footer/footer.vue';
     import backHeader from '../header/backHeader.vue';
-    import areaCaching from './areaCaching.js';
+    import {areaCaching} from '../mixins.js';
 
     export default {
         created() {
@@ -61,19 +60,11 @@
         },
         data() {
             return {
-                //当前要滚动的页面dom
-                pageNow: {},
             }
-        },
-        computed: {
-            ...mapState('info', [
-                'account',
-                'avatarUrl'
-            ])
         },
         methods: {
             initData() {
-                this.handleChangeArea(null, 'p1', 'recommend');
+                this.handleChangeArea(null, 'p0', 'recommend');
             },
         },
         components: {

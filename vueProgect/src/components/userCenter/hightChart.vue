@@ -1,6 +1,5 @@
 <template>
     <div class="highchart">
-        <span class="notData" v-if="notData">暂无数据</span>
         <div id="highcharts-container"></div>
     </div>
 </template>
@@ -13,7 +12,6 @@
         data() {
             return {
                 chart: null,
-                notData: false,
                 options: {
                     credits: {
                         enabled: false
@@ -104,8 +102,6 @@
                 this.options.series[0].data = this.chartData[1];
                 //访问次数
                 this.options.series[1].data = this.chartData[2];
-                //显示暂无数据
-                this.notData = !(this.chartData[1].length || this.chartData[2].length);
                 //生成图表
                 this.chart = new Highcharts.Chart("highcharts-container", this.options);
             }
@@ -132,14 +128,6 @@
         #highcharts-container {
             height: 100%;
             width: 100%;
-        }
-        .notData {
-            position: absolute;
-            font-size: 18px;
-            z-index: 10000;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%)
         }
     }
 </style>
