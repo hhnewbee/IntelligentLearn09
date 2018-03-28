@@ -17,11 +17,15 @@ Vue.filter("formatFromNow", function (value) {
     return Moment(new Date(value)).fromNow();
 });
 
+//得到日期
+Vue.prototype.$formatDate=function (value) {
+    return Moment(new Date(value)).format("YYYY-MM-DD");
+};
 //得到小时时间
-Vue.filter("formatHouse",function (value) {
+Vue.prototype.$formatHouse=function (value) {
     return Moment.duration(value).asHours();
-});
+};
 //得到分钟时间
-Vue.filter("formatMinutes",function (value) {
+Vue.prototype.$formatMinutes=function (value) {
     return Moment.duration(value).asMinutes();
-});
+};

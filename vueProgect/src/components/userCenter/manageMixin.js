@@ -1,5 +1,4 @@
 import {areaCaching} from "../mixins";
-
 let manageMixin={
     data() {
         return {
@@ -210,24 +209,24 @@ let manageMixin={
             let tableData=[];
             resDatas.forEach((data)=>{
                 if(data.course){
-                    tableData.date=this.formatDate(data.createTime);
+                    tableData.date=this.$formatDate(data.createTime);
                     tableData.name=data.course.title;
                     tableData.type='课程';
                     tableData.category=data.course.type;
-                    tableData.newDate=data.updateTime;
+                    tableData.newDate=this.$formatDate(data.updateTime);
                     tableData.avatar=data.course.userIconUrl;
                     tableData.nickName=data.course.uploadUsername;
-                    tableData.useTime=this.formatMinutes(data.learnTime);
+                    tableData.useTime=this.$formatMinutes(data.learnTime);
                     tableData.accessTimes=data.visitTime;
                 }else{
-                    tableData.date=this.formatDate(data.createTime);
+                    tableData.date=this.$formatDate(data.createTime);
                     tableData.name=data.forum.title;
                     tableData.type='课程';
                     tableData.category=data.forum.categorys;
-                    tableData.newDate=data.updateTime;
+                    tableData.newDate=this.$formatDate(data.updateTime);
                     tableData.avatar=data.forum.userIconUrl;
                     tableData.nickName=data.forum.uploadUsername;
-                    tableData.useTime=this.formatMinutes(data.learnTime);
+                    tableData.useTime=this.$formatMinutes(data.learnTime);
                     tableData.accessTimes=data.visitTime;
                 }
             });
