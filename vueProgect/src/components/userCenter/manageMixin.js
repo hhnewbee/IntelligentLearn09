@@ -176,7 +176,6 @@ let manageMixin={
                 this.chartData[2].push(data.accessTimes);
             })
         },
-
         /**
          * 显示更多功能
          */

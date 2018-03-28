@@ -213,7 +213,7 @@
                     let url='';
                     //是获取评论的回复还是回复的回复
                     //如果标识中有video就是获取评论的回复
-                    if(this.targetId.indexOf('video')!==-1){
+                    if(this.targetId.match('video')){
                         url=`comment/${commentInfo.id}/page=0`;
                         this.targetId ='comment-'+commentInfo.id;
                     }else{
@@ -250,7 +250,7 @@
                     //回复的链接
                     url = '/reply';
                     //如果是回复评论的
-                    if(this.targetId.indexOf('video')!==-1){
+                    if(this.targetId.match('video')){
                         data.comment = {id:this.ajxaComments.targetId};
                     //如果是回复回复的
                     }else{
@@ -265,11 +265,11 @@
                     //如果是回复当前评论区的
                 } else {
                     //如果是回复评论的
-                    if (this.targetId.indexOf('comment')!==-1) {
+                    if (this.targetId.match('comment')) {
                         data.comment = {id: this.targetId.replace('comment-','')};
                         url = '/reply';
                     //如果是评论的
-                    } else if(this.targetId.indexOf('video')!==-1){
+                    } else if(this.targetId.match('video')){
                         data = this.commentsInfo.postData;
                         url = this.commentsInfo.postCommentUrl;
                     //如果是回复回复的
