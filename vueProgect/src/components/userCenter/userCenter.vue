@@ -68,6 +68,7 @@
 </template>
 
 <script>
+    import {pageBack} from '../mixins.js';
     export default {
         mounted() {
             //路由到达时判断模拟点击的选择（用hash）的选项
@@ -113,13 +114,9 @@
                 }
             };
             //是从哪里跳转过来的
-            this.originPath=this.$route.query.path;
-        },
-        data(){
-            return{
-                //跳转过来的路由路劲
-                originPath:""
-            };
+            if(this.$route.query.path){
+                localStorage["backUrl"]=this.$route.query.path;
+            }
         },
         methods: {
             /**
@@ -169,13 +166,8 @@
                     }
                 }
             },
-            /**
-             * 返回
-             */
-            handlePageBack(){
-                this.$router.push({path:this.originPath});
-            }
         },
+        mixins:[pageBack]
     }
 </script>
 

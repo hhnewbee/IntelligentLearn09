@@ -37,24 +37,29 @@
 <script>
     import info from '../header/info.vue';
     import {mapState} from 'vuex';
-    import {likeAcollect,pageBack} from '../mixins.js';
+    import {likeAcollect, pageBack} from '../mixins.js';
+
     export default {
-        mounted(){
-          this.handleGroup();
+        mounted() {
+            this.handleGroup();
+            //保存返回的路径，因为刷新会导致路径消失，所以用本地保存
+            if (this.$route.query.path) {
+                localStorage["backUrl"] = this.$route.query.path;
+            }
         },
         data() {
             return {
                 //组件的选项数组
-                checkBoxGroup:[]
+                checkBoxGroup: [],
             }
         },
-        computed:{
-            ...mapState('course',['courseTitle','chapterTitle','courseData'])
+        computed: {
+            ...mapState('course', ['courseTitle', 'chapterTitle', 'courseData'])
         },
         components: {
             info
         },
-        mixins:[likeAcollect,pageBack]
+        mixins: [likeAcollect, pageBack]
     }
 </script>
 
@@ -93,12 +98,12 @@
             display: flex;
             align-items: center;
             margin-right: 80px;
-            .el-checkbox-button__inner{
+            .el-checkbox-button__inner {
                 background-color: #2b3540;
                 border-color: #475669;
                 color: $secondaryText;
-                &:hover{
-                    color:$primaryColor;
+                &:hover {
+                    color: $primaryColor;
                 }
             }
         }

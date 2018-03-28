@@ -7,7 +7,7 @@ export let areaCaching={
             //当前前缓存的信息
             areaInfoNow:{},
             //当前要展示数据
-            listNow:{}
+            listNow:[]
         }
     },
     methods:{
@@ -111,7 +111,7 @@ export let likeAcollect = {
 export let pageBack={
     methods:{
         handlePageBack(){
-            this.$router.go(-1);
+            this.$router.push({path:localStorage["backUrl"]});
         }
 
     }

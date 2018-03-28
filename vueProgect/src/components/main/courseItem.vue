@@ -11,55 +11,55 @@
         <div class="time detail el-icon-time">
             &nbsp;{{data.creationTimestamp | formatDate}}
         </div>
-        </div>
+    </div>
 </template>
 
 <script>
     export default {
-        props:['data'],
-        methods:{
+        props: ['data'],
+        methods: {
             /**
              * 进入课程页面传递的数据
              */
             handleToCourse() {
                 //不能用params，因为页面还要刷新呢
-                this.$router.push({path:`/course/${this.data.id}`});
+                this.$router.push({path: `/course/${this.data.id}`, query: {path: this.$route.path}});
             }
         }
     }
 </script>
 
 <style scoped lang="scss">
-    .courseItem{
+    .courseItem {
         width: 200px;
         margin: 20px 0;
         display: flex;
         flex-direction: column;
-        .pic{
+        .pic {
             width: 100%;
             height: 120px;
             cursor: pointer;
-            img{
+            img {
                 border-radius: 5px;
                 width: 100%;
                 height: 100%;
             }
         }
-        .name{
+        .name {
             align-self: flex-start;
             font-size: 16px;
             color: #18C0DF;
             font-weight: bold;
             margin: 12px 10px;
         }
-        .detail{
+        .detail {
             width: 100%;
             align-self: flex-start;
             font-size: 13px;
             padding: 0 10px;
             color: rgba(133, 135, 136, 0.61);
         }
-        .time{
+        .time {
             margin-top: 8px;
         }
     }

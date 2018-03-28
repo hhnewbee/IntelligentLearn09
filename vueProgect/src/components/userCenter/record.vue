@@ -72,32 +72,28 @@
                     @select="handleSelectBatch"
                     :data="tableData"
                     border>
-                <el-table-column
-                        fixed
-                        align='center'
-                        type="selection"
-                        width="45">
-                </el-table-column>
-                <el-table-column
-                        align='center'
-                        prop="date"
-                        label="日期"
-                        width="100">
+                <el-table-column type="selection"
+                                 fixed
+                                 align='center'
+                                 width="45">
                 </el-table-column>
 
-                <el-table-column
-                        align='center'
-                        prop="name"
-                        label="名称"
-                        min-width="120">
+                <el-table-column prop="date"
+                                 align='center'
+                                 label="日期"
+                                 width="100">
                 </el-table-column>
 
-                <!--上传者-->
-                <el-table-column
-                        align='center'
-                        label="上传传者"
-                        :show-overflow-tooltip="true"
-                        width="160">
+                <el-table-column prop="name"
+                                 align='center'
+                                 label="名称"
+                                 min-width="120">
+                </el-table-column>
+
+                <el-table-column label="上传传者"
+                                 align='center'
+                                 :show-overflow-tooltip="true"
+                                 width="160">
                     <div slot-scope="scope"
                          style="display: flex;justify-content: center;align-items: center;">
                         <infoDetail :avatarUrl="scope.row.avatar"
@@ -106,32 +102,28 @@
                     </div>
                 </el-table-column>
 
-                <el-table-column
-                        align='center'
-                        prop="type"
-                        label="类型"
-                        width="50">
+                <el-table-column prop="type"
+                                 align='center'
+                                 label="类型"
+                                 width="50">
                 </el-table-column>
 
-                <el-table-column
-                        align='center'
-                        prop="category"
-                        label="类别"
-                        width="50">
+                <el-table-column prop="category"
+                                 align='center'
+                                 label="类别"
+                                 width="50">
                 </el-table-column>
 
-                <el-table-column
-                        align='center'
-                        prop="newDate"
-                        label="最近访问"
-                        width="100">
+                <el-table-column prop="newDate"
+                                 align='center'
+                                 label="最近访问"
+                                 width="100">
                 </el-table-column>
 
-                <el-table-column
-                        align='center'
-                        fixed="right"
-                        label="操作"
-                        width="110">
+                <el-table-column label="操作"
+                                 align='center'
+                                 fixed="right"
+                                 width="110">
                     <template slot-scope="scope">
                         <el-button
                                 @click="handleSee(scope)"
@@ -162,8 +154,6 @@
                 layout="prev, pager, next"
                 :total="1000">
         </el-pagination>
-        <!--暂无内容-->
-        <span class="notData" v-if="tableData.length">暂无数据</span>
     </div>
 </template>
 
