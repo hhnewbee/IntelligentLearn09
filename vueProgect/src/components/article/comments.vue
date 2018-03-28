@@ -328,17 +328,23 @@
              * 初始化数据
              */
             initData() {
-                //新的请求拦截器
                 this.ajxaComments = this.$ajax.create({withCredentials: true});
+                //新的请求拦截器
+                this.ajxaComments.interceptors.request.use(function (config) {
+                    this.loadDown.ifLongding=true;
+                    return config;
+                });
+                this.ajxaComments.interceptors.response.use(function (config) {
+                    this.loadDown.ifLongding=false;
+                    return config;
+                });
+                //请求comment数据
                 this.ajxaComments.get(this.commentsInfo.getCommentUrl + this.pageComment).then((response) => {
                     this.itemsListNow = this.commentItems = response.data;
+                    //判断是否还有内容
+                    this.loadDown.ifNothing=this.pageComment>=response.data.page;
                 });
                 this.targetId = this.commentsInfo.targetId;
-
-                //判断是否还有内容
-                this.ajxaComments.get(this.commentsInfo.getCommentUrl + (this.pageComment + 1)).then((response) => {
-                    this.loadDown.ifNothing = response.data.length === 0;
-                });
             },
             /**
              * 加载更多
@@ -346,7 +352,24 @@
             handleLoadMore() {
                 this.ajxaComments.get(this.commentsInfo.getCommentUrl + ++this.pageComment, (res) => {
                     this.commentItems.push(...(res.data));
+                    this.loadDown.ifNothing=this.pageComment>=res.data.page;
                 });
+            },
+            /**
+             * 在dom初始化完成后判断是否还有加载更多来填充高度
+             */
+            setItemCount(){
+                //todo 检查高度是否填充
+                if(1){
+                    if(!this.loadDown.ifNothing){
+                        //如果高度没有填充，则继续请求数据
+                        this.handleLoadMore();
+                        //在dom更新后再次检查高度
+                        this.nextTick(()=>{
+                            this.setItemCount();
+                        })
+                    }
+                }
             },
         },
         computed: {

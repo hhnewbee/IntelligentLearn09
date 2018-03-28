@@ -64,7 +64,7 @@
         },
         methods: {
             initData() {
-                this.handleChangeArea(null, 'p0', 'recommend');
+                this.handleChangeArea(null, 'p1', 'recommend');
             },
         },
         components: {

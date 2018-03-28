@@ -110,7 +110,8 @@
         </div>
 
         <!--帮助vue对map做响应-->
-        <div v-if="statusHelp"></div>
+        <div v-show="statusHelp"></div>
+
     </div>
 </template>
 
