@@ -93,7 +93,7 @@
         },
         watch:{
             account(){
-                this.$ajaxJava.get(`/user/${this.account}`).then((res)=>{
+                this.$ajaxJava.get(`/user/${this.account}/selfInformation`).then((res)=>{
                     this.name=res.data.trueName;
                     this.eMail=res.data.selfInformation.email;
                 })

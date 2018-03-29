@@ -71,7 +71,8 @@ let manageMixin={
         /**
          * 选择所有时
          */
-        handleSelectAll() {
+        handleSelectAll(selction) {
+            this.delectRows = selction;
             this.ifDelect = !this.ifDelect;
             this.ifSelecttALl = true;
         },

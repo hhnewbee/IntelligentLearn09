@@ -102,51 +102,46 @@
 
         <div class="content">
             <el-table
+                    ref="table"
                     v-show="ifTable"
                     @select-all="handleSelectAll"
                     @select="handleSelectBatch"
                     :data="tableData"
                     height="100%"
                     border>
-                <el-table-column
-                        fixed
-                        align='center'
-                        type="selection"
-                        width="45">
+                <el-table-column fixed
+                                 align='center'
+                                 type="selection"
+                                 width="45">
                 </el-table-column>
 
-                <el-table-column
-                        align='center'
-                        prop="date"
-                        label="开通时间"
-                        width="100">
+                <el-table-column prop="date"
+                                 align='center'
+                                 label="开通时间"
+                                 width="100">
                 </el-table-column>
 
-                <el-table-column
-                        align='center'
-                        prop="account"
-                        label="账号"
-                        min-width="200">
+                <el-table-column prop="account"
+                                 align='center'
+                                 label="账号"
+                                 min-width="200">
                 </el-table-column>
 
-                <el-table-column
-                        align='center'
-                        prop="name"
-                        label="姓名"
-                        width="200">
+                <el-table-column prop="name"
+                                 align='center'
+                                 label="姓名"
+                                 width="200">
                 </el-table-column>
 
-                <el-table-column
-                        align='center'
-                        prop="areaFocus"
-                        label="专注领域"
-                        width="130">
+                <el-table-column prop="areaFocus"
+                                 align='center'
+                                 label="专注领域"
+                                 width="130">
                 </el-table-column>
 
-                <el-table-column
-                        align='center'
-                        label="用户状态"
-                        width="150">
+                <el-table-column align='center'
+                                 label="用户状态"
+                                 width="150">
                     <div slot-scope="scope">
                         <el-switch
                                 v-model="scope.row.status"
@@ -159,11 +154,10 @@
                     </div>
                 </el-table-column>
 
-                <el-table-column
-                        align='center'
-                        fixed="right"
-                        label="操作"
-                        width="110">
+                <el-table-column label="操作"
+                                 align='center'
+                                 fixed="right"
+                                 width="110">
                     <template slot-scope="scope">
                         <el-button
                                 @click="handleSee(scope)"
@@ -204,64 +198,18 @@
     import {manageMixin} from './manageMixin.js';
 
     export default {
-        created() {
+        mounted() {
             this.initData(
                 [
                     {
                         date: '2016-05-03',
                         account: '154091333',
                         name: 'newbee',
-                        sex: '男',
                         areaFocus: '金融',
                         status: true,
                         accessTimes: 40,
                         useTime: 200,
-                    }, {
-                    date: '2016-05-03',
-                    account: '154091334',
-                    name: 'newbee',
-                    sex: '男',
-                    areaFocus: '汽车',
-                    status: true,
-                    accessTimes: 30,
-                    useTime: 150,
-                }, {
-                    date: '2016-05-03',
-                    account: '154091335',
-                    name: 'newbee',
-                    sex: '男',
-                    areaFocus: '互联网',
-                    status: true,
-                    accessTimes: 20,
-                    useTime: 120,
-                }, {
-                    date: '2016-05-03',
-                    account: '154091336',
-                    name: 'newbee',
-                    sex: '男',
-                    areaFocus: '产品',
-                    status: true,
-                    accessTimes: 20,
-                    useTime: 101,
-                }, {
-                    date: '2016-05-03',
-                    account: '154091337',
-                    name: 'newbee',
-                    sex: '男',
-                    areaFocus: '设计',
-                    status: false,
-                    accessTimes: 10,
-                    useTime: 101,
-                }, {
-                    date: '2016-05-03',
-                    account: '154091338',
-                    name: 'newbee',
-                    sex: '男',
-                    areaFocus: '教育',
-                    status: true,
-                    accessTimes: 90,
-                    useTime: 181,
-                }
+                    },
                 ],
                 [{value: '学习记录'}, {value: '学习详情'}]
             );
@@ -274,6 +222,14 @@
                 dialogUserVisible:false
             }
         },
+        computed:{
+            url(){
+                return `/admin/users/page=${this.page}/size=${this.itemCount}`;
+            },
+            urlSearch(){
+                return `/admin/users/page=${this.pageSearch}/size=${this.itemCount}`;
+            }
+        },
         methods: {
             /**
              * 用户类型切换
@@ -283,10 +239,27 @@
                 //todo 根据不同的类型取查找不同的数据
                 //this.tableData=this.pageData=this.$ajax.get();
             },
+            /**
+             * 设置获取数据的格式
+             */
+            setDataFormat(resDatas){
+                let tableData=[];
+                resDatas.history.forEach((data)=>{
+                    let newData={};
+                        newData.date=this.$formatDate(data.createTime);
+                        newData.account=data.course.title;
+                        newData.name='课程';
+                        newData.areaFocus=data.course.type;
+                        newData.useTime=this.$formatMinutes(data.learnTime);
+                        newData.accessTimes=data.visitTime;
+                        tableData.push(newData);
+                });
+                return tableData;
+            }
         },
         mixins: [manageMixin],
         components: {
-            hightChart: () => import('./hightChart.vue')
+            hightChart: () => import(/* webpackChunkName: "hightChart.vue" */ './hightChart.vue')
         }
     }
 </script>
