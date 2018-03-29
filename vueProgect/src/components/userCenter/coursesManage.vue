@@ -228,7 +228,7 @@
                     useTime: 40,
                     accessTimes: 20,
                 }
-            ], [{value: '文章记录'}, {value: '文章详情'}]);
+            ], [{value: '课程记录'}, {value: '课程详情'}]);
         },
         data() {
             return {
