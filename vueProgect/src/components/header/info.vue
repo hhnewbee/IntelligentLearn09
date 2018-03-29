@@ -25,12 +25,16 @@
                 </div>
             </div>
         </el-popover>
-        <el-button icon="el-icon-message"
-                   plain
-                    size="mini"
-                    class="noticeIcon "
-                v-popover:popover2>
-        </el-button>
+        <el-badge :value="10"
+                  :max="100"
+                  :is-dot="true">
+            <el-button icon="el-icon-message"
+                       plain
+                       size="mini"
+                       class="noticeIcon "
+                       v-popover:popover2>
+            </el-button>
+        </el-badge>
         <!--个人信息弹出框-->
         <el-popover
                 ref="popover1"
@@ -132,7 +136,7 @@
              * @param tar
              */
             handleChoose(tar) {
-                this.$router.push({path: `/userCenter/${tar}#${tar}`,query: { path: this.$route.path }});
+                this.$router.push({path: `/userCenter/${tar}#${tar}`, query: {path: this.$route.path}});
             },
             /**
              * 退出登录
@@ -160,11 +164,15 @@
                         content: '泰国神级广告导演Thanonchai Sornsriwichai亲自操刀，马云大佬buff加持，然而不能改变我对这则广告很弱智的看法。难道我们现在对一个人的认识，不是注重个人对人接物的态度和自身良好的素养品德了吗？这则广告，在我看来就是在传达这么一个意思，有车有房才能结婚。广告的最后，才让人恍然醒悟，原来是滴滴出行，然而有啥关联吗？',
                         time: '2013-12-3 22:33'
                     },
-                    {user: '通知', content: '请开始学习"比特的原理"该文章',time: '2013-12-3 22:33'}
+                    {user: '通知', content: '请开始学习"比特的原理"该文章', time: '2013-12-3 22:33'}
                 ];
                 //todo 加载推荐课程
                 //todo 加载推荐文章
             },
+            /**
+             * 查看消息
+             * @param item
+             */
             handleNotification(item) {
                 if (item.answer === undefined) {
                     this.dialogNotificationVisible = true;
@@ -182,6 +190,11 @@
         justify-content: center;
         align-items: center;
         border-color: inherit;
+        .el-badge__content{
+            right: 12px;
+            top: 7px;
+            border: none;
+        }
         .noticeIcon {
             background-color: inherit;
             border-color: inherit;
@@ -215,7 +228,7 @@
             p:nth-child(3) {
                 margin-left: 20px;
                 font-size: 12px;
-                color:#b0b0b0
+                color: #b0b0b0
             }
             &:hover {
                 background-color: #eeeeee;

@@ -15,7 +15,7 @@
             <el-menu-item index="/main/questionPage">问答</el-menu-item>
             <searchItem style="align-self: center;width: 300px;cursor: text;"> </searchItem>
             <div class="img">
-                <avatarInfo></avatarInfo>
+                <avatarInfo style="color: #adafb3"></avatarInfo>
             </div>
         </el-menu>
     </div>

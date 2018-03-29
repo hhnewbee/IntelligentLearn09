@@ -29,7 +29,7 @@
                     0&nbsp;收藏
                 </el-checkbox-button>
             </el-checkbox-group>
-            <info></info>
+            <info style="color: #4e6075"></info>
         </div>
     </div>
 </template>
