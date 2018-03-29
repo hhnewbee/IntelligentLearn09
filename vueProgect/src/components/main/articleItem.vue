@@ -6,6 +6,7 @@
         <div class="detail">
             <infoDetail
                     :avatarUrl="itemData.userIconUrl"
+                    :account="itemData.userName"
                     class="avatar">
             </infoDetail>
             <div class="name">{{itemData.userName}}</div>

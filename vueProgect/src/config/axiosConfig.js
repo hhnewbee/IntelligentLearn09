@@ -4,6 +4,7 @@ import ElementUI from 'element-ui';
 
 //全局url配置
 Axios.defaults.baseURL = 'http://172.16.148.27:8080/';
+Axios.defaults.withCredentials = true;
 
 //java后端的配置
 const axiosJava=Axios.create({

@@ -1,5 +1,5 @@
 <template>
-    <div class="userInfo">
+    <div id="userInfoIL09">
         <el-breadcrumb class="breadcrumb">
             <el-breadcrumb-item
                     class="el-icon-edit-outline">&nbsp;个人信息
@@ -8,14 +8,13 @@
         <div class="item item1">
             <div>
                 <img :src="avatarUrl">
-                <div></div>
             </div>
             <div style="margin: 0 30px">
                 <div>账号：
                     <span>{{account}}</span>
                 </div>
                 <div>专注领域：
-                    <el-select v-model="areaFocus"
+                    <el-select v-model="areaFocus_"
                                multiple
                                placeholder="请选择专注领域">
                         <el-option v-for="item in filterType('全部')"
@@ -29,7 +28,6 @@
 
             <div class="learnInfo">
                 <div>学习时长：<span>48h</span></div>
-                <div style="margin-left: 10px">访问次数：<span>50</span></div>
             </div>
         </div>
         <div class="item">
@@ -50,42 +48,62 @@
 </template>
 
 <script>
-    import {mapGetters,mapState} from 'vuex';
+    import {mapGetters, mapState} from 'vuex';
+
     export default {
-        created(){
-          this.areaFocus.push(...this.areaFocus.split('/'));
-        },
-        data(){
-            return{
-                areaFocus:[]
+        data() {
+            return {
+                name: '',
+                eMail: ''
             }
+        },
+        activated(){
+            this.$ajaxJava.get(`/user/${this.account}`).then((res)=>{
+                this.name=res.data.trueName;
+                this.eMail=res.data.selfInformation.email;
+            })
         },
         computed: {
             ...mapGetters(['filterType']),
-            ...mapState('info',['account','avatarUrl','name','eMail','areaFocus'])
-        },
-        methods:{
-            handleEditInfo(tar,e){
-                let target=e.currentTarget;
-                let content=this.$refs[tar];
-                //修改还是保存的判断
-                if(target.innerText==='修改'){
-                    content.contentEditable=true;
-                    content.focus();
-                    target.style.color='#8fdf09';
-                    target.innerText="保存";
+            ...mapState('info', ['account', 'avatarUrl', 'areaFocus']),
+            areaFocus_(){
+                if (this.areaFocus.match('/')) {
+                    return this.areaFocus.split('/');
                 }else{
-                    content.contentEditable=false;
-                    target.style.color='#00abf9';
-                    target.innerText="修改";
+                    return [this.areaFocus];
                 }
+            }
+        },
+        methods: {
+            handleEditInfo(tar, e) {
+                let target = e.currentTarget;
+                let content = this.$refs[tar];
+                //修改还是保存的判断
+                if (target.innerText === '修改') {
+                    content.contentEditable = true;
+                    content.focus();
+                    target.style.color = '#8fdf09';
+                    target.innerText = "保存";
+                } else {
+                    content.contentEditable = false;
+                    target.style.color = '#00abf9';
+                    target.innerText = "修改";
+                }
+            }
+        },
+        watch:{
+            account(){
+                this.$ajaxJava.get(`/user/${this.account}`).then((res)=>{
+                    this.name=res.data.trueName;
+                    this.eMail=res.data.selfInformation.email;
+                })
             }
         }
     }
 </script>
 
 <style lang="scss">
-    .userInfo {
+    #userInfoIL09 {
         .item {
             margin: 20px 100px;
             padding: 10px;
@@ -101,12 +119,12 @@
                 position: absolute;
                 right: 0;
             }
-            .item2{
+            .item2 {
                 margin: 20px;
                 font-size: 15px;
                 font-weight: bold;
             }
-            .control{
+            .control {
                 font-size: 14px;
                 color: #00abf9;
                 cursor: pointer;
@@ -120,8 +138,8 @@
             align-items: center;
             font-size: 18px;
             font-weight: bold;
-            .el-input__inner{
-                border:none
+            .el-input__inner {
+                border: none
             }
         }
     }

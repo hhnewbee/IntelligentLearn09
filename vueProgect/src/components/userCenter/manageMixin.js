@@ -31,7 +31,9 @@ let manageMixin={
             //每次获取的item条数
             itemCount:0,
             //当前页数
-            page:0
+            page:0,
+            //搜索的页数
+            pageSearch:0
         }
     },
     methods: {
@@ -90,10 +92,16 @@ let manageMixin={
          * @param size
          */
         handlePage(size) {
-            let oldTag=this.page;
-            this.page=size;
-            this.handleChangeArea('p'+oldTag,'p'+size,this.url);
-            this.tableData = this.pageData=this.listNow;
+            //如果是搜索翻页
+            if(this.ifSearch){
+                let oldTag=this.pageSearch;
+                this.pageSearch=size;
+                this.handleChangeArea('search'+oldTag,'search'+size,this.urlSearch);
+            }else{
+                let oldTag=this.page;
+                this.page=size;
+                this.handleChangeArea('p'+oldTag,'p'+size,this.url);
+            }
         },
         /**
          * 判断是展示图表还是表格
@@ -106,28 +114,7 @@ let manageMixin={
          * 搜索数据
          */
         handleSearch() {
-            this.tableData = [
-                {
-                    date: '2016-05-03',
-                    name: 'vue与webpack初步1',
-                    type: '课程',
-                    category: '金融',
-                    newDate: '2016-05-03',
-                    avatar: 'http://localhost:3100/img/avatar/softIcon.jpg',
-                    nickName: 'newbee',
-                    useTime: 100,
-                    accessTimes: 30,
-                }, {
-                    date: '2016-05-03',
-                    name: 'vue与webpack初步2',
-                    type: '课程',
-                    category: '金融',
-                    newDate: '2017-05-03',
-                    avatar: 'http://localhost:3100/img/avatar/softIcon.jpg',
-                    nickName: 'newbee',
-                    useTime: 130,
-                    accessTimes: 20,
-                },];
+            this.handleChangeArea(null,'search0',this.url);
             //展示搜索的数据
             this.ifSearch = true;
         },
@@ -191,7 +178,7 @@ let manageMixin={
             this.setItemCount();
             //加载数据
             this.handleChangeArea(null,'p0',this.url);
-            this.tableData = this.pageData=this.setDataFormat(this.listNow);              //初始图表类型选项的值
+            //初始图表类型选项的值
             this.options=tableOptions;
             this.selectValue=tableOptions[0].value;
         },
@@ -202,36 +189,6 @@ let manageMixin={
             //获取表格的高度，表头固定是48，每个单元固定是60
             this.itemCount=Math.floor((this.$refs['table'].$el.clientHeight-48)/60);
         },
-        /**
-         * 设置获取数据的格式
-         */
-        setDataFormat(resDatas){
-            let tableData=[];
-            resDatas.forEach((data)=>{
-                if(data.course){
-                    tableData.date=this.$formatDate(data.createTime);
-                    tableData.name=data.course.title;
-                    tableData.type='课程';
-                    tableData.category=data.course.type;
-                    tableData.newDate=this.$formatDate(data.updateTime);
-                    tableData.avatar=data.course.userIconUrl;
-                    tableData.nickName=data.course.uploadUsername;
-                    tableData.useTime=this.$formatMinutes(data.learnTime);
-                    tableData.accessTimes=data.visitTime;
-                }else{
-                    tableData.date=this.$formatDate(data.createTime);
-                    tableData.name=data.forum.title;
-                    tableData.type='课程';
-                    tableData.category=data.forum.categorys;
-                    tableData.newDate=this.$formatDate(data.updateTime);
-                    tableData.avatar=data.forum.userIconUrl;
-                    tableData.nickName=data.forum.uploadUsername;
-                    tableData.useTime=this.$formatMinutes(data.learnTime);
-                    tableData.accessTimes=data.visitTime;
-                }
-            });
-            return tableData;
-        }
     },
     watch: {
         //监听数据变化以更新视图
@@ -243,6 +200,14 @@ let manageMixin={
         delectRows() {
             this.ifDelect = this.delectRows.length === 0;
         },
+        //监听加载的数据变化
+        listNow(){
+            if(this.ifSearch){
+                this.tableData = this.setDataFormat(this.listNow);
+            }else{
+                this.pageData=this.tableData=this.setDataFormat(this.listNow);
+            }
+        }
     },
     mixins:[areaCaching]
 };

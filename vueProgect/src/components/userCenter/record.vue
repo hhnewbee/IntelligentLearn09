@@ -93,10 +93,11 @@
                 <el-table-column label="上传传者"
                                  align='center'
                                  :show-overflow-tooltip="true"
-                                 width="160">
+                                 width="200">
                     <div slot-scope="scope"
                          style="display: flex;justify-content: center;align-items: center;">
                         <infoDetail :avatarUrl="scope.row.avatar"
+                                    :account="scope.row.nickName"
                                     style="width: 35px;height: 35px;border-radius: 50%;margin-right: 10px;cursor: pointer"></infoDetail>
                         <span>{{scope.row.nickName}}</span>
                     </div>
@@ -111,7 +112,7 @@
                 <el-table-column prop="category"
                                  align='center'
                                  label="类别"
-                                 width="50">
+                                 width="100">
                 </el-table-column>
 
                 <el-table-column prop="newDate"
@@ -165,6 +166,40 @@
         mounted(){
             this.initData([{value: '学习记录'}, {value: '学习详情'}]);
         },
+        methods:{
+            /**
+             * 设置获取数据的格式
+             */
+            setDataFormat(resDatas){
+                let tableData=[];
+                resDatas.history.forEach((data)=>{
+                    let newData={};
+                    if(data.course){
+                        newData.date=this.$formatDate(data.createTime);
+                        newData.name=data.course.title;
+                        newData.type='课程';
+                        newData.category=data.course.type;
+                        newData.newDate=this.$formatDate(data.updateTime);
+                        newData.avatar=data.course.userIconUrl;
+                        newData.nickName=data.course.uploadUsername;
+                        newData.useTime=this.$formatMinutes(data.learnTime);
+                        newData.accessTimes=data.visitTime;
+                    }else{
+                        newData.date=this.$formatDate(data.createTime);
+                        newData.name=data.forum.title;
+                        newData.type='文章';
+                        newData.category=data.forum.categorys;
+                        newData.newDate=this.$formatDate(data.updateTime);
+                        newData.avatar=data.forum.userIconUrl;
+                        newData.nickName=data.forum.userName;
+                        newData.useTime=this.$formatMinutes(data.learnTime);
+                        newData.accessTimes=data.visitTime;
+                    }
+                    tableData.push(newData);
+                });
+                return tableData;
+            }
+        },
         components: {
             hightChart:()=>import(/* webpackChunkName: "hightChart.vue" */ './hightChart.vue'),
             infoDetail
@@ -172,6 +207,9 @@
         computed:{
             url(){
                 return `/user/history/page=${this.page}/size=${this.itemCount}`;
+            },
+            urlSearch(){
+                return `/user/history/page=${this.pageSearch}/size=${this.itemCount}`;
             }
         },
         mixins: [manageMixin],
