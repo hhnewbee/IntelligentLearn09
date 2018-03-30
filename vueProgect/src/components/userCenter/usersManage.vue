@@ -130,13 +130,13 @@
                 <el-table-column prop="name"
                                  align='center'
                                  label="姓名"
-                                 width="200">
+                                 width="100">
                 </el-table-column>
 
                 <el-table-column prop="areaFocus"
                                  align='center'
                                  label="专注领域"
-                                 width="130">
+                                 width="230">
                 </el-table-column>
 
                 <el-table-column align='center'
@@ -200,6 +200,10 @@
                             <span>{{infoData.account}}</span>
                         </div>
                         <div>专注领域：{{infoData.areaFocus}}</div>
+                    </div>
+                    <div class="learnInfo">
+                        <div>学习时长：<span>48h</span></div>
+                        <div>访问次数：<span>48次</span></div>
                     </div>
                 </div>
                 <div class="item">
@@ -281,20 +285,26 @@
 <style scoped lang="scss">
     @import "./manageStyle.scss";
     .userInfo {
-        width: 300px;
-        height: 200px;
         .item {
             padding: 8px;
             border-bottom: 1px solid #f8f4f4;
             img {
-                width: 60px;
-                height: 60px;
+                width: 80px;
+                height: 80px;
                 border-radius: 50%;
             }
             .item2 {
                 margin: 8px;
                 font-size: 13px;
                 font-weight: bold;
+            }
+            .learnInfo {
+                position: absolute;
+                font-size: 14px;
+                right: 20px;
+                div:nth-child(1){
+                    margin-bottom: 5px;
+                }
             }
         }
         .item:nth-child(2) {

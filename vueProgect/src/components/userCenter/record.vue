@@ -98,7 +98,9 @@
                          style="display: flex;justify-content: center;align-items: center;">
                         <infoDetail :avatarUrl="scope.row.avatar"
                                     :account="scope.row.nickName"
-                                    style="width: 35px;height: 35px;border-radius: 50%;margin-right: 10px;cursor: pointer"></infoDetail>
+                                    :size="35"
+                                    style="cursor: pointer;margin-right: 8px">
+                        </infoDetail>
                         <span>{{scope.row.nickName}}</span>
                     </div>
                 </el-table-column>

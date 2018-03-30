@@ -26,16 +26,22 @@
                 </div>
             </div>
         </el-popover>
-        <img :src="avatarUrl"
-             @click="handleShowInfo"
-             style="border-radius: 50%;height: 100%;width: 100%"
-             v-popover:popover1>
+        <avatar :username="account"
+                :src="avatarUrl"
+                @click.native="handleShowInfo"
+                v-popover:popover1
+                :size="size"></avatar>
+        <!--<img :src="avatarUrl"-->
+             <!--@click="handleShowInfo"-->
+             <!--style="border-radius: 50%;height: 100%;width: 100%"-->
+             <!--v-popover:popover1>-->
     </div>
 </template>
 
 <script>
+    import Avatar from 'vue-avatar'
     export default {
-        props: ['account', 'avatarUrl'],
+        props: ['account', 'avatarUrl','size'],
         data() {
             return {
                 focusArea: '',
@@ -45,13 +51,16 @@
         },
         methods: {
             handleShowInfo() {
-                this.$ajaxJava.get(`user/${this.account}`).then((res) => {
+                this.$ajaxJava.get(`user/${this.account}/selfInformation`).then((res) => {
                     this.name = res.data.trueName;
-                    this.focusArea = res.data.selfInformation.position;
-                    this.eMail = res.data.selfInformation.email;
+                    this.focusArea = res.data.position;
+                    this.eMail = res.data.email;
                 })
             }
         },
+        components:{
+            Avatar
+        }
     }
 </script>
 
