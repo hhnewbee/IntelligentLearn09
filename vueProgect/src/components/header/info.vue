@@ -188,6 +188,10 @@
             top: 7px;
             border: none;
         }
+        .el-badge__content.is-dot{
+            height: 6px;
+            width: 6px;
+        }
         .noticeIcon {
             background-color: inherit;
             border-color: inherit;

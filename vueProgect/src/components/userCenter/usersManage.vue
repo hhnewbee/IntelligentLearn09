@@ -323,9 +323,9 @@
                 //详细信息
                 infoData:{},
                 //表格数据
-                tableData:[],
+                tableData_:[],
                 //图表数据
-                chatData:[]
+                chatData_:[]
             }
         },
         computed:{
