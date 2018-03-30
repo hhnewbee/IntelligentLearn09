@@ -177,7 +177,8 @@
             </el-table>
             <hightChart
                     v-if="!ifTable"
-                    :chartData="chartData"></hightChart>
+                    :chartData="chartData">
+            </hightChart>
         </div>
 
         <el-pagination
@@ -214,6 +215,93 @@
                         <span ref="eMail" style="padding: 5px">{{infoData.eMail}}</span>
                     </div>
                 </div>
+                <div>
+                    <!--时间切换-->
+                    <el-select
+                            @change="handleUserTypeChange"
+                            style="width: 110px;position: absolute;right: 160px"
+                            v-model="userSelectV"
+                            size="small"
+                            placeholder="请选择">
+                        <el-option
+                                v-for="item in userTypes"
+                                :key="item.label"
+                                :value="item.value">
+                        </el-option>
+                    </el-select>
+                    <!--图表啦类型切换-->
+                    <el-select
+                            @change="handleUserTypeChange"
+                            style="width: 110px;position: absolute;right: 160px"
+                            v-model="userSelectV"
+                            size="small"
+                            placeholder="请选择">
+                        <el-option
+                                v-for="item in userTypes"
+                                :key="item.label"
+                                :value="item.value">
+                        </el-option>
+                    </el-select>
+                </div>
+                <!--表格和图表-->
+                <div>
+                    <el-table
+                            ref="table"
+                            v-show="ifTable"
+                            @select-all="handleSelectAll"
+                            @select="handleSelectBatch"
+                            :data="infoData.tableData"
+                            height="100%"
+                            border>
+                        <el-table-column prop="date"
+                                         align='center'
+                                         label="学习时间"
+                                         width="100">
+                        </el-table-column>
+
+                        <el-table-column prop="account"
+                                         align='center'
+                                         label="课程名称"
+                                         min-width="200">
+                        </el-table-column>
+
+                        <el-table-column prop="areaFocus"
+                                         align='center'
+                                         label="类别"
+                                         width="230">
+                        </el-table-column>
+
+                        <el-table-column prop="areaFocus"
+                                         align='center'
+                                         label="学习时间"
+                                         width="150">
+                        </el-table-column>
+
+                        <el-table-column prop="areaFocus1"
+                                         align='center'
+                                         label="访问次数"
+                                         width="150">
+                        </el-table-column>
+
+                        <el-table-column label="操作"
+                                         align='center'
+                                         fixed="right"
+                                         width="110">
+                            <template slot-scope="scope">
+                                <el-button
+                                        @click="handleSee('user',scope)"
+                                        type="text"
+                                        size="small">
+                                    查看
+                                </el-button>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                    <hightChart
+                            v-if="!ifTable"
+                            :chartData="infoData.chartData">
+                    </hightChart>
+                </div>
             </div>
         </el-dialog>
     </div>
@@ -233,7 +321,11 @@
                 //查看用户弹出框
                 dialogUserVisible:false,
                 //详细信息
-                infoData:{}
+                infoData:{},
+                //表格数据
+                tableData:[],
+                //图表数据
+                chatData:[]
             }
         },
         computed:{

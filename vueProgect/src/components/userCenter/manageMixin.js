@@ -144,6 +144,15 @@ let manageMixin={
                 }
                 case 'user':{
                     this.infoData=scope.row;
+                    //获取表格数据
+                    this.$ajaxJava.get('').then((res)=>{
+                        this.tableData=res.data;
+                    });
+                    //获取图表数据
+                    this.$ajaxJava.get('').then((res)=>{
+                        this.chatData=res.data;
+                     });
+                    //展现数据
                     this.dialogUserVisible=true;
                     break;
                 }
