@@ -6,8 +6,18 @@
             </el-breadcrumb-item>
         </el-breadcrumb>
         <div class="item item1">
-            <div>
+            <div class="avator-mode"
+                 @mouseenter="handleSetShow"
+                 @mouseleave="handleSetClose">
                 <img :src="avatarUrl">
+                <div class="update-avator"
+                     id="setAvatar">
+                    <p>更换头像</p>
+                </div>
+                <avatar-cropper trigger="#setAvatar"
+                                @uploaded="handleUploaded"
+                                upload-url="/files/upload">
+                </avatar-cropper>
             </div>
             <div style="margin: 0 30px">
                 <div>账号：
@@ -28,6 +38,7 @@
 
             <div class="learnInfo">
                 <div>学习时长：<span>48h</span></div>
+                <div>访问次数：<span>48次</span></div>
             </div>
         </div>
         <div class="item">
@@ -48,20 +59,25 @@
 </template>
 
 <script>
-    import {mapGetters, mapState} from 'vuex';
+    import {mapGetters, mapState, mapMutations} from 'vuex';
+    import AvatarCropper from "vue-avatar-cropper";
 
     export default {
         data() {
             return {
                 name: '',
-                eMail: ''
+                eMail: '',
             }
         },
         activated(){
-            this.$ajaxJava.get(`/user/${this.account}`).then((res)=>{
-                this.name=res.data.trueName;
-                this.eMail=res.data.selfInformation.email;
-            })
+            setTimeout(()=>{
+                if(this.account){
+                    this.$ajaxJava.get(`/user/${this.account}/selfInformation`).then((res)=>{
+                        this.name=res.data.trueName;
+                        this.eMail=res.data.email;
+                    })
+                }
+            },1);
         },
         computed: {
             ...mapGetters(['filterType']),
@@ -75,6 +91,15 @@
             }
         },
         methods: {
+            ...mapMutations('info', [
+                'setAvatarUrl',
+                'setAreaFocus'
+            ]),
+            /**
+             * 修改个人信息
+             * @param tar
+             * @param e
+             */
             handleEditInfo(tar, e) {
                 let target = e.currentTarget;
                 let content = this.$refs[tar];
@@ -89,15 +114,29 @@
                     target.style.color = '#00abf9';
                     target.innerText = "修改";
                 }
+            },
+            /**
+             * 显示修改
+             */
+            handleSetShow(){
+                document.querySelector('#setAvatar').style.bottom='0';
+            },
+            /**
+             * 不显示显示修改
+             */
+            handleSetClose(){
+                document.querySelector('#setAvatar').style.bottom='-30px';
+            },
+            /**
+             * 头像上传成功
+             * @param resp
+             */
+            handleUploaded(resp) {
+                this.setAvatarUrl(resp.relative_url);
             }
         },
-        watch:{
-            account(){
-                this.$ajaxJava.get(`/user/${this.account}/selfInformation`).then((res)=>{
-                    this.name=res.data.trueName;
-                    this.eMail=res.data.selfInformation.email;
-                })
-            }
+        components:{
+            AvatarCropper
         }
     }
 </script>
@@ -108,16 +147,39 @@
             margin: 20px 100px;
             padding: 10px;
             border-bottom: 1px solid #f8f4f4;
-            img {
-                width: 95px;
-                height: 95px;
+            .avator-mode{
+                position: relative;
+                width: 100px;
+                height: 100px;
                 border-radius: 50%;
+                overflow: hidden;
+                img {
+                    width: 100%;
+                    height: 100%;
+                }
+                .update-avator{
+                    font-size: 12px;
+                    position: absolute;
+                    width: 100%;
+                    left: 0;
+                    bottom: -30px;
+                    transition: bottom .3s;
+                    p{
+                        cursor: pointer;
+                        background: rgba(0,0,0,.6);
+                        color: #fff;
+                        text-align: center;
+                        line-height: 30px;
+                    }
+                }
             }
             .learnInfo {
-                display: flex;
-                align-items: center;
                 position: absolute;
+                font-size: 15px;
                 right: 0;
+                div:nth-child(1){
+                    margin-bottom: 5px;
+                }
             }
             .item2 {
                 margin: 20px;

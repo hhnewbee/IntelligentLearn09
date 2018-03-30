@@ -160,7 +160,7 @@
                                  width="110">
                     <template slot-scope="scope">
                         <el-button
-                                @click="handleSee(scope)"
+                                @click="handleSee('user',scope)"
                                 type="text"
                                 size="small">
                             查看
@@ -190,6 +190,27 @@
 
         <!--查看用户时的弹出框-->
         <el-dialog :visible.sync="dialogUserVisible">
+            <div class="userInfo">
+                <div class="item item1">
+                    <div>
+                        <img :src="infoData.avatarUrl">
+                    </div>
+                    <div style="margin: 0 15px">
+                        <div style="margin-bottom: 3px">账号：
+                            <span>{{infoData.account}}</span>
+                        </div>
+                        <div>专注领域：{{infoData.areaFocus}}</div>
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="item2">姓名：
+                        <span ref="name" style="padding: 5px">{{infoData.name}}</span>
+                    </div>
+                    <div class="item2">邮箱：
+                        <span ref="eMail" style="padding: 5px">{{infoData.eMail}}</span>
+                    </div>
+                </div>
+            </div>
         </el-dialog>
     </div>
 </template>
@@ -199,27 +220,16 @@
 
     export default {
         mounted() {
-            this.initData(
-                [
-                    {
-                        date: '2016-05-03',
-                        account: '154091333',
-                        name: 'newbee',
-                        areaFocus: '金融',
-                        status: true,
-                        accessTimes: 40,
-                        useTime: 200,
-                    },
-                ],
-                [{value: '学习记录'}, {value: '学习详情'}]
-            );
+            this.initData([{value: '学习记录'}, {value: '学习详情'}]);
         },
         data() {
             return {
                 //用户类型选项值
                 userSelectV: '普通用户',
                 //查看用户弹出框
-                dialogUserVisible:false
+                dialogUserVisible:false,
+                //详细信息
+                infoData:{}
             }
         },
         computed:{
@@ -244,14 +254,18 @@
              */
             setDataFormat(resDatas){
                 let tableData=[];
-                resDatas.history.forEach((data)=>{
+                resDatas.users.forEach((data)=>{
                     let newData={};
-                        newData.date=this.$formatDate(data.createTime);
-                        newData.account=data.course.title;
-                        newData.name='课程';
-                        newData.areaFocus=data.course.type;
-                        newData.useTime=this.$formatMinutes(data.learnTime);
-                        newData.accessTimes=data.visitTime;
+                        newData.date=this.$formatDate(data.creationTimestamp);
+                        newData.account=data.account;
+                        newData.name=data.selfInformation.trueName;
+                        newData.areaFocus=data.selfInformation.position;
+                        newData.status=true;
+                        //查看更多才显示的
+                        newData.eMail=data.selfInformation.email;
+                        newData.avatarUrl=data.selfInformation.imgPath;
+//                        newData.useTime=Math.ceil(this.$formatMinutes(data.learnTime));
+//                        newData.accessTimes=data.visitTime;
                         tableData.push(newData);
                 });
                 return tableData;
@@ -266,5 +280,34 @@
 
 <style scoped lang="scss">
     @import "./manageStyle.scss";
+    .userInfo {
+        width: 300px;
+        height: 200px;
+        .item {
+            padding: 8px;
+            border-bottom: 1px solid #f8f4f4;
+            img {
+                width: 60px;
+                height: 60px;
+                border-radius: 50%;
+            }
+            .item2 {
+                margin: 8px;
+                font-size: 13px;
+                font-weight: bold;
+            }
+        }
+        .item:nth-child(2) {
+            border-bottom: none;
+        }
+        .item1 {
+            position: relative;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            font-size: 15px;
+            font-weight: bold;
+        }
+    }
 </style>
 

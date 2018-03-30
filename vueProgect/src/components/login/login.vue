@@ -253,11 +253,11 @@
                         } else {//注册
                             data = {
                                 account: this.formDataSign.accountLogin,
-                                trueName: this.formDataSign.name,
                                 //把数组切割成字符串
                                 selfInformation: {
                                     position: this.formDataSign.areaFocus.join('/'),
-                                    email: this.formDataSign.eMail
+                                    email: this.formDataSign.eMail,
+                                    trueName: this.formDataSign.name,
                                 },
                                 password: sha256(this.formDataSign.passwdLogin)
                             };
@@ -283,7 +283,6 @@
              *设置返回的用户数据
              */
             ...mapMutations('info', [
-                'setAccountHashMap',
                 'setAccount',
                 'setAvatarUrl',
                 'setAreaFocus'
@@ -296,13 +295,11 @@
                 //作为下次不用登录的依据
                 localStorage["ifLogin"] = data.accountHashMap;
                 //初始化页面信息
-                this.setAccountHashMap(data.accountHashMap);
                 this.setAccount(data.account);
                 this.setAvatarUrl(data.avatarUrl);
                 this.setAreaFocus(data.areaFocus);
                 //跳转页面
                 this.$router.push({path: '/main/recommend'});
-
             }
         },
         components: {

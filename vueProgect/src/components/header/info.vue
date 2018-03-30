@@ -126,12 +126,6 @@
         },
         methods: {
             /**
-             * 设置用户信息
-             */
-            ...mapMutations('info', [
-                'setAccountHashMap',
-            ]),
-            /**
              * 快捷选项跳转
              * @param tar
              */
@@ -143,8 +137,7 @@
              */
             handleOut() {
                 localStorage.removeItem("ifLogin");
-                this.setAccountHashMap('');
-                window.location.reload();
+                this.$router.push({name: 'login'});
             },
             /**
              * 初始化数据

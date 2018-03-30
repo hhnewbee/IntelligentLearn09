@@ -129,20 +129,21 @@ let manageMixin={
         /**
          * 当个查看
          * @param type - 查看数据的类型
-         * @param target - 课程/文章的id/用户账号
+         * @param scope - 课程/文章的id/用户账号
          */
-        handleSee(type,target) {
+        handleSee(type,scope) {
             //判断是什么类型的查看
             switch(type){
                 case 'course':{
-                    this.$router.push({path:`/course/${target}`});
+                    this.$router.push({path:`/course/${scope.row.account}`});
                     break;
                 }
                 case 'article':{
-                    this.$router.push({path:`/articlePage/article/${target}`});
+                    this.$router.push({path:`/articlePage/article/${scope.row.account}`});
                     break;
                 }
                 case 'user':{
+                    this.infoData=scope.row;
                     this.dialogUserVisible=true;
                     break;
                 }

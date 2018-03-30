@@ -182,7 +182,7 @@
                         newData.newDate=this.$formatDate(data.updateTime);
                         newData.avatar=data.course.userIconUrl;
                         newData.nickName=data.course.uploadUsername;
-                        newData.useTime=this.$formatMinutes(data.learnTime);
+                        newData.useTime=Math.ceil(this.$formatMinutes(data.learnTime));
                         newData.accessTimes=data.visitTime;
                     }else{
                         newData.date=this.$formatDate(data.createTime);
@@ -192,7 +192,7 @@
                         newData.newDate=this.$formatDate(data.updateTime);
                         newData.avatar=data.forum.userIconUrl;
                         newData.nickName=data.forum.userName;
-                        newData.useTime=this.$formatMinutes(data.learnTime);
+                        newData.useTime=Math.ceil(this.$formatMinutes(data.learnTime));
                         newData.accessTimes=data.visitTime;
                     }
                     tableData.push(newData);
