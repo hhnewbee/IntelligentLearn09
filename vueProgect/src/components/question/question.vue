@@ -99,6 +99,7 @@
                                 </div>
                                 <div class="footer">
                                     <span class="count fa fa-heart"
+                                          :ref="'liking'+item.id"
                                           @click="handleLikeAcollect('question/liking/',item)">
                                         &nbsp;0人赞同
                                     </span>
