@@ -92,10 +92,11 @@
                         intro: res.data.description,
                         name: res.data.uploadUsername,
                         time: res.data.creationTimestamp,
-                        chapters: {}
+                        chapters:{}
                     };
+                    //遍历每个视频文件
                     res.data.file.forEach((file) => {
-                        //判断是否是章节
+                        //判断是否是章节,因为资源夹带在里面了
                         if (file.chapter) {
                             //判断该章节数组是否存在
                             if (!this.chapter.chapters[file.chapter]) {
@@ -111,6 +112,23 @@
                             )
                         }
                     });
+
+                    //todo 名称排序
+                    let chapters=Array.from(this.chapter.chapters);
+                    chapters.sort((a,b)=>{
+                        let a_=a[0].split('*&@&@*');
+                        let b_=b[0].split('*&@&@*');
+                        //替换名字
+                        a[0]=a_[1];
+                        //章节排序
+                        return a_[0]-b_[0];
+                    });
+                    chapters.forEach((chapter)=>{
+                        //视频名称排序
+                        chapter[1].sort();
+                    });
+                    console.log(chapters);
+
                     //初始化第一个选择章节的内容
                     this.lastCh = '1to1';
                     //初始化视频的url，等待数据加载完成在更新dom
