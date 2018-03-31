@@ -40,11 +40,12 @@
             <!--答案列表-->
             <div v-for="answer in answerList" class="article">
                 <div class="detail" style="position: relative">
-                    <img
-                            class="avatar"
-                            :src="answer.avatar">
-                    <div class="name">{{answer.nickname}}</div>
-                    <div class="time" style="position:absolute;right: 0">时间：{{answer.time}}</div>
+                    <img class="avatar"
+                         :src="answer.userIconUrl">
+                    <div class="name">{{answer.username}}</div>
+                    <div class="time" style="position:absolute;right: 0">
+                        时间：{{answer.creationTimestamp | formatFromNow}}
+                    </div>
                 </div>
                 <div
                         class="content">
@@ -52,9 +53,9 @@
                 </div>
                 <div class="info" style="align-self: flex-start">
                     <div class="likes fa fa-heart ic">&nbsp;{{answer.likes}}人赞同</div>
-                    <div
-                            @click="openChatList(answer.id)"
-                            class="comments fa fa-comments ic">&nbsp;{{answer.answers}}个回复
+                    <div @click="openChatList(answer)"
+                         class="comments fa fa-comments ic">
+                        &nbsp;{{answer.answers}}个回复
                     </div>
                 </div>
             </div>
@@ -66,69 +67,64 @@
             </el-pagination>
             <!--答案回复列表-->
             <el-dialog :visible.sync="chatListVisible">
-                <div class="replyList">
-                    <!--回复列表items-->
-                    <div class="replysList">
-                        <div class="listHeader">
-                            <div class="listName">{{replyData.username}}</div>
-                            <img class="listAvatar" :src="replyData.userIconUrl">
+                <!--回复列表items-->
+                <div class="replysList">
+                    <div class="listHeader">
+                        <img class="listAvatar" :src="replyData.userIconUrl">
+                        <div class="listName">{{replyData.username}}</div>
+                    </div>
+                    <div class="listContent">
+                        <p>{{replyData.content}}</p>
+                        <div class="cheart el-icon-time">
+                            &nbsp;{{replyData.creationTimestamp | formatDateTime}}
                         </div>
-                        <div class="listContent">
-                            {{replyData.content}}
-                            <span class="cheart el-icon-time"
-                                  style="color:#b5b9bc;left: 10px;bottom: 5px">
-                    &nbsp;{{replyData.creationTimestamp | formatDateTime}}
-                </span>
-                            <span class="cheart fa fa-heart"
-                                  @click="handleSupport(area)">&nbsp;0
-                            </span>
+                        <div class="cheart fa fa-heart"
+                             @click="handleSupport(area)">&nbsp;0
                         </div>
-                        <div class="itemCount">
-                            {{listNow.length}}&nbsp;个回答
-                        </div>
-                        <vue-scrollbar class="my-scrollbar"
-                                       style="background-color: white">
-                            <div class="itemsList">
-                                <div class="item"
-                                     v-for="item in listNow">
-                                    <div class="header">
-                                        <img :src="item.userIconUrl"/>
-                                        <div class="name">{{item.username}}</div>
-                                        <div class="time">{{item.creationTimestamp | formatFromNow}}</div>
-                                    </div>
-                                    <div class="content" style="color:black">
-                                        {{item.content}}
-                                    </div>
-                                    <div class="footer">
-                                        <span class="count fa fa-heart"
-                                              @click="handleSupport(item)">
-                                            &nbsp;0人赞同
-                                        </span>
-                                        <span class="count fa fa-comments"
-                                              @click="handleAreaChange(true,item)"
-                                              style="margin-left: 10px">
-                                            &nbsp;{{item.replies}}人回复
-                                         </span>
-                                    </div>
+                    </div>
+                    <div class="itemCount">
+                        {{listNow.length}}&nbsp;个回答
+                    </div>
+                    <vue-scrollbar class="my-scrollbar">
+                        <div class="itemsList">
+                            <div class="item"
+                                 v-for="item in replyList">
+                                <div class="header">
+                                    <img :src="item.userIconUrl"/>
+                                    <div class="name">{{item.username}}</div>
+                                    <div class="time">{{item.creationTimestamp | formatFromNow}}</div>
+                                </div>
+                                <div class="content" style="color:black">
+                                    {{item.content}}
+                                </div>
+                                <div class="footer">
+                                    <span class="count fa fa-heart"
+                                          @click="handleLikeAcollect('question/liking/',item)">
+                                        &nbsp;0人赞同
+                                    </span>
+                                    <span class="count fa fa-comments"
+                                          style="margin-left: 10px">
+                                        &nbsp;{{item.replies}}人回复
+                                     </span>
                                 </div>
                             </div>
-                        </vue-scrollbar>
-                    </div>
-                    <div style="display: flex;justify-content: center;align-items: flex-end;align-self: center;margin-top: 20px">
-                        <el-input
-                                style="width: 522px;margin-right: 10px;"
-                                type="textarea"
-                                :autosize="{minRows: 2}"
-                                resize="none"
-                                placeholder="请输入回复内容"
-                                v-model="replyInput">
-                        </el-input>
-                        <el-button type="primary"
-                                   size="medium"
-                                   disabled>
-                            回复
-                        </el-button>
-                    </div>
+                        </div>
+                    </vue-scrollbar>
+                </div>
+                <div style="display: flex;justify-content: center;align-items: flex-end;margin-top: 20px">
+                    <el-input
+                            style="width: 522px;margin-right: 10px;"
+                            type="textarea"
+                            :autosize="{minRows: 2}"
+                            resize="none"
+                            placeholder="请输入回复内容"
+                            v-model="replyInput">
+                    </el-input>
+                    <el-button type="primary"
+                               size="medium"
+                               disabled>
+                        回复
+                    </el-button>
                 </div>
             </el-dialog>
         </div>
@@ -201,31 +197,31 @@
                 this.answerList = [
                     {
                         id: "1",
-                        avatar: 'http://localhost:3100/img/avatar/softIcon.jpg',
-                        nickname: 'newbee1',
-                        time: '2018-1-1',
+                        username: 'newbee1',
+                        userIconUrl: 'http://localhost:3100/img/avatar/softIcon.jpg',
+                        creationTimestamp: '2018-1-1',
                         content: '这几天在修改 WPJAM 问答网站首页列表的时候，发现一个问题，就是有些问题的标题比较长，为了显示美观，我想将首页列表的标题都设置为1行，如果超出的在最后显示 …，开始的时候我使用 PHP 函数来计算文字个数，但是由于中英文字数算法和长度的问题，总是不能做.',
                         likes: '22',
                         answers: '22',
                     },
                     {
-                        id: "2",
-                        avatar: 'http://localhost:3100/img/avatar/softIcon.jpg',
-                        nickname: 'newbee1',
-                        time: '2018-1-1',
+                        id: "1",
+                        username: 'newbee1',
+                        userIconUrl: 'http://localhost:3100/img/avatar/softIcon.jpg',
+                        creationTimestamp: '2018-1-1',
                         content: '这几天在修改 WPJAM 问答网站首页列表的时候，发现一个问题，就是有些问题的标题比较长，为了显示美观，我想将首页列表的标题都设置为1行，如果超出的在最后显示 …，开始的时候我使用 PHP 函数来计算文字个数，但是由于中英文字数算法和长度的问题，总是不能做.',
                         likes: '22',
                         answers: '22',
                     },
                     {
-                        id: "3",
-                        avatar: 'http://localhost:3100/img/avatar/softIcon.jpg',
-                        nickname: 'newbee1',
-                        time: '2018-1-1',
+                        id: "1",
+                        username: 'newbee1',
+                        userIconUrl: 'http://localhost:3100/img/avatar/softIcon.jpg',
+                        creationTimestamp: '2018-1-1',
                         content: '这几天在修改 WPJAM 问答网站首页列表的时候，发现一个问题，就是有些问题的标题比较长，为了显示美观，我想将首页列表的标题都设置为1行，如果超出的在最后显示 …，开始的时候我使用 PHP 函数来计算文字个数，但是由于中英文字数算法和长度的问题，总是不能做.',
                         likes: '22',
                         answers: '22',
-                    }
+                    },
                 ];
                 this.similarityQuestion = [
                     {content: '我的回答内容我的回答内容1我的回答内容我的回答内容1', time: '2013-11-11 22:33'},
@@ -237,28 +233,30 @@
             },
             /**
              * 打开对话列表
-             * @param id - 答案的id
+             * @param dataAnswer - 答案的内容
              */
-            openChatList(id) {
+            openChatList(dataAnswer) {
+                this.replyData = dataAnswer;
                 this.replyList = [
                     {
                         id: "2",
-                        avatar: 'http://localhost:3100/img/avatar/softIcon.jpg',
-                        nickname: 'newbee1',
-                        time: '2018-1-1',
+                        userIconUrl: 'http://localhost:3100/img/avatar/softIcon.jpg',
+                        username: 'newbee1',
+                        creationTimestamp: '2018-1-1',
                         content: '这几天在修改 WPJAM 问答网站首页列表的时候，发现一个问题，就是有些问题的标题比较长，为了显示美观，我想将首页列表的标题都设置为1行，如果超出的在最后显示 …，开始的时候我使用 PHP 函数来计算文字个数，但是由于中英文字数算法和长度的问题，总是不能做.',
                         likes: '22',
-                        answers: '22',
+                        replies: '22',
                     },
                     {
                         id: "3",
-                        avatar: 'http://localhost:3100/img/avatar/softIcon.jpg',
-                        nickname: 'newbee1',
-                        time: '2018-1-1',
+                        userIconUrl: 'http://localhost:3100/img/avatar/softIcon.jpg',
+                        username: 'newbee1',
+                        creationTimestamp: '2018-1-1',
                         content: '这几天在修改 WPJAM 问答网站首页列表的时候，发现一个问题，就是有些问题的标题比较长，为了显示美观，我想将首页列表的标题都设置为1行',
                         likes: '22',
-                        answers: '22',
-                    }
+                        replies: '22',
+                    },
+
                 ];
                 this.chatListVisible = true;
             },
@@ -379,123 +377,148 @@
                 margin: 20px 0;
             }
             .el-dialog {
+                display: flex;
+                flex-direction: column;
                 width: 600px;
                 max-height: 90%;
-                padding-top: 10px;
-                .el-dialog__body{
+                padding-top: 5px;
+                .el-dialog__body {
                     padding-bottom: 15px;
-                }
-                /*回复的列表*/
-                .replysList {
                     height: 1%;
                     flex-grow: 1;
-                    position: relative;
                     display: flex;
                     flex-direction: column;
-                    padding-bottom: 10px;
-                    background-color: white;
-                    .listHeader {
-                        display: flex;
-                        align-items: center;
-                        justify-content: flex-start;
-                        .listName {
-                            color: $primaryColor;
-                            font-size: 16px;
-                            margin-right: 5px;
-                        }
-                        .listAvatar {
-                            margin: 5px 0;
-                            width: 25px;
-                            height: 25px;
-                            border-radius: 50%;
-                        }
-                    }
-                    .listContent {
-                        box-shadow: 1px 1px 4px #c4c4c4;
-                        margin: 5px 0;
-                        min-height: 100px;
-                        padding: 8px 10px;
+                    /*回复的列表*/
+                    .replysList {
+                        height: 1%;
+                        flex-grow: 1;
                         position: relative;
-                        font-size: 15px;
-                        color: black;
-                        .cheart {
-                            cursor: pointer;
-                            position: absolute;
-                            right: 10px;
-                            bottom: 5px;
-                            color: #495a6c;
-                            font-size: 12px;
-                            &:hover {
-                                color: #b5b5b5;
+                        display: flex;
+                        flex-direction: column;
+                        padding-bottom: 10px;
+                        background-color: white;
+                        .listHeader {
+                            flex-shrink: 0;
+                            display: flex;
+                            align-items: center;
+                            justify-content: flex-start;
+                            .listName {
+                                color: $primaryColor;
+                                font-weight: bold;
+                                font-size: 16px;
+                                margin-left: 8px;
+                            }
+                            .listAvatar {
+                                margin: 5px 0;
+                                width: 30px;
+                                height: 30px;
+                                border-radius: 50%;
                             }
                         }
-                    }
-                    .itemCount {
-                        margin: 5px 15px;
-                        color: #9e9e9e;
-                        font-size: 13px;
-                    }
-                    .itemsList {
-                        height: 100%;
-                        .item {
-                            width: 92%;
-                            padding: 10px 10px;
-                            background-color: white;
-                            .header {
-                                display: flex;
-                                align-items: center;
-                                position: relative;
-                                border-radius: 4px 4px 0 0;
-                                img {
-                                    width: 30px;
-                                    height: 30px;
-                                    border-radius: 50%;
-                                    z-index: 2;
-                                }
-                                .name {
-                                    margin-left: 8px;
-                                    font-size: 16px;
-                                    font-weight: 700;
-                                    color: $primaryColor;
-                                }
-                                .tag {
-                                    padding: 2px 4px;
-                                    margin-left: 10px;
-                                    background: #409eff;
-                                    font-size: 12px;
-                                    font-weight: bold;
-                                    color: #ffffff;
-                                    border-radius: 3px;
-                                }
-                                .time {
-                                    font-size: 12px;
-                                    color: #9E9E9E;
-                                    margin-left: 10px;
-                                }
+                        .listContent {
+                            flex-shrink: 0;
+                            box-shadow: 1px 1px 4px #c4c4c4;
+                            margin: 5px 0;
+                            min-height: 80px;
+                            padding: 8px 10px;
+                            position: relative;
+                            font-size: 15px;
+                            color: black;
+                            p {
+                                padding-bottom: 15px;
                             }
-                            .content {
-                                font-size: 15px;
-                                /*强制英文断词*/
-                                word-break: break-all;
-                                padding-top: 5px;
-                                padding-bottom: 10px;
+                            div:nth-child(2) {
+                                color: #b5b9bc;
+                                left: 10px;
+                                bottom: 5px;
                             }
-                            .footer {
-                                display: flex;
-                                align-items: center;
+                            div:nth-child(3){
                                 cursor: pointer;
-                                span {
-                                    color: #9E9E9E;
-                                    font-size: 12px;
-                                    &:hover {
-                                        color: #b5b5b5;
+                                right: 10px;
+                                &:hover {
+                                    color: #6a819c;
+                                }
+                            }
+                            .cheart {
+                                position: absolute;
+                                bottom: 5px;
+                                color: #b5b5b5;
+                                font-size: 12px;
+                            }
+                        }
+                        .itemCount {
+                            flex-shrink: 0;
+                            margin: 5px 15px;
+                            color: #9e9e9e;
+                            font-size: 13px;
+                            border-bottom: 1px solid #ddd5d5;
+                        }
+                        .my-scrollbar {
+                            height: 1%;
+                            width: 100%;
+                            flex-grow: 1;
+                            .itemsList {
+                                .item {
+                                    width: 92%;
+                                    padding: 10px 10px;
+                                    background-color: white;
+                                    .header {
+                                        display: flex;
+                                        align-items: center;
+                                        position: relative;
+                                        border-radius: 4px 4px 0 0;
+                                        img {
+                                            width: 30px;
+                                            height: 30px;
+                                            border-radius: 50%;
+                                            z-index: 2;
+                                        }
+                                        .name {
+                                            margin-left: 8px;
+                                            font-size: 16px;
+                                            font-weight: 700;
+                                            color: $primaryColor;
+                                        }
+                                        .tag {
+                                            padding: 2px 4px;
+                                            margin-left: 10px;
+                                            background: #409eff;
+                                            font-size: 12px;
+                                            font-weight: bold;
+                                            color: #ffffff;
+                                            border-radius: 3px;
+                                        }
+                                        .time {
+                                            font-size: 12px;
+                                            color: #9E9E9E;
+                                            margin-left: 10px;
+                                        }
+                                    }
+                                    .content {
+                                        font-size: 15px;
+                                        /*强制英文断词*/
+                                        word-break: break-all;
+                                        padding-top: 5px;
+                                        padding-bottom: 10px;
+                                    }
+                                    .footer {
+                                        display: flex;
+                                        align-items: center;
+                                        cursor: pointer;
+                                        span {
+                                            color: #9E9E9E;
+                                            font-size: 12px;
+                                            &:hover {
+                                                color: #b5b5b5;
+                                            }
+                                        }
                                     }
                                 }
+                                .item {
+                                    margin: 5px 15px;
+                                    border-bottom: 1px solid #ddd5d5;
+                                }
                             }
-                        }
-                        .item {
-                            margin: 5px 15px;
-                            border-top: 1px solid #ddd5d5;
                         }
                     }
                 }

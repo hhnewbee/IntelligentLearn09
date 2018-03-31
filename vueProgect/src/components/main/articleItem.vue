@@ -32,7 +32,7 @@
         <div class="info">
             <div class="likes fa fa-heart ic"
                  :ref="'liking'+itemData.id"
-                 @click="handleLikeAcollect('liking',itemData)">
+                 @click="handleLikeAcollect('forum/liking/',itemData)">
                 &nbsp;{{itemData.liking}}人喜欢
             </div>
             <div class="comments fa fa-comments ic">
@@ -40,7 +40,7 @@
             </div>
             <div class="collection fa fa-star ic"
                  :ref="'collect'+itemData.id"
-                 @click="handleLikeAcollect('collect',itemData)">
+                 @click="handleLikeAcollect('forum/collect/',itemData)">
                 &nbsp;0个收藏
             </div>
         </div>

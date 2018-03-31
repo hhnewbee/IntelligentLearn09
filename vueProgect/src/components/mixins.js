@@ -75,24 +75,12 @@ export let recordLearning = {
 export let likeAcollect = {
     methods: {
         /**
-         * 处理checkbox组件不能监听click事件的问题
-         */
-        handleGroup(){
-            this.$refs['like'].$el.querySelector('span').addEventListener('click',()=>{
-                this.handleLikeAcollect('liking',this.courseData);
-            });
-            this.$refs['collect'].$el.querySelector('span').addEventListener('click',()=>{
-                this.handleLikeAcollect('collect',this.courseData);
-            });
-
-        },
-        /**
          * 喜欢和收藏
          * @param lOc - 是喜欢还是收藏
          * @param data - 要操作的数据
          */
         handleLikeAcollect(lOc, data) {
-            this.$ajaxJava.get(`forum/${lOc}/${data.id}`).then((res) => {
+            this.$ajaxJava.get(lOc+data.id).then((res) => {
                 //是否已经点赞或者收藏过
                 if (res.data.result === '0') {
                     this.$message({

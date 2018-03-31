@@ -11,19 +11,18 @@
         </div>
         <div class="info">
             <el-checkbox-group
-                    v-model="checkBoxGroup"
                     style="margin-right: 100px;width: 140px"
                     fill="#475669"
                     textColor="#409EFF"
                     size="small">
                 <el-checkbox-button
-                        ref="like"
+                        @click.native="handleLikeAcollect('course/liking/',courseData)"
                         label="liking"
                         key="liking">
                     {{courseData.liking}}&nbsp;喜欢
                 </el-checkbox-button>
                 <el-checkbox-button
-                        ref="collect"
+                        @click.native="handleLikeAcollect('course/collect/',courseData)"
                         label="collect"
                         key="collect">
                     0&nbsp;收藏
@@ -41,8 +40,6 @@
 
     export default {
         mounted() {
-            this.handleGroup();
-            //保存返回的路径，因为刷新会导致路径消失，所以用本地保存
             if (this.$route.query.path) {
                 localStorage["backUrl"] = this.$route.query.path;
             }

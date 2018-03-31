@@ -11,13 +11,13 @@
                 <div style="position: absolute;right: 0">
                     <el-checkbox-group v-model="checkboxGroup" size="small">
                         <el-checkbox-button
-                                @click="handleLikeAcollect('liking',articleData)"
+                                @click.native="handleLikeAcollect('forum/liking/',articleData)"
                                 label="likes"
                                 key="likes">
                             {{articleData.liking}}&nbsp;喜欢
                         </el-checkbox-button>
                         <el-checkbox-button
-                                @click="handleLikeAcollect('collect',articleData)"
+                                @click.native="handleLikeAcollect('forum/collect/',articleData)"
                                 label="collections"
                                 key="collections">
                             {{0}}&nbsp;收藏
