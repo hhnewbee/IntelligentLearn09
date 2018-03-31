@@ -50,7 +50,6 @@
                     placeholder="请选择">
                 <el-option
                         v-for="item in userTypes"
-                        :key="item.label"
                         :value="item.value">
                 </el-option>
             </el-select>
@@ -216,30 +215,28 @@
                     </div>
                 </div>
                 <div>
-                    <!--时间切换-->
-                    <el-select
-                            @change="handleUserTypeChange"
-                            style="width: 110px;position: absolute;right: 160px"
-                            v-model="userSelectV"
-                            size="small"
-                            placeholder="请选择">
-                        <el-option
-                                v-for="item in userTypes"
-                                :key="item.label"
-                                :value="item.value">
-                        </el-option>
-                    </el-select>
                     <!--图表啦类型切换-->
                     <el-select
-                            @change="handleUserTypeChange"
+                            @change="handleTypeChange"
                             style="width: 110px;position: absolute;right: 160px"
-                            v-model="userSelectV"
+                            v-model="typeSelect"
                             size="small"
                             placeholder="请选择">
                         <el-option
-                                v-for="item in userTypes"
-                                :key="item.label"
-                                :value="item.value">
+                                v-for="item in ['表格','图表']"
+                                :value="item">
+                        </el-option>
+                    </el-select>
+                    <!--时间切换-->
+                    <el-select
+                            @change="handleTimeChange"
+                            style="width: 110px;position: absolute;right: 160px"
+                            v-model="timeSelect"
+                            size="small"
+                            placeholder="请选择">
+                        <el-option
+                                v-for="item in ['最近一周','最近一月','最近一年']"
+                                :value="item">
                         </el-option>
                     </el-select>
                 </div>
@@ -247,10 +244,10 @@
                 <div>
                     <el-table
                             ref="table"
-                            v-show="ifTable"
+                            v-show="ifDialogTable"
                             @select-all="handleSelectAll"
                             @select="handleSelectBatch"
-                            :data="infoData.tableData"
+                            :data="tableData_"
                             height="100%"
                             border>
                         <el-table-column prop="date"
@@ -259,25 +256,25 @@
                                          width="100">
                         </el-table-column>
 
-                        <el-table-column prop="account"
+                        <el-table-column prop="name"
                                          align='center'
-                                         label="课程名称"
+                                         label="名称"
                                          min-width="200">
                         </el-table-column>
 
-                        <el-table-column prop="areaFocus"
+                        <el-table-column prop="type"
                                          align='center'
                                          label="类别"
                                          width="230">
                         </el-table-column>
 
-                        <el-table-column prop="areaFocus"
+                        <el-table-column prop="time"
                                          align='center'
                                          label="学习时间"
                                          width="150">
                         </el-table-column>
 
-                        <el-table-column prop="areaFocus1"
+                        <el-table-column prop="times"
                                          align='center'
                                          label="访问次数"
                                          width="150">
@@ -298,9 +295,17 @@
                         </el-table-column>
                     </el-table>
                     <hightChart
-                            v-if="!ifTable"
-                            :chartData="infoData.chartData">
+                            v-if="!ifDialogTable"
+                            :chartData="chatData_">
                     </hightChart>
+                    <el-pagination
+                            style="align-self: center"
+                            @current-change="handleDialogPage"
+                            background
+                            layout="prev, pager, next"
+                            :total="1000">
+                    </el-pagination>
+
                 </div>
             </div>
         </el-dialog>
@@ -316,16 +321,26 @@
         },
         data() {
             return {
+                //图表类型切换
+                userTypes: [{value: '管理员'}, {value: '普通用户'}],
                 //用户类型选项值
                 userSelectV: '普通用户',
                 //查看用户弹出框
                 dialogUserVisible:false,
+                //弹出框的图表类型选择
+                typeSelect:'图表',
+                //弹出框的图表时间选择
+                timeSelect:'最近一周',
+                //dialog分页
+                dialogPage:'',
+                //dialog的缓存标志
+                dialogOldTag:'',
                 //详细信息
                 infoData:{},
                 //表格数据
                 tableData_:[],
                 //图表数据
-                chatData_:[]
+                chatData_:[[],[],[]]
             }
         },
         computed:{
@@ -365,12 +380,76 @@
                         tableData.push(newData);
                 });
                 return tableData;
+            },
+            /**
+             * 切换弹出框表格类型
+             */
+            handleTypeChange(value){
+                //todo 格式化不同类型的数据
+                this.ifDialogTable = value === '表格';
+            },
+            /**
+             * 切换弹出框表格时间
+             */
+            handleTimeChange(value){
+                //todo 请求不同时间的数据
+                this.handleChangeArea(this.dialogOldTag,'dialog'+value+this.dialogPage,`${this.infoData.account+value}`);
+                this.dialogOldTag='dialog'+value+this.dialogPage;
+            },
+            /**
+             * 格式化数据
+             */
+            setTableData(datas){
+                datas.forEach((data)=>{
+                    this.tableData_.push({
+                        date:'',
+                        name:'',
+                        type:'',
+                        time:'',
+                        times:''
+                    })
+                });
+            },
+            /**
+             * 格式化数据
+             */
+            setChatData(datas){
+                datas.forEach((data)=>{
+                    this.chatData_[0].push(data.courseName);
+                    this.chatData_[1].push(data.learnTime);
+                    this.chatData_[2].push(data.visitTime);
+                });
+            },
+            /**
+             * 弹出框分页
+             */
+            handleDialogPage(page){
+                this.dialogPage=page;
+                this.handleChangeArea(this.dialogOldTag,'dialog'+this.timeSelect+this.dialogPage,`${this.infoData.account+value}`);
+                this.dialogOldTag='dialog'+this.timeSelect+this.dialogPage;
             }
         },
-        mixins: [manageMixin],
+        watch:{
+            //监听加载的数据变化
+            listNow(){
+                //如果是搜索的缓存数据
+                if(this.ifSearch){
+                    this.tableData = this.setDataFormat(this.listNow);
+                    //如果是弹出框的缓存数据
+                }else if(this.dialogUserVisible){
+                    this.setTableData(this.listNow);
+                    this.setChatData(this.listNow);
+                }
+                //如果主页的缓存数据
+                else{
+                    this.pageData=this.tableData=this.setDataFormat(this.listNow);
+                }
+            }
+        },
         components: {
             hightChart: () => import(/* webpackChunkName: "hightChart.vue" */ './hightChart.vue')
-        }
+        },
+        mixins: [manageMixin]
     }
 </script>
 

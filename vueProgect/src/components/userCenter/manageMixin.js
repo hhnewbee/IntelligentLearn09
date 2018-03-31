@@ -20,14 +20,12 @@ let manageMixin={
             selectValue: '',
             //图表与表格的切换
             ifTable: true,
-            //图表类型切换
-            userTypes: [{value: '管理员'}, {value: '普通用户'}],
             //图表的数据
             chartData: [[], [], []],
             //显示更多功能
             ifMoreFun: false,
             //图标类型选择
-            options:'',
+            options:[],
             //每次获取的item条数
             itemCount:0,
             //当前页数
@@ -144,14 +142,10 @@ let manageMixin={
                 }
                 case 'user':{
                     this.infoData=scope.row;
-                    //获取表格数据
-                    this.$ajaxJava.get(`${scope.row.account}`).then((res)=>{
-                        this.tableData_=res.data;
-                    });
-                    //获取图表数据
-                    this.$ajaxJava.get(`${scope.row.account}`).then((res)=>{
-                        this.chatData_=res.data;
-                     });
+                    //获取数据
+                    this.handleChangeArea(null,'dialog最近一周1',`${this.scope.row.account}`);
+                    //设置缓存标识
+                    this.dialogOldTag='dialog最近一周1';
                     //展现数据
                     this.dialogUserVisible=true;
                     break;
