@@ -7,8 +7,8 @@
         <div
                 class="content"
                 v-for="content in contents">
-            <div class="contentText">{{content.content}}</div>
-            <div class="el-icon-time">&nbsp;{{content.time}}</div>
+            <div class="contentText">{{content.content}}</div> b
+            <div class="el-icon-time">&nbsp;{{content.time|formatDate}}</div>
         </div>
     </div>
 </template>
@@ -51,6 +51,10 @@ export default {
                     color: #0457bb;
                 }
 
+            }
+            div:nth-child(2){
+                color:$secondaryText;
+                font-size: 13px;
             }
         }
     }

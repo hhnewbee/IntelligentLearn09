@@ -38,6 +38,7 @@
                 @size-change="handlePage"
                 background
                 layout="prev, pager, next"
+                :key="listNow.page"
                 :total="listNow.page">
         </el-pagination>
         <footer_></footer_>
