@@ -1,5 +1,6 @@
 import {areaCaching} from "../mixins";
-let manageMixin={
+
+let manageMixin = {
     data() {
         return {
             //要删除的行
@@ -25,13 +26,13 @@ let manageMixin={
             //显示更多功能
             ifMoreFun: false,
             //图标类型选择
-            options:[],
+            options: [],
             //每次获取的item条数
-            itemCount:0,
+            itemCount: 0,
             //当前页数
-            page:0,
+            page: 1,
             //搜索的页数
-            pageSearch:0
+            pageSearch: 1
         }
     },
     methods: {
@@ -92,14 +93,10 @@ let manageMixin={
          */
         handlePage(size) {
             //如果是搜索翻页
-            if(this.ifSearch){
-                let oldTag=this.pageSearch;
-                this.pageSearch=size;
-                this.handleChangeArea('search'+oldTag,'search'+size,this.urlSearch);
-            }else{
-                let oldTag=this.page;
-                this.page=size;
-                this.handleChangeArea('p'+oldTag,'p'+size,this.url);
+            if (this.ifSearch) {
+                this.handleChangeArea('search' + size, this.urlSearch);
+            } else {
+                this.handleChangeArea('p' + size, this.url);
             }
         },
         /**
@@ -113,7 +110,7 @@ let manageMixin={
          * 搜索数据
          */
         handleSearch() {
-            this.handleChangeArea(null,'search0',this.url);
+            this.handleChangeArea(null, 'search0', this.url);
             //展示搜索的数据
             this.ifSearch = true;
         },
@@ -129,28 +126,30 @@ let manageMixin={
          * @param type - 查看数据的类型
          * @param scope - 课程/文章的id/用户账号
          */
-        handleSee(type,scope) {
+        handleSee(type, scope) {
             //判断是什么类型的查看
-            switch(type){
-                case 'course':{
-                    this.$router.push({path:`/course/${scope.row.account}`});
+            switch (type) {
+                case 'course': {
+                    this.$router.push({path: `/course/${scope.row.account}`});
                     break;
                 }
-                case 'article':{
-                    this.$router.push({path:`/articlePage/article/${scope.row.account}`});
+                case 'article': {
+                    this.$router.push({path: `/articlePage/article/${scope.row.account}`});
                     break;
                 }
-                case 'user':{
-                    this.infoData=scope.row;
+                case 'user': {
+                    this.infoData = scope.row;
                     //获取数据
-                    this.handleChangeArea(null,'dialog最近一周1',`${this.scope.row.account}`);
-                    //设置缓存标识
-                    this.dialogOldTag='dialog最近一周1';
+                    this.handleChangeArea('dialog最近一周', `admin/user/${scope.row.id}/week`);
+                    // this.nextTick(() => {
+                    //     //获取数据
+                    //     this.handleChangeArea('dialog最近一周', `admin/user/${this.scope.row.id}/week`);
+                    // });
                     //展现数据
-                    this.dialogUserVisible=true;
+                    this.dialogUserVisible = true;
                     break;
                 }
-                case 'message':{
+                case 'message': {
                     // this.content=target.row.content;
                     break;
                 }
@@ -182,17 +181,17 @@ let manageMixin={
             //获取加载item的条数
             this.setItemCount();
             //加载数据
-            this.handleChangeArea(null,'p0',this.url);
+            this.handleChangeArea('p1', this.url);
             //初始图表类型选项的值
-            this.options=tableOptions;
-            this.selectValue=tableOptions[0].value;
+            this.options = tableOptions;
+            this.selectValue = tableOptions[0].value;
         },
         /**
          * 根据屏幕判断item加载的数目
          */
-        setItemCount(){
+        setItemCount() {
             //获取表格的高度，表头固定是48，每个单元固定是60
-            this.itemCount=Math.floor((this.$refs['table'].$el.clientHeight-48)/60);
+            this.itemCount = Math.floor((this.$refs['table'].$el.clientHeight - 48) / 60);
         },
     },
     watch: {
@@ -206,14 +205,14 @@ let manageMixin={
             this.ifDelect = this.delectRows.length === 0;
         },
         //监听加载的数据变化
-        listNow(){
-            if(this.ifSearch){
+        listNow() {
+            if (this.ifSearch) {
                 this.tableData = this.setDataFormat(this.listNow);
-            }else{
-                this.pageData=this.tableData=this.setDataFormat(this.listNow);
+            } else {
+                this.pageData = this.tableData = this.setDataFormat(this.listNow);
             }
         }
     },
-    mixins:[areaCaching]
+    mixins: [areaCaching]
 };
 export {manageMixin};

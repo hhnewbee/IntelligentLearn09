@@ -50,7 +50,7 @@
                     placeholder="请选择">
                 <el-option
                         v-for="item in userTypes"
-                        :key="item"
+                        :key="item.value"
                         :value="item.value">
                 </el-option>
             </el-select>
@@ -186,7 +186,7 @@
                 @current-change="handlePage"
                 background
                 layout="prev, pager, next"
-                :total="1000">
+                :total="tableMainPage">
         </el-pagination>
 
         <!--查看用户时的弹出框-->
@@ -215,22 +215,9 @@
                         <span ref="eMail" style="padding: 5px">{{infoData.eMail}}</span>
                     </div>
                 </div>
-                <div>
-                    <!--图表啦类型切换-->
-                    <el-select
-                            @change="handleTypeChange"
-                            style="width: 110px;position: absolute;right: 160px"
-                            v-model="typeSelect"
-                            size="small"
-                            placeholder="请选择">
-                        <el-option
-                                v-for="item in ['表格','图表']"
-                                :key="item"
-                                :value="item">
-                        </el-option>
-                    </el-select>
-                    <!--时间切换-->
-                    <el-select
+                <div>学习详情</div>
+                <!--时间切换-->
+                <el-select
                             @change="handleTimeChange"
                             style="width: 110px;position: absolute;right: 160px"
                             v-model="timeSelect"
@@ -242,74 +229,71 @@
                                 :value="item">
                         </el-option>
                     </el-select>
-                </div>
-                <!--表格和图表-->
-                <div>
-                    <el-table
-                            ref="table"
-                            v-show="ifDialogTable"
-                            @select-all="handleSelectAll"
-                            @select="handleSelectBatch"
-                            :data="tableData_"
-                            height="100%"
-                            border>
-                        <el-table-column prop="date"
-                                         align='center'
-                                         label="学习时间"
-                                         width="100">
-                        </el-table-column>
+                <!--最近学习时长图表-->
+                <hightChart
+                        style="padding: 0;height: 20%"
+                        :chartData="chatData_">
+                </hightChart>
+                <!--最近学习记录表格-->
+                <div>学习记录</div>
+                <el-table
+                        ref="table"
+                        @select-all="handleSelectAll"
+                        @select="handleSelectBatch"
+                        :data="tableData_"
+                        height="100%"
+                        border>
+                    <el-table-column prop="date"
+                                     align='center'
+                                     label="学习时间"
+                                     width="100">
+                    </el-table-column>
 
-                        <el-table-column prop="name"
-                                         align='center'
-                                         label="名称"
-                                         min-width="200">
-                        </el-table-column>
+                    <el-table-column prop="name"
+                                     align='center'
+                                     label="名称"
+                                     min-width="200">
+                    </el-table-column>
 
-                        <el-table-column prop="type"
-                                         align='center'
-                                         label="类别"
-                                         width="230">
-                        </el-table-column>
+                    <el-table-column prop="type"
+                                     align='center'
+                                     label="类别"
+                                     width="230">
+                    </el-table-column>
 
-                        <el-table-column prop="time"
-                                         align='center'
-                                         label="学习时间"
-                                         width="150">
-                        </el-table-column>
+                    <el-table-column prop="time"
+                                     align='center'
+                                     label="学习时间"
+                                     width="150">
+                    </el-table-column>
 
-                        <el-table-column prop="times"
-                                         align='center'
-                                         label="访问次数"
-                                         width="150">
-                        </el-table-column>
+                    <el-table-column prop="times"
+                                     align='center'
+                                     label="访问次数"
+                                     width="150">
+                    </el-table-column>
 
-                        <el-table-column label="操作"
-                                         align='center'
-                                         fixed="right"
-                                         width="110">
-                            <template slot-scope="scope">
-                                <el-button
-                                        @click="handleSee('user',scope)"
-                                        type="text"
-                                        size="small">
-                                    查看
-                                </el-button>
-                            </template>
-                        </el-table-column>
-                    </el-table>
-                    <hightChart
-                            v-if="!ifDialogTable"
-                            :chartData="chatData_">
-                    </hightChart>
-                    <el-pagination
+                    <el-table-column label="操作"
+                                     align='center'
+                                     fixed="right"
+                                     width="110">
+                        <template slot-scope="scope">
+                            <el-button
+                                    @click="handleSee('user',scope)"
+                                    type="text"
+                                    size="small">
+                                查看
+                            </el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
+                <el-pagination
                             style="align-self: center"
                             @current-change="handleDialogPage"
                             background
                             layout="prev, pager, next"
                             :total="1000">
                     </el-pagination>
-
-                </div>
             </div>
         </el-dialog>
     </div>
@@ -324,20 +308,18 @@
         },
         data() {
             return {
+                //主页面的页数
+                tableMainPage:1,
                 //图表类型切换
                 userTypes: [{value: '管理员'}, {value: '普通用户'}],
                 //用户类型选项值
                 userSelectV: '普通用户',
                 //查看用户弹出框
                 dialogUserVisible:false,
-                //弹出框的图表类型选择
-                typeSelect:'图表',
                 //弹出框的图表时间选择
                 timeSelect:'最近一周',
                 //dialog分页
                 dialogPage:'',
-                //dialog的缓存标志
-                dialogOldTag:'',
                 //详细信息
                 infoData:{},
                 //表格数据
@@ -348,10 +330,10 @@
         },
         computed:{
             url(){
-                return `/admin/users/page=${this.page}/size=${this.itemCount}`;
+                return `/admin/users/page=${this.page-1}/size=${this.itemCount}`;
             },
             urlSearch(){
-                return `/admin/users/page=${this.pageSearch}/size=${this.itemCount}`;
+                return `/admin/users/page=${this.pageSearch-1}/size=${this.itemCount}`;
             }
         },
         methods: {
@@ -370,6 +352,7 @@
                 let tableData=[];
                 resDatas.users.forEach((data)=>{
                     let newData={};
+                        newData.id=data.id;
                         newData.date=this.$formatDate(data.creationTimestamp);
                         newData.account=data.account;
                         newData.name=data.selfInformation.trueName;
@@ -378,29 +361,21 @@
                         //查看更多才显示的
                         newData.eMail=data.selfInformation.email;
                         newData.avatarUrl=data.selfInformation.imgPath;
-//                        newData.useTime=Math.ceil(this.$formatMinutes(data.learnTime));
-//                        newData.accessTimes=data.visitTime;
+                        newData.useTime=Math.ceil(this.$formatMinutes(data.learnTime));
+                        newData.accessTimes=data.visitTime;
                         tableData.push(newData);
                 });
                 return tableData;
-            },
-            /**
-             * 切换弹出框表格类型
-             */
-            handleTypeChange(value){
-                //todo 格式化不同类型的数据
-                this.ifDialogTable = value === '表格';
             },
             /**
              * 切换弹出框表格时间
              */
             handleTimeChange(value){
                 //todo 请求不同时间的数据
-                this.handleChangeArea(this.dialogOldTag,'dialog'+value+this.dialogPage,`${this.infoData.account+value}`);
-                this.dialogOldTag='dialog'+value+this.dialogPage;
+                this.handleChangeArea('dialog'+value+this.dialogPage,`${this.infoData.account+value}`);
             },
             /**
-             * 格式化数据
+             * 格式化表格数据
              */
             setTableData(datas){
                 datas.forEach((data)=>{
@@ -414,7 +389,7 @@
                 });
             },
             /**
-             * 格式化数据
+             * 格式化图表数据
              */
             setChatData(datas){
                 datas.forEach((data)=>{
@@ -428,8 +403,7 @@
              */
             handleDialogPage(page){
                 this.dialogPage=page;
-                this.handleChangeArea(this.dialogOldTag,'dialog'+this.timeSelect+this.dialogPage,`${this.infoData.account+value}`);
-                this.dialogOldTag='dialog'+this.timeSelect+this.dialogPage;
+                this.handleChangeArea('dialog'+this.timeSelect+this.dialogPage,`${this.infoData.account+value}`);
             }
         },
         watch:{
@@ -438,14 +412,16 @@
                 //如果是搜索的缓存数据
                 if(this.ifSearch){
                     this.tableData = this.setDataFormat(this.listNow);
+                    this.tableMainPage=this.listNow.page;
                     //如果是弹出框的缓存数据
                 }else if(this.dialogUserVisible){
-                    this.setTableData(this.listNow);
+//                    this.setTableData(this.listNow);
                     this.setChatData(this.listNow);
                 }
                 //如果主页的缓存数据
                 else{
                     this.pageData=this.tableData=this.setDataFormat(this.listNow);
+                    this.tableMainPage=this.listNow.page;
                 }
             }
         },

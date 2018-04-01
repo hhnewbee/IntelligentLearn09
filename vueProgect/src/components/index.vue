@@ -41,9 +41,9 @@
                     } else {
                         //TODO 如果是刷新，直接再次请求用户信息数据即可
                         this.$ajaxJava.get('user').then((res) => {
-                            this.setAccount(res.data.account);
-                            this.setAvatarUrl(res.data.selfInformation.imgPath);
-                            this.setAreaFocus(res.data.selfInformation.position);
+                            this.setAccount(res.data.user.account);
+                            this.setAvatarUrl(res.data.user.selfInformation.imgPath);
+                            this.setAreaFocus(res.data.user.selfInformation.position);
                         });
                     }
                 } else {

@@ -3,11 +3,13 @@
         <div class="itemName">
             {{option.title}}
         </div>
-        <div v-if="contents.length===0" style="text-align: center;color: #9b9b9b">暂无</div>
+        <div v-if="contents.length===0" style="text-align: center;color: #9b9b9b">
+            暂无
+        </div>
         <div
                 class="content"
                 v-for="content in contents">
-            <div class="contentText">{{content.content}}</div> b
+            <div class="contentText">{{content.content}}</div>
             <div class="el-icon-time">&nbsp;{{content.time|formatDate}}</div>
         </div>
     </div>
