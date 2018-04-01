@@ -32,7 +32,9 @@ let manageMixin = {
             //当前页数
             page: 1,
             //搜索的页数
-            pageSearch: 1
+            pageSearch: 1,
+            //显示的页数
+            currentPage:1
         }
     },
     methods: {
@@ -140,13 +142,11 @@ let manageMixin = {
                 case 'user': {
                     this.infoData = scope.row;
                     //获取数据
-                    this.handleChangeArea('dialog最近一周', `admin/user/${scope.row.id}/week`);
-                    // this.nextTick(() => {
-                    //     //获取数据
-                    //     this.handleChangeArea('dialog最近一周', `admin/user/${this.scope.row.id}/week`);
-                    // });
+                    this.handleChangeArea(`dialog${scope.row.id}最近一周`, `admin/user/${scope.row.id}/week`);
                     //展现数据
-                    this.dialogUserVisible = true;
+                    this.$nextTick(()=>{
+                        this.dialogUserVisible = true;
+                    });
                     break;
                 }
                 case 'message': {
@@ -205,13 +205,13 @@ let manageMixin = {
             this.ifDelect = this.delectRows.length === 0;
         },
         //监听加载的数据变化
-        listNow() {
-            if (this.ifSearch) {
-                this.tableData = this.setDataFormat(this.listNow);
-            } else {
-                this.pageData = this.tableData = this.setDataFormat(this.listNow);
-            }
-        }
+        // listNow() {
+        //     if (this.ifSearch) {
+        //         this.tableData = this.setDataFormat(this.listNow);
+        //     } else {
+        //         this.pageData = this.tableData = this.setDataFormat(this.listNow);
+        //     }
+        // }
     },
     mixins: [areaCaching]
 };

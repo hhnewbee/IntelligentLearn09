@@ -3,6 +3,10 @@ import Moment from 'moment';
 import Vue from 'vue';
 Moment.locale('zh-cn');
 
+//全局支持
+window.$moment=Moment;
+Vue.prototype.$moment=Moment;
+
 //vue的全局时间拦截器
 //精确到天数
 Vue.filter("formatDate", function (value) {
@@ -27,5 +31,5 @@ Vue.prototype.$formatHouse=function (value) {
 };
 //得到分钟时间
 Vue.prototype.$formatMinutes=function (value) {
-    return Moment.duration(value).asMinutes();
+    return Math.ceil(Moment.duration(value).asMinutes());
 };
