@@ -9,7 +9,7 @@ module.exports = db.defineModel('users', {
     passwd:db.STRING(100),
     avatarUrl:{
         type: db.STRING(100),
-        defaultValue: 'http://172.16.116.18:3100/img/avatar/avatar.jpg'
+        defaultValue: 'http://172.16.116.18:3100/img/avatar/softIcon.jpg'
     },
     name: db.STRING(50),
     areaFocus: db.STRING(50),

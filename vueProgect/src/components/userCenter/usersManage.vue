@@ -50,6 +50,7 @@
                     placeholder="请选择">
                 <el-option
                         v-for="item in userTypes"
+                        :key="item"
                         :value="item.value">
                 </el-option>
             </el-select>
@@ -224,6 +225,7 @@
                             placeholder="请选择">
                         <el-option
                                 v-for="item in ['表格','图表']"
+                                :key="item"
                                 :value="item">
                         </el-option>
                     </el-select>
@@ -236,6 +238,7 @@
                             placeholder="请选择">
                         <el-option
                                 v-for="item in ['最近一周','最近一月','最近一年']"
+                                :key="item"
                                 :value="item">
                         </el-option>
                     </el-select>

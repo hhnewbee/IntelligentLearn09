@@ -7,10 +7,13 @@
             <infoDetail
                     :avatarUrl="itemData.userIconUrl"
                     :account="itemData.userName"
+                    :size="25"
                     class="avatar">
             </infoDetail>
-            <div class="name">{{itemData.userName}}</div>
-            <div class="time">时间：{{itemData.creationTimestamp | formatDate}}</div>
+            <div class="name" v-if="itemData.title">{{itemData.userName}}</div>
+            <div class="name" v-else style="color:#409EFF;font-size: 16px">{{itemData.userName}}</div>
+
+            <div class="time">时间：{{itemData.creationTimestamp | formatFromNow}}</div>
         </div>
         <div class="content" @click="handleIn(itemData.id)">
             <!--有图片时-->
@@ -25,7 +28,10 @@
                 <source :src="itemContent.video"/>
             </video>
 
-            <span class="text">{{itemContent.textContent}}<span>...</span>
+            <span class="text">
+                {{itemContent.textContent}}
+                <span v-if="itemContent.textContent.length>=205"
+                      style="font-weight: bold">…</span>
             </span>
         </div>
 
@@ -73,7 +79,11 @@
              * @param articleId
              */
             handleIn(articleId) {
-                window.open(`http://localhost:3000/#/main/articlePage/article/${articleId}`);
+                if(this.itemData.title){
+                    window.open(`http://localhost:3000/#/main/articlePage/article/${articleId}`);
+                }else{
+                    window.open(`http://localhost:3000/#/main/questionPage/question/${articleId}`);
+                }
             },
             /**
              * 设置获取的数据
@@ -81,7 +91,7 @@
             setContent(itemContent, itemData) {
                 let src = null;
                 //获取所有文本，图片，视频链接
-                itemContent.textContent = this.delHtmlTag(itemData.content);
+                itemContent.textContent = this.delHtmlTag(itemData.content).substring(0,205);
                 //如果图片存在的话
                 if (src = itemData.content.match(/<img.*?(?:>|\/>)/)) {
                     itemContent.img = src[0].match(/src=[\'\"]?([^\'\"]*)[\'\"]?/)[1];
@@ -133,8 +143,6 @@
             font-size: 13px;
             color: rgba(57, 66, 79, 0.61);
             .avatar {
-                width: 25px;
-                height: 25px;
                 margin-right: 10px;
                 cursor: pointer;
             }

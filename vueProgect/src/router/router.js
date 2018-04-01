@@ -36,7 +36,7 @@ let router = new VueRouter(
                         component: () => import(/* webpackChunkName: "questionPage.vue" */ '../components/main/questionPage.vue'),
                     },
                     {
-                        path: 'questionPage/question',
+                        path: 'questionPage/question/:questionId',
                         component: () => import(/* webpackChunkName: "question.vue" */ '../components/question/question.vue'),
                     },
                     {

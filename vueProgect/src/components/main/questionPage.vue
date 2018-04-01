@@ -3,6 +3,7 @@
         <div class="left">
             <div class="choose">
                 <el-radio-group
+                        @change="handleChoose"
                         v-model="choose"
                         size="small"
                         style="margin-right: 20px">
@@ -10,16 +11,17 @@
                     <el-radio-button label="最热"></el-radio-button>
                 </el-radio-group>
             </div>
-            <questionItem
+            <articleItem
                     v-for="item in items"
-                    :key="item.nickname"
-                    :itemContent="item">
-            </questionItem>
+                    :key="item.id"
+                    :itemData="item">
+            </articleItem>
             <el-pagination
+                    @size-change="handlePage"
                     style="flex-shrink: 0;align-self: center;margin-bottom: 20px"
                     background
                     layout="prev, pager, next"
-                    :total="1000">
+                    :total="listNow.page">
             </el-pagination>
         </div>
         <div class="right">
@@ -38,6 +40,7 @@
                     问题分类
                 </div>
                 <el-radio-group
+                        @change="hanleType"
                         v-model="typeChoose"
                         style="padding:0 10px"
                         size="small">
@@ -57,19 +60,19 @@
 </template>
 
 <script>
-    import questionItem from '../question/questionItem.vue';
+    import articleItem from '../main/articleItem.vue';
     import rightItem from './rightItem.vue';
     import myLearnerEditor from '../edit/myLearnerEditor.vue';
-    import {mapState} from 'vuex'
+    import {mapState} from 'vuex';
+    import {areaCaching,pageRequire} from '../mixins.js';
+
 
     export default {
         created() {
-            this.initPage();
+            this.initRight();
         },
         data() {
             return {
-                choose: '最新',
-                typeChoose: '全部',
                 items: [],
                 //推荐问题
                 constructionArticle: [],
@@ -82,41 +85,47 @@
         },
         methods: {
             /**
-             * 初始化页面数据
+             * 初始化右边页面数据
              */
-            initPage() {
+            initRight() {
                 this.items = [
                     {
-                        avatar: 'http://localhost:3100/img/avatar/softIcon.jpg',
-                        nickname: 'newbee1',
-                        time: '2018-1-1',
-                        pic: '',
+                        id:'1',
+                        userIconUrl: 'http://localhost:3100/img/avatar/softIcon.jpg',
+                        userName: 'newbee1',
+                        creationTimestamp: '2018-1-1',
+                        content: '这几天在修改 WPJAM 问答网站首页列表的时候，发现一个问题，就是有些问题的标题比较长，为了显示美观，我想将首页列表的标题都设置为1行，如果超出的在最后显示 …，开始的时候我使用 PHP 函数来计算文字个数，但是由于中英文字数算法和长度的问题，总是不能做这几天在修改 WPJAM 问答网站首页列表的时候，发现一个问题，就是有些问题的标题比较长，为了显示美观，我想将首页列表的标题都设置为1行，如果超出的在最后显示 显，开始的时候我使用 PHP 函数来计算文字个数，但是由于中英文字数算法和长度的问题，总是不能做',
+                        liking: '22',
+                        questions: 0
+                    },
+                    {
+                        id:'2',
+                        userIconUrl: 'http://localhost:3100/img/avatar/softIcon.jpg',
+                        userName: 'newbee1',
+                        creationTimestamp: '2018-1-1',
                         content: '这几天在修改 WPJAM 问答网站首页列表的时候，发现一个问题，就是有些问题的标题比较长，为了显示美观，我想将首页列表的标题都设置为1行，如果超出的在最后显示 …，开始的时候我使用 PHP 函数来计算文字个数，但是由于中英文字数算法和长度的问题，总是不能做.',
-                        likes: '22',
-                        answers: '22',
-                        collections: '22'
+                        liking: '22',
+                        questions: 0
                     },
                     {
-                        avatar: 'http://localhost:3100/img/avatar/softIcon.jpg',
-                        nickname: 'newbee2',
-                        time: '2018-1-1',
-                        pic: 'http://localhost:3100/img/avatar/softIcon.jpg',
-                        content: '这几天在修改 WPJAM 问答网站首页列表的时候，发现一个问题，就是有些问题的标题比较长，为了显示美观，我想将首页列表的标题都设置为1行，如果超出的在最后显示开始的时候我使用 PHP 函数来计算文字个数，但是由于中英文字数算法和长度的问题，总是不能做到很完美的效果，后来发现可以通过定义元素的 test ...',
-                        likes: '22',
-                        answers: '22',
-                        collections: '22'
+                        id:'3',
+                        userIconUrl: 'http://localhost:3100/img/avatar/softIcon.jpg',
+                        userName: 'newbee1',
+                        creationTimestamp: '2018-1-1',
+                        content: '这几天在修改 WPJAM 问答网站首页列表的时候，发现一个问题，就是有些问题的标题比较长，为了显示美观，我想将首页列表的标题都设置为1行，如果超出的在最后显示 …，开始的时候我使用 PHP 函数来计算文字个数，但是由于中英文字数算法和长度的问题，总是不能做.',
+                        liking: '22',
+                        questions: 0
                     },
                     {
-                        avatar: 'http://localhost:3100/img/avatar/softIcon.jpg',
-                        nickname: 'newbee3',
-                        time: '2018-1-1',
-                        pic: 'http://localhost:3100/img/avatar/softIcon.jpg',
-                        content: '这几天在修改 WPJAM 问答网站首页列表的时候，发现一个问题，就是有些问题的标题比较长，为了显示美观，我想将首页列表的标题都设置为1行，如果超出的在最后显示 …，开始的时候我使用 PHP 函数来计算文字个数，但是由于中英文字数算法和长度的问题，总是不能做到很完美的效果，后来发现可以通过定义元素的 test-overflow 这个 CSS 属性实现文本溢出省略号。这几天在修改 WPJAM 问答网站首页列表的时候，发现一个问题，就是有些问题的标题比较长，为了显示美观，我想将首页列表的标题都设置为...',
-                        likes: '22',
-                        answers: '22',
-                        collections: '22'
-                    }
-                ],
+                        id:'4',
+                        userIconUrl: 'http://localhost:3100/img/avatar/softIcon.jpg',
+                        userName: 'newbee1',
+                        creationTimestamp: '2018-1-1',
+                        content: '这几天在修改 WPJAM 问答网站首页列表的时候，发现一个问题，就是有些问题的标题比较长，为了显示美观，我想将首页列表的标题都设置为1行，如果超出的在最后显示 …，开始的时候我使用 PHP 函数来计算文字个数，但是由于中英文字数算法和长度的问题，总是不能做.',
+                        liking: '22',
+                        questions: 0
+                    },
+                ];
                 this.constructionArticle = [
                         {content: '我的回答内容我的回答内容1我的回答内容我的回答内容1', time: '2013-11-11 22:33'},
                         {content: '我的回答内容我的回答内容1我的回答内容我的回答内容1', time: '2013-13-23 22:33'},
@@ -133,10 +142,11 @@
             }
         },
         components: {
-            questionItem,
+            articleItem,
             rightItem,
             myLearnerEditor
-        }
+        },
+        mixins:[areaCaching,pageRequire]
     }
 </script>
 

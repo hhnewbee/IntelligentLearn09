@@ -35,10 +35,11 @@
                     </div>
                 </div>
                 <el-pagination
+                        @size-change="handlePage"
                         style="align-self: center;margin-top: 20px"
                         background
                         layout="prev, pager, next"
-                        :total="1000">
+                        :total="listNow.page">
                 </el-pagination>
             </div>
             <footer_></footer_>
@@ -64,8 +65,14 @@
         },
         methods: {
             initData() {
-                this.handleChangeArea(null, 'p1', 'recommend');
+                this.handleChangeArea('p1', 'recommend');
             },
+            /**
+             * 分页
+             */
+            handlePage(size){
+                this.handleChangeArea(`p${size}`, `recommend/page=${size-1}`);
+            }
         },
         components: {
             courseItem,
@@ -133,7 +140,7 @@
                 font-weight: bold;
                 margin-left: 40px;
                 margin-bottom: 5px;
-                color: #00a0e9;
+                color: $primaryColor;
             }
             /*分类标题*/
             .ListType {
@@ -141,12 +148,14 @@
                 font-weight: bold;
                 margin: 10px 0;
                 align-self: center;
+                color: $primaryColor;
             }
             .more {
                 align-self: flex-end;
                 margin-right: 100px;
-                color: #00a0e9;
                 cursor: pointer;
+                font-size: 14px;
+                color: #8a8a8a;
             }
             .course {
                 width: 100%;

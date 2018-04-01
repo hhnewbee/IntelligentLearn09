@@ -5,6 +5,7 @@
                 分类：
             </div>
             <el-radio-group
+                    @change="hanleType"
                     v-model="typeChoose"
                     style="padding:0 10px"
                     size="small">
@@ -12,11 +13,13 @@
                         v-for="ty in type"
                         :key=ty
                         :label=ty
-                        class="chooseItem"></el-radio-button>
+                        class="chooseItem">
+                </el-radio-button>
             </el-radio-group>
         </div>
         <div class="choose">
             <el-radio-group
+                    @change="handleChoose"
                     v-model="choose"
                     size="small"
                     style="margin-right: 20px">
@@ -32,9 +35,10 @@
             </courseItem>
         </div>
         <el-pagination
+                @size-change="handlePage"
                 background
                 layout="prev, pager, next"
-                :total="1000">
+                :total="listNow.page">
         </el-pagination>
         <footer_></footer_>
     </div>
@@ -44,32 +48,17 @@
     import courseItem from './courseItem.vue'
     import {mapState} from 'vuex'
     import footer_ from '../footer/footer.vue';
-    import {areaCaching} from '../mixins.js';
+    import {areaCaching,pageRequire} from '../mixins.js';
 
     export default {
-        created(){
-            this.iniData();
-        },
-        data() {
-            return {
-                choose:'最新',
-                //类型选择
-                typeChoose: "全部"
-            }
-        },
-        methods:{
-            iniData(){
-                this.handleChangeArea(null, 'allP1', 'coursePage');
-            }
-        },
-        computed:{
-            ...mapState(['type']),
-        },
         components: {
             courseItem,
             footer_,
         },
-        mixins: [areaCaching]
+        computed:{
+            ...mapState(['type']),
+        },
+        mixins:[pageRequire,areaCaching]
     }
 </script>
 
