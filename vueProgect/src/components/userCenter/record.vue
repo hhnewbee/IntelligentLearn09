@@ -214,6 +214,16 @@
                 return `/user/history/page=${this.pageSearch}/size=${this.itemCount}`;
             }
         },
+        watch:{
+//            监听加载的数据变化
+             listNow(){
+                 if (this.ifSearch) {
+                     this.tableData = this.setDataFormat(this.listNow);
+                 } else {
+                     this.pageData = this.tableData = this.setDataFormat(this.listNow);
+                 }
+             }
+        },
         mixins: [manageMixin],
     }
 </script>

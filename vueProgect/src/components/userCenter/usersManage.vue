@@ -216,101 +216,103 @@
                         <span ref="eMail" style="padding: 5px">{{infoData.eMail}}</span>
                     </div>
                 </div>
-                <div style="display: flex;justify-content: flex-end;">
-                    <!--图表啦类型切换-->
-                    <el-select
-                            @change="handleTypeChange"
-                            style="width: 110px;margin-right: 10px"
-                            v-model="typeSelect"
-                            size="small"
-                            placeholder="请选择">
-                        <el-option
-                                v-for="item in ['表格','图 表']"
-                                :key="item"
-                                :value="item">
-                        </el-option>
-                    </el-select>
-                    <!--时间切换-->
-                    <el-select
-                            @change="handleTimeChange"
-                            style="width: 110px;"
-                            v-model="timeSelect"
-                            size="small"
-                            placeholder="请选择">
-                        <el-option
-                                v-for="item in ['最近一周','最近一月','最近一年']"
-                                :key="item"
-                                :value="item">
-                        </el-option>
-                    </el-select>
-                </div>
-                <!--表格和图表-->
                 <div>
-                    <el-table
-                            ref="table"
-                            v-show="ifDialogTable"
-                            @select-all="handleSelectAll"
-                            @select="handleSelectBatch"
-                            :data="tableData_"
-                            height="100%"
-                            border>
-                        <el-table-column prop="date"
-                                         align='center'
-                                         label="学习时间"
-                                         width="100">
-                        </el-table-column>
+                    <div style="display: flex;justify-content: flex-end;">
+                        <!--图表啦类型切换-->
+                        <el-select
+                                @change="handleTypeChange"
+                                style="width: 110px;margin-right: 10px"
+                                v-model="typeSelect"
+                                size="small"
+                                placeholder="请选择">
+                            <el-option
+                                    v-for="item in ['表格','图表']"
+                                    :key="item"
+                                    :value="item">
+                            </el-option>
+                        </el-select>
+                        <!--时间切换-->
+                        <el-select
+                                @change="handleTimeChange"
+                                style="width: 110px;"
+                                v-model="timeSelect"
+                                size="small"
+                                placeholder="请选择">
+                            <el-option
+                                    v-for="item in ['最近一周','最近一月','最近一年']"
+                                    :key="item"
+                                    :value="item">
+                            </el-option>
+                        </el-select>
+                    </div>
+                    <!--表格和图表-->
+                    <div style="display: flex;flex-direction: column;align-items: center">
+                        <el-table
+                                ref="table"
+                                v-show="ifDialogTable"
+                                @select-all="handleSelectAll"
+                                @select="handleSelectBatch"
+                                :data="tableData_"
+                                height="400"
+                                border>
+                            <el-table-column prop="date"
+                                             align='center'
+                                             label="学习时间"
+                                             width="100">
+                            </el-table-column>
 
-                        <el-table-column prop="name"
-                                         align='center'
-                                         label="名称"
-                                         min-width="200">
-                        </el-table-column>
+                            <el-table-column prop="name"
+                                             align='center'
+                                             label="名称"
+                                             min-width="200">
+                            </el-table-column>
 
-                        <el-table-column prop="type"
-                                         align='center'
-                                         label="类别"
-                                         width="230">
-                        </el-table-column>
+                            <el-table-column prop="type"
+                                             align='center'
+                                             label="类别"
+                                             width="230">
+                            </el-table-column>
 
-                        <el-table-column prop="time"
-                                         align='center'
-                                         label="学习时间"
-                                         width="150">
-                        </el-table-column>
+                            <el-table-column prop="time"
+                                             align='center'
+                                             label="学习时间"
+                                             width="150">
+                            </el-table-column>
 
-                        <el-table-column prop="times"
-                                         align='center'
-                                         label="访问次数"
-                                         width="150">
-                        </el-table-column>
+                            <el-table-column prop="times"
+                                             align='center'
+                                             label="访问次数"
+                                             width="150">
+                            </el-table-column>
 
-                        <el-table-column label="操作"
-                                         align='center'
-                                         fixed="right"
-                                         width="110">
-                            <template slot-scope="scope">
-                                <el-button
-                                        @click="handleSee('user',scope)"
-                                        type="text"
-                                        size="small">
-                                    查看
-                                </el-button>
-                            </template>
-                        </el-table-column>
-                    </el-table>
-                    <hightChart
-                            style="padding: 0;"
-                            v-if="!ifDialogTable"
-                            :chartData="chatData_">
-                    </hightChart>
-                    <el-pagination
-                            v-if="ifDialogTable"
-                            style="align-self: center"
-                            @current-change="handleDialogPage"
-                            background
-                            layout="prev, pager, next"
-                            :total="listNow.page">
-                    </el-pagination>
+                            <el-table-column label="操作"
+                                             align='center'
+                                             fixed="right"
+                                             width="110">
+                                <template slot-scope="scope">
+                                    <el-button
+                                            @click="handleSee('user',scope)"
+                                            type="text"
+                                            size="small">
+                                        查看
+                                    </el-button>
+                                </template>
+                            </el-table-column>
+                        </el-table>
+                        <hightChart
+                                style="padding: 0;"
+                                v-if="!ifDialogTable"
+                                :chartData="chatData_">
+                        </hightChart>
+                        <el-pagination
+                                v-if="ifDialogTable"
+                                style="align-self: center"
+                                @current-change="handleDialogPage"
+                                background
+                                layout="prev, pager, next"
+                                :total="listNow.page">
+                        </el-pagination>
+                    </div>
                 </div>
             </div>
         </el-dialog>
@@ -395,9 +397,9 @@
             handleTypeChange(value) {
                 //todo 格式化不同类型的数据
                 if(this.ifDialogTable = value === '表格'){
-                    this.handleChangeArea('dialogTable最近一周', `admin/user/${this.infoData.id}/week`);
+                    this.handleChangeArea('dialogTable'+this.infoData.id, `/user/history/page=0/size=6`);
                 }else{
-                    this.handleChangeArea('dialogChat最近一周', `admin/user/${this.infoData.id}/week`);                }
+                    this.handleChangeArea('dialogChat最近一周'+this.infoData.id, `admin/user/${this.infoData.id}/week`);                }
             },
             /**
              * 切换弹出框表格时间
@@ -410,13 +412,13 @@
              * 格式化表格数据
              */
             setTableData(datas) {
-                datas.forEach((data) => {
+                datas.history.forEach((data) => {
                     this.tableData_.push({
-                        date: '',
-                        name: '',
-                        type: '',
-                        time: '',
-                        times: ''
+                        date: this.$formatDate(data.createTime),
+                        name: data.course.title,
+                        type: data.course.type,
+                        time: this.$formatMinutes(data.learnTime)+'分钟',
+                        times:data.visitTime
                     })
                 });
             },
@@ -454,7 +456,7 @@
              */
             handleDialogPage(page) {
                 this.dialogPage = page;
-                this.handleChangeArea('dialog' + this.timeSelect + this.dialogPage, `${this.infoData.account + value}`);
+                this.handleChangeArea('dialog' + this.timeSelect + this.dialogPage, `${this.infoData.account + page}`);
             }
         },
         watch: {

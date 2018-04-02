@@ -144,6 +144,8 @@ let manageMixin = {
                     //获取数据
                     this.handleChangeArea(`dialog${scope.row.id}最近一周`, `admin/user/${scope.row.id}/week`);
                     //展现数据
+                    this.typeSelect='图表';
+                    this.ifDialogTable=false;
                     this.$nextTick(()=>{
                         this.dialogUserVisible = true;
                     });

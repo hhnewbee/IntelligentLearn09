@@ -114,20 +114,23 @@
                     });
 
                     //todo 名称排序
-                    let chapters=Array.from(this.chapter.chapters);
-                    chapters.sort((a,b)=>{
-                        let a_=a[0].split('*&@&@*');
-                        let b_=b[0].split('*&@&@*');
-                        //替换名字
-                        a[0]=a_[1];
-                        //章节排序
-                        return a_[0]-b_[0];
-                    });
-                    chapters.forEach((chapter)=>{
-                        //视频名称排序
-                        chapter[1].sort();
-                    });
-                    console.log(chapters);
+//                    chapters.sort((a,b)=>{
+//                        let a_=a[0].split('*&@&@*');
+//                        let b_=b[0].split('*&@&@*');
+//                        //替换名字
+//                        a[0]=a_[1];
+//                        //章节排序
+//                        return a_[0]-b_[0];
+//                    });
+//                    chapters.forEach((chapter)=>{
+//                        //视频名称排序
+//                        chapter[1].sort();
+//                    });
+                    let strMap = new Map();
+                    for (let k of Object.keys(this.chapter.chapters)) {
+                        strMap.set(k, this.chapter.chapters[k]);
+                    }
+                    console.log(Array.from(strMap));
 
                     //初始化第一个选择章节的内容
                     this.lastCh = '1to1';
