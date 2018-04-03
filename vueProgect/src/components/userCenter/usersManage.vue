@@ -86,13 +86,24 @@
                     icon="el-icon-delete">
                 全部删除
             </el-button>
+            <el-dialog :visible.sync="dialogPushInfo">
+                <div style="display: flex;flex-direction: column">
+                    <div style="align-self: flex-start;font-size: 14px;color: #8a8a8a;margin-bottom: 10px">{{typePushInfo}}</div>
+                    <el-input type="textarea" resize="none" :rows="10" v-model="infoPush"></el-input>
+                    <el-button type="primary"
+                               :disabled="infoPush===''"
+                               style="align-self: flex-end;margin-top: 10px">发布</el-button>
+                </div>
+            </el-dialog>
             <el-button
+                    @click="handlePushInfoAll"
                     type="success"
                     style="margin-left: 10px"
                     size="small">
                 全局信息
             </el-button>
             <el-button
+                    @click="handlePushInfoBranch"
                     type="success"
                     style="margin-left: 10px"
                     size="small">
@@ -321,6 +332,8 @@
 
 <script>
     import {manageMixin} from './manageMixin.js';
+    import ElButton from "../../../../node_modules/element-ui/packages/button/src/button.vue";
+    import ElInput from "../../../../node_modules/element-ui/packages/input/src/input.vue";
 
     export default {
         mounted() {
@@ -341,7 +354,7 @@
                 //弹出框的图表时间选择
                 timeSelect: '最近一周',
                 //dialog表格还是图表
-                ifDialogTable:false,
+                ifDialogTable: false,
                 //dialog分页
                 dialogPage: '',
                 //详细信息
@@ -349,7 +362,13 @@
                 //表格数据
                 tableData_: [],
                 //图表数据
-                chatData_: []
+                chatData_: [],
+                //是否要发布信息
+                dialogPushInfo: false,
+                //要发布的信息类型
+                typePushInfo: '',
+                //要发布的信息
+                infoPush:''
             }
         },
         computed: {
@@ -396,10 +415,11 @@
              */
             handleTypeChange(value) {
                 //todo 格式化不同类型的数据
-                if(this.ifDialogTable = value === '表格'){
-                    this.handleChangeArea('dialogTable'+this.infoData.id, `/user/history/page=0/size=6`);
-                }else{
-                    this.handleChangeArea('dialogChat最近一周'+this.infoData.id, `admin/user/${this.infoData.id}/week`);                }
+                if (this.ifDialogTable = value === '表格') {
+                    this.handleChangeArea('dialogTable' + this.infoData.id, `/user/history/page=0/size=6`);
+                } else {
+                    this.handleChangeArea('dialogChat最近一周' + this.infoData.id, `admin/user/${this.infoData.id}/week`);
+                }
             },
             /**
              * 切换弹出框表格时间
@@ -417,8 +437,8 @@
                         date: this.$formatDate(data.createTime),
                         name: data.course.title,
                         type: data.course.type,
-                        time: this.$formatMinutes(data.learnTime)+'分钟',
-                        times:data.visitTime
+                        time: this.$formatMinutes(data.learnTime) + '分钟',
+                        times: data.visitTime
                     })
                 });
             },
@@ -427,28 +447,28 @@
              */
             setChatData(datas) {
                 //清空原来的数据
-                this.chatData_=[];
+                this.chatData_ = [];
                 //数据格式化
-                let i=0;
-                let time=[];
-                if(this.timeSelect==='最近一周'){
-                    for(i=6;i>=0;i--){
+                let i = 0;
+                let time = [];
+                if (this.timeSelect === '最近一周') {
+                    for (i = 6; i >= 0; i--) {
                         time.push(this.$moment().day(-i).fromNow());
                     }
-                }else if(this.timeSelect==='最近一月'){
-                    for(i=29;i>=0;i--){
+                } else if (this.timeSelect === '最近一月') {
+                    for (i = 29; i >= 0; i--) {
                         time.push(this.$moment().day(-i).fromNow());
                     }
-                }else{
-                    for(i=11;i>=0;i--){
+                } else {
+                    for (i = 11; i >= 0; i--) {
                         time.push(this.$moment().month(-i).fromNow());
                     }
                 }
                 this.chatData_.push(time);
                 this.chatData_.push(
-                    datas.learnTime.reverse().map((item)=>{
-                    return this.$formatMinutes(item);
-                }));
+                    datas.learnTime.reverse().map((item) => {
+                        return this.$formatMinutes(item);
+                    }));
                 this.chatData_.push(datas.visitTime.reverse());
             },
             /**
@@ -457,8 +477,23 @@
             handleDialogPage(page) {
                 this.dialogPage = page;
                 this.handleChangeArea('dialog' + this.timeSelect + this.dialogPage, `${this.infoData.account + page}`);
+            },
+            /**
+             * 发布全局信息
+             */
+            handlePushInfoAll() {
+                this.dialogPushInfo = true;
+                this.typePushInfo = '全部信息';
+            },
+            /**
+             * 发布部分信息
+             */
+            handlePushInfoBranch(){
+                this.dialogPushInfo = true;
+                this.typePushInfo = '部分信息';
             }
         },
+
         watch: {
             //监听加载的数据变化
             listNow() {
@@ -468,9 +503,9 @@
                     this.tableMainPage = this.listNow.page;
                     //如果是弹出框的缓存数据
                 } else if (this.dialogUserVisible) {
-                    if(this.typeSelect=== '表格'){
+                    if (this.typeSelect === '表格') {
                         this.setTableData(this.listNow);
-                    }else{
+                    } else {
                         this.setChatData(this.listNow);
                     }
                 }
@@ -479,9 +514,11 @@
                     this.pageData = this.tableData = this.setDataFormat(this.listNow.users);
                     this.tableMainPage = this.listNow.page;
                 }
-            }
+            },
         },
         components: {
+            ElInput,
+            ElButton,
             hightChart: () => import(/* webpackChunkName: "hightChart.vue" */ './hightChart.vue')
         },
         mixins: [manageMixin]
@@ -490,7 +527,6 @@
 
 <style scoped lang="scss">
     @import "./manageStyle.scss";
-
     .userInfo {
         .item {
             padding: 8px;
