@@ -12,11 +12,11 @@
                 简介：&nbsp;{{chapter.intro}}
             </div>
             <div class="catalog"
-                 v-for="(item1,chapterName,index1) in chapter.chapters"
-                 :key="chapterName">
-                <div>{{'第' + ++index1 + '章&nbsp;&nbsp;' + chapterName}}</div>
+                 v-for="(chapterItem,index1) in chapter.chapters"
+                 :key="chapterItem.name">
+                <div>{{'第' + ++index1 + '章&nbsp;&nbsp;' + chapterItem.name}}</div>
                 <div class="fa fa-play"
-                     v-for="(item2,index2) in item1"
+                     v-for="(item2,index2) in chapterItem.videos"
                      :key="item2.title"
                      :ref="index1+'to'+ ++index2"
                      @click="handleChapterChange(item2.videoUrl,index1+'to'+index2,item2.title,item2.id)">
@@ -92,45 +92,63 @@
                         intro: res.data.description,
                         name: res.data.uploadUsername,
                         time: res.data.creationTimestamp,
-                        chapters:{}
+                        chapters:[]
                     };
                     //遍历每个视频文件
                     res.data.file.forEach((file) => {
                         //判断是否是章节,因为资源夹带在里面了
                         if (file.chapter) {
-                            //判断该章节数组是否存在
-                            if (!this.chapter.chapters[file.chapter]) {
-                                this.chapter.chapters[file.chapter] = [];
-                            }
-                            this.chapter.chapters[file.chapter].push(
-                                //切掉后缀名
+
+//                            //判断该章节数组是否存在(旧的章节数据保存机制)
+//                            if (!this.chapter.chapters[file.chapter]) {
+//                                this.chapter.chapters[file.chapter] = [];
+//                            }
+//                            this.chapter.chapters[file.chapter].push(
+//                                //切掉后缀名
+//                                {
+//                                    title: `${file.title.replace(`.${file.type}`, '')} (${file.totalTime})`,
+//                                    videoUrl: file.path,
+//                                    id:file.id
+//                                }
+//                            );
+
+
+                            //todo 判断数组中是否包含了目前的章节
+                            //每个视频关联的信息
+                            let video=
                                 {
+                                    //去掉视频的后缀，只保留名称，并加入视频时长
                                     title: `${file.title.replace(`.${file.type}`, '')} (${file.totalTime})`,
                                     videoUrl: file.path,
                                     id:file.id
-                                }
-                            )
+                                };
+                            //接收已经存在的章节对象，判断章节对象是否存在
+                            let chapterO=this.chapter.chapters.find((chapter)=>{
+                                return chapter.name===file.chapter;
+                            });
+                            //如果没有包含，undefined,则重新创建
+                            if(!chapterO){
+                                this.chapter.chapters.push({name:file.chapter,videos:[video]});
+                            }else{
+                                //如果有就直接添加
+                                chapterO.videos.push(video);
+                            }
                         }
                     });
 
-                    //todo 名称排序
-//                    chapters.sort((a,b)=>{
-//                        let a_=a[0].split('*&@&@*');
-//                        let b_=b[0].split('*&@&@*');
-//                        //替换名字
-//                        a[0]=a_[1];
-//                        //章节排序
-//                        return a_[0]-b_[0];
-//                    });
-//                    chapters.forEach((chapter)=>{
-//                        //视频名称排序
-//                        chapter[1].sort();
-//                    });
-                    let strMap = new Map();
-                    for (let k of Object.keys(this.chapter.chapters)) {
-                        strMap.set(k, this.chapter.chapters[k]);
-                    }
-                    console.log(Array.from(strMap));
+                    //todo 章节名称排序
+                    this.chapter.chapters.sort((a,b)=>{
+                        //切分章节的序号,章节排序
+                        return a.name.split('-',1)-b.name.split('-',1);
+                    });
+                    //todo 返回没有序号的章节名称
+                    this.chapter.chapters=this.chapter.chapters.map((chapter)=>{
+                        return chapter.name.replace(/\d+-/,'');
+                    });
+                    //todo 视频名称排序
+                    this.chapter.chapters.forEach((chapter)=>{
+                        chapter.videos.sort();
+                    });
 
                     //初始化第一个选择章节的内容
                     this.lastCh = '1to1';

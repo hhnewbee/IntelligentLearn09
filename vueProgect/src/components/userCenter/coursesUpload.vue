@@ -89,7 +89,7 @@
                     </el-button>
                 </div>
                 <div style="overflow: auto;height: 1%;flex-grow: 1;margin-top: 10px;">
-                    <el-upload :name='index+"*&@&@*"+upload.chapterName'
+                    <el-upload :name='index+"-"+upload.chapterName'
                                :action='courseUrl'
                                v-for="(upload,index) in videosUpload"
                                :key="index"

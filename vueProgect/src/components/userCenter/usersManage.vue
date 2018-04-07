@@ -86,13 +86,14 @@
                     icon="el-icon-delete">
                 全部删除
             </el-button>
-            <el-dialog :visible.sync="dialogPushInfo">
+            <el-dialog :visible.sync="dialogPushInfo" width="40%">
                 <div style="display: flex;flex-direction: column">
                     <div style="align-self: flex-start;font-size: 14px;color: #8a8a8a;margin-bottom: 10px">{{typePushInfo}}</div>
-                    <el-input type="textarea" resize="none" :rows="10" v-model="infoPush"></el-input>
+                    <el-input type="textarea" resize="none" :rows="6" v-model="infoPush"></el-input>
                     <el-button type="primary"
                                :disabled="infoPush===''"
-                               style="align-self: flex-end;margin-top: 10px">发布</el-button>
+                               style="align-self: flex-end;margin-top: 10px">发布
+                    </el-button>
                 </div>
             </el-dialog>
             <el-button
@@ -202,7 +203,7 @@
         </el-pagination>
 
         <!--查看用户时的弹出框-->
-        <el-dialog :visible.sync="dialogUserVisible">
+        <el-dialog :visible.sync="dialogUserVisible" width="60%">
             <div class="userInfo">
                 <div class="item item1">
                     <div>
@@ -228,7 +229,7 @@
                     </div>
                 </div>
                 <div>
-                    <div style="display: flex;justify-content: flex-end;">
+                    <div style="display: flex;justify-content: flex-end;margin: 10px 0;">
                         <!--图表啦类型切换-->
                         <el-select
                                 @change="handleTypeChange"
@@ -250,9 +251,10 @@
                                 size="small"
                                 placeholder="请选择">
                             <el-option
-                                    v-for="item in ['最近一周','最近一月','最近一年']"
-                                    :key="item"
-                                    :value="item">
+                                    v-for="item in timesOptions"
+                                    :key="item.value"
+                                    :label="item.label"
+                                    :value="item.value">
                             </el-option>
                         </el-select>
                     </div>
@@ -281,19 +283,19 @@
                             <el-table-column prop="type"
                                              align='center'
                                              label="类别"
-                                             width="230">
+                                             width="150">
                             </el-table-column>
 
                             <el-table-column prop="time"
                                              align='center'
                                              label="学习时间"
-                                             width="150">
+                                             width="100">
                             </el-table-column>
 
                             <el-table-column prop="times"
                                              align='center'
                                              label="访问次数"
-                                             width="150">
+                                             width="100">
                             </el-table-column>
 
                             <el-table-column label="操作"
@@ -352,23 +354,29 @@
                 //弹出框的图表类型选择
                 typeSelect: '图表',
                 //弹出框的图表时间选择
-                timeSelect: '最近一周',
+                timeSelect: 'week',
                 //dialog表格还是图表
                 ifDialogTable: false,
                 //dialog分页
-                dialogPage: '',
+                dialogPage: 1,
                 //详细信息
                 infoData: {},
                 //表格数据
                 tableData_: [],
                 //图表数据
-                chatData_: [],
+                chatData_: [[],[],[]],
                 //是否要发布信息
                 dialogPushInfo: false,
                 //要发布的信息类型
                 typePushInfo: '',
                 //要发布的信息
-                infoPush:''
+                infoPush: '',
+                //时间的选项值
+                timesOptions:[
+                    {label:'最近一周',value:'week'},
+                    {label:'最近一月',value:'month'},
+                    {label:'最近一年',value:'year'}
+                ]
             }
         },
         computed: {
@@ -415,10 +423,10 @@
              */
             handleTypeChange(value) {
                 //todo 格式化不同类型的数据
-                if (this.ifDialogTable = value === '表格') {
-                    this.handleChangeArea('dialogTable' + this.infoData.id, `/user/history/page=0/size=6`);
+                if (this.ifDialogTable =value === '表格') {
+                    this.handleChangeArea('dialogTable' + this.infoData.id+this.dialogPage, `/user/history/page=0/size=6`);
                 } else {
-                    this.handleChangeArea('dialogChat最近一周' + this.infoData.id, `admin/user/${this.infoData.id}/week`);
+                    this.handleChangeArea('dialogChat' + this.timeSelect + this.infoData.id, `admin/user/${this.infoData.id}/${this.timeSelect}`);
                 }
             },
             /**
@@ -426,20 +434,30 @@
              */
             handleTimeChange(value) {
                 //todo 请求不同时间的数据
-                this.handleChangeArea('dialog' + value + this.dialogPage, `admin/user/${this.infoData.id}/week`);
+                this.handleChangeArea('dialogChat' + value, `admin/user/${this.infoData.id}/${value}`);
             },
             /**
              * 格式化表格数据
              */
             setTableData(datas) {
                 datas.history.forEach((data) => {
-                    this.tableData_.push({
-                        date: this.$formatDate(data.createTime),
-                        name: data.course.title,
-                        type: data.course.type,
-                        time: this.$formatMinutes(data.learnTime) + '分钟',
-                        times: data.visitTime
-                    })
+                    if(data.course){
+                        this.tableData_.push({
+                            date: this.$formatDate(data.createTime),
+                            name: data.course.title,
+                            type: data.course.type,
+                            time: this.$formatMinutes(data.learnTime) + '分钟',
+                            times: data.visitTime
+                        });
+                    }else{
+                        this.tableData_.push({
+                            date: this.$formatDate(data.createTime),
+                            name: data.forum.title,
+                            type: data.forum.type,
+                            time: this.$formatMinutes(data.learnTime) + '分钟',
+                            times: data.visitTime
+                        });
+                    }
                 });
             },
             /**
@@ -451,11 +469,11 @@
                 //数据格式化
                 let i = 0;
                 let time = [];
-                if (this.timeSelect === '最近一周') {
+                if (this.timeSelect === 'week') {
                     for (i = 6; i >= 0; i--) {
                         time.push(this.$moment().day(-i).fromNow());
                     }
-                } else if (this.timeSelect === '最近一月') {
+                } else if (this.timeSelect === 'month') {
                     for (i = 29; i >= 0; i--) {
                         time.push(this.$moment().day(-i).fromNow());
                     }
@@ -464,19 +482,19 @@
                         time.push(this.$moment().month(-i).fromNow());
                     }
                 }
-                this.chatData_.push(time);
-                this.chatData_.push(
+                this.chatData_.splice(0,1,time);
+                this.chatData_.splice(1,1,
                     datas.learnTime.reverse().map((item) => {
                         return this.$formatMinutes(item);
                     }));
-                this.chatData_.push(datas.visitTime.reverse());
+                this.chatData_.splice(2,1,datas.visitTime.reverse());
             },
             /**
              * 弹出框分页
              */
             handleDialogPage(page) {
                 this.dialogPage = page;
-                this.handleChangeArea('dialog' + this.timeSelect + this.dialogPage, `${this.infoData.account + page}`);
+                this.handleChangeArea('dialogTable'+this.infoData.id+this.dialogPage, `${this.infoData.account + page}`);
             },
             /**
              * 发布全局信息
@@ -488,7 +506,7 @@
             /**
              * 发布部分信息
              */
-            handlePushInfoBranch(){
+            handlePushInfoBranch() {
                 this.dialogPushInfo = true;
                 this.typePushInfo = '部分信息';
             }
@@ -527,6 +545,7 @@
 
 <style scoped lang="scss">
     @import "./manageStyle.scss";
+
     .userInfo {
         .item {
             padding: 8px;

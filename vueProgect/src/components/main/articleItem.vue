@@ -41,7 +41,7 @@
                  @click="handleLikeAcollect('forum/liking/',itemData)">
                 &nbsp;{{itemData.liking}}人喜欢
             </div>
-            <div class="comments fa fa-comments ic">
+            <div class="comments fa fa-comments ic" @click="handleIn(itemData.id)">
                 &nbsp;{{itemData.questions}}个问题
             </div>
             <div class="collection fa fa-star ic"

@@ -23,7 +23,7 @@
             font-size: 14px;
             color: #b0bcd0;
             &:hover{
-                color: #d7e6fe;
+                color: #7b8491;
             }
         }
     }

@@ -113,9 +113,12 @@ export let pageRequire={
     },
     data() {
         return {
+            //最新、最热
             choose:'最新',
             //类型选择
-            typeChoose: "全部"
+            typeChoose: "全部",
+            //分页
+            pageNow:1
         }
     },
     methods:{

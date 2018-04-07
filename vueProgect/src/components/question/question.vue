@@ -63,7 +63,7 @@
                     style="margin-top: 20px;align-self: center"
                     background
                     layout="prev, pager, next"
-                    :total="1000">
+                    :total="answerList.length">
             </el-pagination>
             <!--答案回复列表-->
             <el-dialog :visible.sync="chatListVisible">
@@ -231,6 +231,8 @@
                     {content: '我的回答内容我的回答内容1我的回答内容我的回答内容1', time: '2013-1-4 22:33'},
                     {content: '我的回答内容我的回答内容1我的回答内容我的回答内容1', time: '2013-12-23 22:33'}
                 ]
+                //todo 初始化答案列表 答案列表用question保存，防止被弹出大安回复的listNow覆盖
+//                this.answerList=this.listNow;
             },
             /**
              * 打开对话列表

@@ -111,7 +111,7 @@
                 if (type === 'img' | type === 'video' | type === 'file') {
                     this.uploadType = type;
                     //todo 设置上传地址
-                    this.uploadUrl = `http://172.16.148.27:8080/upload/forumFile`;
+                    this.uploadUrl = `http://172.16.148.27:8080/upload/questionFile`;
                     document.querySelector('#uploadButton').click();
                     return;
                 }
@@ -398,8 +398,9 @@
             },
 
             publish(){
-                //todo 发布
-                this.$ajax.post("posts",{
+                //todo 设置发布地址
+                this.$ajaxJava.post("upload/question",{
+                    title:'',
                     categorys: this.categorys.join('/'),
                     content:this.editarea.innerHTML,
                 }).then(()=>{

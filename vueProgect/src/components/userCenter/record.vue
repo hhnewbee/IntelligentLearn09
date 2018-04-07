@@ -177,26 +177,22 @@
                 resDatas.history.forEach((data)=>{
                     let newData={};
                     if(data.course){
-                        newData.date=this.$formatDate(data.createTime);
-                        newData.name=data.course.title;
                         newData.type='课程';
+                        newData.name=data.course.title;
                         newData.category=data.course.type;
-                        newData.newDate=this.$formatDate(data.updateTime);
                         newData.avatar=data.course.userIconUrl;
                         newData.nickName=data.course.uploadUsername;
-                        newData.useTime=Math.ceil(this.$formatMinutes(data.learnTime));
-                        newData.accessTimes=data.visitTime;
                     }else{
-                        newData.date=this.$formatDate(data.createTime);
-                        newData.name=data.forum.title;
                         newData.type='文章';
+                        newData.name=data.forum.title;
                         newData.category=data.forum.categorys;
-                        newData.newDate=this.$formatDate(data.updateTime);
-                        newData.avatar=data.forum.userIconUrl;
                         newData.nickName=data.forum.userName;
-                        newData.useTime=Math.ceil(this.$formatMinutes(data.learnTime));
-                        newData.accessTimes=data.visitTime;
+                        newData.avatar=data.forum.userIconUrl;
                     }
+                    newData.date=this.$formatDate(data.createTime);
+                    newData.newDate=this.$formatDate(data.updateTime);
+                    newData.useTime=Math.ceil(this.$formatMinutes(data.learnTime));
+                    newData.accessTimes=data.visitTime;
                     tableData.push(newData);
                 });
                 return tableData;
@@ -215,7 +211,7 @@
             }
         },
         watch:{
-//            监听加载的数据变化
+             //监听加载的数据变化
              listNow(){
                  if (this.ifSearch) {
                      this.tableData = this.setDataFormat(this.listNow);
