@@ -17,10 +17,10 @@
                             {{articleData.liking}}&nbsp;喜欢
                         </el-checkbox-button>
                         <el-checkbox-button
-                                @click.native="handleLikeAcollect('forum/collect/',articleData)"
+                                @click.native="handleLikeAcollect('forum/collection/',articleData)"
                                 label="collections"
                                 key="collections">
-                            {{0}}&nbsp;收藏
+                            {{articleData.collections}}&nbsp;收藏
                         </el-checkbox-button>
                     </el-checkbox-group>
                 </div>

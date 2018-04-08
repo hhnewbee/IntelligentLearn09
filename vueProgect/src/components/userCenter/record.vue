@@ -155,7 +155,8 @@
                 @current-change="handlePage"
                 background
                 layout="prev, pager, next"
-                :total="1000">
+                :page-size="1"
+                :total="listNow.page">
         </el-pagination>
     </div>
 </template>
@@ -204,10 +205,10 @@
         },
         computed:{
             url(){
-                return `/user/history/page=${this.page}/size=${this.itemCount}`;
+                return `/user/history/page=${this.page-1}/size=${this.itemCount}`;
             },
             urlSearch(){
-                return `/user/history/page=${this.pageSearch}/size=${this.itemCount}`;
+                return `/user/history/page=${this.pageSearch-1}/size=${this.itemCount}`;
             }
         },
         watch:{

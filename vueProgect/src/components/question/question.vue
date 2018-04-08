@@ -5,23 +5,23 @@
             <div class="autorDetail">
                 <img
                         class="avatar"
-                        :src="question.avatar">
-                <div class="name">{{question.nickname}}</div>
-                <div class="time">时间：{{question.time}}</div>
-                <div class="type">类型：金融</div>
+                        :src="question.userIconUrl">
+                <div class="name">{{question.userName}}</div>
+                <div class="time">时间：{{question.creationTimestamp | formatDateTime}}</div>
+                <div class="type">类型：{{question.categorys}}</div>
             </div>
             <!--问题的内容-->
             <div class="article">
-                <div
-                        class="content">
-                    {{question.content}}
-                </div>
-
+                <div class="content" ref="questionContent"></div>
                 <div class="info">
-                    <div class="likes fa fa-heart ic">
-                        &nbsp;{{question.likes}}人喜欢
+                    <div class="likes fa fa-heart ic"
+                         :ref="'question/liking/'+question.id"
+                         @click="handleLikeAcollect('question/liking/',question)">
+                        &nbsp;{{question.liking}}人喜欢
                     </div>
-                    <div class="collection fa fa-star ic">
+                    <div class="collection fa fa-star ic"
+                         :ref="'question/collection/'+question.id"
+                         @click="handleLikeAcollect('question/collection/',question)">
                         &nbsp;{{question.collections}}个收藏
                     </div>
                 </div>
@@ -34,11 +34,11 @@
                         size="small"
                         style="margin-right: 20px">
                     <el-radio-button label="最新"></el-radio-button>
-                    <el-radio-button label="最热"></el-radio-button>
+                    <el-radio-button label="最热" ></el-radio-button>
                 </el-radio-group>
             </div>
             <!--答案列表-->
-            <div v-for="answer in answerList" class="article">
+            <div v-for="answer in answerList.comments" class="article">
                 <div class="detail" style="position: relative">
                     <img class="avatar"
                          :src="answer.userIconUrl">
@@ -52,18 +52,20 @@
                     {{answer.content}}
                 </div>
                 <div class="info" style="align-self: flex-start">
-                    <div class="likes fa fa-heart ic">&nbsp;{{answer.likes}}人赞同</div>
+                    <div class="likes fa fa-heart ic">&nbsp;{{answer.liking}}人赞同</div>
                     <div @click="openChatList(answer)"
                          class="comments fa fa-comments ic">
-                        &nbsp;{{answer.answers}}个回复
+                        &nbsp;{{answer.replies}}个回复
                     </div>
                 </div>
             </div>
+            <!--分页-->
             <el-pagination
                     style="margin-top: 20px;align-self: center"
                     background
                     layout="prev, pager, next"
-                    :total="answerList.length">
+                    @size-change="handleAnswerPage"
+                    :total="answerList.pages">
             </el-pagination>
             <!--答案回复列表-->
             <el-dialog :visible.sync="chatListVisible">
@@ -79,11 +81,13 @@
                             &nbsp;{{replyData.creationTimestamp | formatDateTime}}
                         </div>
                         <div class="cheart fa fa-heart"
-                             @click="handleSupport(area)">&nbsp;0
+                             :ref="'question/liking/'+replyData.id"
+                             @click="handleLikeAcollect('question/liking/',replyData)">&nbsp;
+                            {{replyData.liking}}
                         </div>
                     </div>
                     <div class="itemCount">
-                        {{listNow.length}}&nbsp;个回答
+                        {{replyData.replies}}&nbsp;个回复
                     </div>
                     <vue-scrollbar class="my-scrollbar">
                         <div class="itemsList">
@@ -99,11 +103,11 @@
                                 </div>
                                 <div class="footer">
                                     <span class="count fa fa-heart"
-                                          :ref="'liking'+item.id"
-                                          @click="handleLikeAcollect('question/liking/',item)">
+                                          :ref="'liking'+item.id">
                                         &nbsp;0人赞同
                                     </span>
                                     <span class="count fa fa-comments"
+                                          @click="handleGetRR(item)"
                                           style="margin-left: 10px">
                                         &nbsp;{{item.replies}}人回复
                                      </span>
@@ -111,19 +115,20 @@
                             </div>
                         </div>
                     </vue-scrollbar>
+                    <!--回答的回复列表-->
                 </div>
                 <div style="display: flex;justify-content: center;align-items: flex-end;margin-top: 20px">
-                    <el-input
-                            style="width: 522px;margin-right: 10px;"
-                            type="textarea"
-                            :autosize="{minRows: 2}"
-                            resize="none"
-                            placeholder="请输入回复内容"
-                            v-model="replyInput">
+                    <el-input style="width: 522px;margin-right: 10px;"
+                              type="textarea"
+                              :autosize="{minRows: 2}"
+                              resize="none"
+                              placeholder="请输入回复内容"
+                              v-model="replyInput">
                     </el-input>
                     <el-button type="primary"
                                size="medium"
-                               disabled>
+                               @click="handleReplyComment"
+                               :disabled="replyInput===''">
                         回复
                     </el-button>
                 </div>
@@ -136,9 +141,16 @@
                     style="width: 100%">我要回答
             </el-button>
             <el-dialog
-                    title="编辑回答"
                     :visible.sync="EditorVisible">
-                <myLearnerEditor></myLearnerEditor>
+                <div style="display: flex;flex-direction: column">
+                    <div style="align-self: flex-start;font-size: 14px;color: #8a8a8a;margin-bottom: 10px">编辑回答</div>
+                    <el-input type="textarea" resize="none" :rows="6" v-model="answersContent"></el-input>
+                    <el-button type="primary"
+                               @click="handlePushAnswer"
+                               :disabled="answersContent===''"
+                               style="align-self: flex-end;margin-top: 10px">发布
+                    </el-button>
+                </div>
             </el-dialog>
             <rightItem
                     :contents="similarityQuestion"
@@ -150,13 +162,13 @@
 
 <script>
     import rightItem from '../main/rightItem.vue';
-    import myLearnerEditor from '../edit/myLearnerEditor.vue';
     import footer_ from '../footer/footer.vue';
     import {areaCaching, likeAcollect} from '../mixins.js';
     import VueScrollbar from 'vue2-scrollbar'
+    import {mapState} from 'vuex';
 
     export default {
-        created() {
+        mounted() {
             this.initData();
         },
         data() {
@@ -165,6 +177,8 @@
                 question: {},
                 //类型的选择
                 choose: '最新',
+                //回答的内容
+                answersContent:'',
                 //答案列表
                 answerList: [],
                 //相似问题
@@ -186,95 +200,113 @@
              * 初始化数据
              */
             initData() {
-                this.question = {
-                    avatar: 'http://localhost:3100/img/avatar/softIcon.jpg',
-                    nickname: 'newbee1',
-                    time: '2018-1-1',
-                    content: '这几天在修改 WPJAM 问答网站首页列表的时候，发现一个问题，就是有些问题的标题比较长，为了显示美观，我想将首页列表的标题都设置为1行，如果超出的在最后显示 …，开始的时候我使用 PHP 函数来计算文字个数，但是由于中英文字数算法和长度的问题，总是不能做.',
-                    likes: '22',
-                    answers: '22',
-                    collections: '22'
-                };
-                this.answerList = [
-                    {
-                        id: "1",
-                        username: 'newbee1',
-                        userIconUrl: 'http://localhost:3100/img/avatar/softIcon.jpg',
-                        creationTimestamp: '2018-1-1',
-                        content: '这几天在修改 WPJAM 问答网站首页列表的时候，发现一个问题，就是有些问题的标题比较长，为了显示美观，我想将首页列表的标题都设置为1行，如果超出的在最后显示 …，开始的时候我使用 PHP 函数来计算文字个数，但是由于中英文字数算法和长度的问题，总是不能做.',
-                        likes: '22',
-                        answers: '22',
-                    },
-                    {
-                        id: "1",
-                        username: 'newbee1',
-                        userIconUrl: 'http://localhost:3100/img/avatar/softIcon.jpg',
-                        creationTimestamp: '2018-1-1',
-                        content: '这几天在修改 WPJAM 问答网站首页列表的时候，发现一个问题，就是有些问题的标题比较长，为了显示美观，我想将首页列表的标题都设置为1行，如果超出的在最后显示 …，开始的时候我使用 PHP 函数来计算文字个数，但是由于中英文字数算法和长度的问题，总是不能做.',
-                        likes: '22',
-                        answers: '22',
-                    },
-                    {
-                        id: "1",
-                        username: 'newbee1',
-                        userIconUrl: 'http://localhost:3100/img/avatar/softIcon.jpg',
-                        creationTimestamp: '2018-1-1',
-                        content: '这几天在修改 WPJAM 问答网站首页列表的时候，发现一个问题，就是有些问题的标题比较长，为了显示美观，我想将首页列表的标题都设置为1行，如果超出的在最后显示 …，开始的时候我使用 PHP 函数来计算文字个数，但是由于中英文字数算法和长度的问题，总是不能做.',
-                        likes: '22',
-                        answers: '22',
-                    },
-                ];
+                //请求获取问题
+                this.$ajaxJava.get(`question/${this.$route.params.questionId}`).then((response) => {
+                    this.question = response.data;
+                    //加载问题内容
+                    this.$refs.questionContent.innerHTML = this.question.content;
+                });
+                //获取答案列表
+                this.handleChangeArea('answerP1',`question/${this.$route.params.questionId}/page=0/size=10`);
+                //侧边推荐数据
                 this.similarityQuestion = [
                     {content: '我的回答内容我的回答内容1我的回答内容我的回答内容1', time: '2013-11-11 22:33'},
                     {content: '我的回答内容我的回答内容1我的回答内容我的回答内容1', time: '2013-13-23 22:33'},
                     {content: '答内容我的回答内容1', time: '2013-12-3 22:33'},
                     {content: '我的回答内容我的回答内容1我的回答内容我的回答内容1', time: '2013-1-4 22:33'},
                     {content: '我的回答内容我的回答内容1我的回答内容我的回答内容1', time: '2013-12-23 22:33'}
-                ]
-                //todo 初始化答案列表 答案列表用question保存，防止被弹出大安回复的listNow覆盖
-//                this.answerList=this.listNow;
+                ];
             },
             /**
-             * 打开对话列表
+             * 打开对话列表，回去评论的回复
              * @param dataAnswer - 答案的内容
              */
             openChatList(dataAnswer) {
                 this.replyData = dataAnswer;
-                this.replyList = [
-                    {
-                        id: "2",
-                        userIconUrl: 'http://localhost:3100/img/avatar/softIcon.jpg',
-                        username: 'newbee1',
-                        creationTimestamp: '2018-1-1',
-                        content: '这几天在修改 WPJAM 问答网站首页列表的时候，发现一个问题，就是有些问题的标题比较长，为了显示美观，我想将首页列表的标题都设置为1行，如果超出的在最后显示 …，开始的时候我使用 PHP 函数来计算文字个数，但是由于中英文字数算法和长度的问题，总是不能做.',
-                        likes: '22',
-                        replies: '22',
-                    },
-                    {
-                        id: "3",
-                        userIconUrl: 'http://localhost:3100/img/avatar/softIcon.jpg',
-                        username: 'newbee1',
-                        creationTimestamp: '2018-1-1',
-                        content: '这几天在修改 WPJAM 问答网站首页列表的时候，发现一个问题，就是有些问题的标题比较长，为了显示美观，我想将首页列表的标题都设置为1行',
-                        likes: '22',
-                        replies: '22',
-                    },
-
-                ];
+                //直接向缓存区取数据
+                this.handleChangeArea('replyComment'+dataAnswer.id,`comment/${dataAnswer.id}/page=0`);
                 this.chatListVisible = true;
+            },
+            /**
+             * 获取回复的回复
+             */
+            handleGetRR(replyData){
+                this.replyData = replyData;
+                //直接向缓存区取数据
+                this.handleChangeArea('replyReply'+replyData.id,`reply/${replyData.id}/page=0`);
+                //下拉组件抽风了
+                document.querySelector('.vue-scrollbar__area').style.marginTop='0'
             },
             /**
              * 打开回答editor
              */
             openEditor() {
                 this.EditorVisible = true;
+            },
+            /**
+             * 确定回答
+             */
+            handlePushAnswer(){
+                this.$ajaxJava.post('question/comment',{
+                    question:{id:this.question.id},
+                    content:this.answersContent
+                }).then(()=>{
+                    this.$message.success('回答成功');
+                    this.answersContent='';
+                });
+            },
+            /**
+             * 回复回答的
+             */
+            handleReplyComment(){
+                //如果是回复评论的
+                let data={};
+                if(!('parent' in this.replyData)){
+                    data.comment={id:this.replyData.id};
+                //如果是回复回复的
+                }else{
+                    data.parent={id:this.replyData.id};
+                }
+                data.content=this.replyInput;
+                this.$ajaxJava.post('reply',data
+                ).then(()=>{
+                    this.$message.success('回复成功');
+                    //清空发送区
+                    this.replyInput='';
+                    //本地更新
+                    data.usreName=this.account;
+                    data.userIconUrl=this.avatarUrl;
+                    data.creationTimestamp=new Date();
+                    data.replies=0;
+                    this.replyList.unshift(data);
+                });
+            },
+            /**
+             * 答案分页
+             * @param size
+             */
+            handleAnswerPage(size){
+                this.handleChangeArea('answerP'+size,`question/${this.question.id}/page=${size-1}/size=10`);
+
             }
         },
         components: {
             rightItem,
-            myLearnerEditor,
             footer_,
             VueScrollbar
+        },
+        computed:{
+            ...mapState('info',['account','avatarUrl'])
+        },
+        watch:{
+            listNow(){
+                //判断是弹出框的分页，还是主页的分页
+                if(this.chatListVisible){
+                    this.replyList =this.listNow;
+                }else{
+                    this.answerList= this.listNow;
+                }
+            }
         },
         mixins: [areaCaching, likeAcollect]
     }
@@ -308,12 +340,13 @@
                 }
                 .name {
                     font-weight: bold;
-                    font-size: 16px;
+                    font-size: 18px;
                     margin-right: 10px;
-                    color: #1a1a1a;
+                    color: $primaryColor;
                 }
                 .time {
-                    font-size: 14px;
+                    font-size: 12px;
+                    color:$secondaryText;
                 }
                 .type {
                     position: absolute;
@@ -344,7 +377,7 @@
                         font-weight: bold;
                         font-size: 16px;
                         margin-right: 10px;
-                        color: #1a1a1a;
+                        color: $primaryColor;
                     }
                     .time {
                         font-size: 12px;
@@ -357,6 +390,99 @@
                     font-weight: 400;
                     line-height: 1.67;
                     color: #000000;
+                    .resizeDiv {
+                        padding: 10px;
+                        height: 200px;
+                        width: 300px;
+                        position: relative;
+                        cursor: default;
+                        user-select: none;
+                        img {
+                            height: 100%;
+                            width: 100%;
+                        }
+                        .res {
+                            position: absolute;
+                            height: 12px;
+                            width: 12px;
+                            background-color: white;
+                            border: 1px solid rgb(119, 119, 119);
+                            box-sizing: border-box;
+                            opacity: 0.8;
+                            cursor: nwse-resize;
+                            right: -6px;
+                            bottom: -6px;
+                            display: none;
+                        }
+                        .resS {
+                            background-color: black;
+                            border: none;
+                            color: white;
+                            position: absolute;
+                            font-style: normal;
+                            font-variant: normal;
+                            font-weight: normal;
+                            font-stretch: normal;
+                            font-size: 12px;
+                            line-height: 1;
+                            font-family: Arial, Helvetica, sans-serif;
+                            padding: 4px 8px;
+                            text-align: center;
+                            box-sizing: border-box;
+                            opacity: 0.8;
+                            cursor: default;
+                            right: 4px;
+                            bottom: 4px;
+                            left: auto;
+                            display: none;
+                            z-index: 2;
+                        }
+                        .posC {
+                            position: absolute;
+                            top: 0;
+                            left: 50%;
+                            transform: translate(-50%, -50%);
+                            display: none;
+                        }
+                        .pos {
+                            height: 19px;
+                            width: 19px;
+                            background: white;
+                            font-size: 18px;
+                            border: 1px solid rgb(153, 153, 153);
+                        }
+                    }
+                    h2 {
+                        font-weight: normal;
+                        border-bottom: 1px solid #ddd;
+                        padding-bottom: 10px;
+                        margin: 10px 0;
+                    }
+                    hr {
+                        margin: 20px 30px;
+                        border: 0;
+                        border-top: 1px solid #d9d9d9 !important
+                    }
+                    a {
+                        padding: 2px 0;
+                        margin: 0 5px;
+                        text-decoration: none;
+                        border: 1px solid #00a0e9;
+                        border-radius: 4px;
+                        color: rgb(63, 135, 166);
+                        cursor: pointer;
+                    }
+                    pre {
+                        padding: 20px;
+                        background-color: #f2f2f2;
+                        border-left: 6px solid #b3b3b3;
+                        word-break: break-all;
+                        font-family: "Coda", "Helvetica Neue", "Helvetica", Arial, sans-serif;
+                        font-size: 16px;
+                        font-weight: 400;
+                        line-height: 30px;
+                        margin: 0 0 20px;
+                    }
                 }
                 .info {
                     display: flex;
@@ -435,7 +561,7 @@
                                 left: 10px;
                                 bottom: 5px;
                             }
-                            div:nth-child(3){
+                            div:nth-child(3) {
                                 cursor: pointer;
                                 right: 10px;
                                 &:hover {
@@ -461,6 +587,7 @@
                             width: 100%;
                             flex-grow: 1;
                             .itemsList {
+                                height: 100%;
                                 .item {
                                     width: 92%;
                                     padding: 10px 10px;
@@ -493,7 +620,7 @@
                                         }
                                         .time {
                                             font-size: 12px;
-                                            color: #9E9E9E;
+                                            color: $secondaryText;
                                             margin-left: 10px;
                                         }
                                     }
@@ -533,11 +660,7 @@
             flex-direction: column;
             align-items: center;
             .el-dialog {
-                min-width: 580px;
-                height: 80%;
-                .el-dialog__body {
-                    height: 90%;
-                }
+                min-width: 40%;
             }
         }
     }

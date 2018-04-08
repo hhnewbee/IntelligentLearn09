@@ -91,6 +91,7 @@
                     <div style="align-self: flex-start;font-size: 14px;color: #8a8a8a;margin-bottom: 10px">{{typePushInfo}}</div>
                     <el-input type="textarea" resize="none" :rows="6" v-model="infoPush"></el-input>
                     <el-button type="primary"
+                               @click="handlePushInfo"
                                :disabled="infoPush===''"
                                style="align-self: flex-end;margin-top: 10px">发布
                     </el-button>
@@ -509,6 +510,17 @@
             handlePushInfoBranch() {
                 this.dialogPushInfo = true;
                 this.typePushInfo = '部分信息';
+            },
+            /**
+             * 发布通知
+             */
+            handlePushInfo(){
+                this.$ajaxJava.post('admin/notification',{
+                    content:this.infoPush
+                }).then(()=>{
+                    this.$message.success('发送成功');
+                    this.infoPush='';
+                })
             }
         },
 

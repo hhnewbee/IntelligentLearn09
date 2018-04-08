@@ -214,10 +214,10 @@
                     //是获取评论的回复还是回复的回复
                     //如果标识中有video就是获取评论的回复
                     if(this.targetId.match('video')){
-                        url=`comment/${commentInfo.id}/page=0`;
+                        url=`comment/${commentInfo.id}/page=0/size=20`;
                         this.targetId ='comment-'+commentInfo.id;
                     }else{
-                        url=`reply/${commentInfo.id}/page=0`;
+                        url=`reply/${commentInfo.id}/page=0/size=20`;
                         this.targetId ='reply-'+commentInfo.id;
                     }
                     this.replysAreas.forEach((area) => {
@@ -328,7 +328,7 @@
              * 初始化数据
              */
             initData() {
-                this.ajxaComments = this.$ajax.create({withCredentials: true});
+                this.ajxaComments = this.$ajax.create();
                 //新的请求拦截器
                 this.ajxaComments.interceptors.request.use(function (config) {
                     this.loadDown.ifLongding=true;

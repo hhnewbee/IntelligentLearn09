@@ -12,16 +12,16 @@
                 </el-radio-group>
             </div>
             <articleItem
-                    v-for="item in items"
-                    :key="item.id"
-                    :itemData="item">
+                    v-for="question in listNow.questions"
+                    :key="question.id"
+                    :itemData="question">
             </articleItem>
             <el-pagination
                     @size-change="handlePage"
                     style="flex-shrink: 0;align-self: center;margin-bottom: 20px"
                     background
                     layout="prev, pager, next"
-                    :total="listNow.page">
+                    :total="listNow.pages">
             </el-pagination>
         </div>
         <div class="right">
@@ -69,11 +69,12 @@
 
     export default {
         created() {
+            //areaFocus没有在init前被初始化，所以放到事件循环最后加载
+            setTimeout(this.iniData,1);
             this.initRight();
         },
         data() {
             return {
-                items: [],
                 //推荐问题
                 constructionArticle: [],
                 //回答编辑区显示
@@ -82,50 +83,13 @@
         },
         computed: {
             ...mapState(['type']),
+            ...mapState('info',['areaFocus']),
         },
         methods: {
             /**
              * 初始化右边页面数据
              */
             initRight() {
-                this.items = [
-                    {
-                        id:'1',
-                        userIconUrl: 'http://localhost:3100/img/avatar/softIcon.jpg',
-                        userName: 'newbee1',
-                        creationTimestamp: '2018-1-1',
-                        content: '这几天在修改 WPJAM 问答网站首页列表的时候，发现一个问题，就是有些问题的标题比较长，为了显示美观，我想将首页列表的标题都设置为1行，如果超出的在最后显示 …，开始的时候我使用 PHP 函数来计算文字个数，但是由于中英文字数算法和长度的问题，总是不能做这几天在修改 WPJAM 问答网站首页列表的时候，发现一个问题，就是有些问题的标题比较长，为了显示美观，我想将首页列表的标题都设置为1行，如果超出的在最后显示 显，开始的时候我使用 PHP 函数来计算文字个数，但是由于中英文字数算法和长度的问题，总是不能做',
-                        liking: '22',
-                        questions: 0
-                    },
-                    {
-                        id:'2',
-                        userIconUrl: 'http://localhost:3100/img/avatar/softIcon.jpg',
-                        userName: 'newbee1',
-                        creationTimestamp: '2018-1-1',
-                        content: '这几天在修改 WPJAM 问答网站首页列表的时候，发现一个问题，就是有些问题的标题比较长，为了显示美观，我想将首页列表的标题都设置为1行，如果超出的在最后显示 …，开始的时候我使用 PHP 函数来计算文字个数，但是由于中英文字数算法和长度的问题，总是不能做.',
-                        liking: '22',
-                        questions: 0
-                    },
-                    {
-                        id:'3',
-                        userIconUrl: 'http://localhost:3100/img/avatar/softIcon.jpg',
-                        userName: 'newbee1',
-                        creationTimestamp: '2018-1-1',
-                        content: '这几天在修改 WPJAM 问答网站首页列表的时候，发现一个问题，就是有些问题的标题比较长，为了显示美观，我想将首页列表的标题都设置为1行，如果超出的在最后显示 …，开始的时候我使用 PHP 函数来计算文字个数，但是由于中英文字数算法和长度的问题，总是不能做.',
-                        liking: '22',
-                        questions: 0
-                    },
-                    {
-                        id:'4',
-                        userIconUrl: 'http://localhost:3100/img/avatar/softIcon.jpg',
-                        userName: 'newbee1',
-                        creationTimestamp: '2018-1-1',
-                        content: '这几天在修改 WPJAM 问答网站首页列表的时候，发现一个问题，就是有些问题的标题比较长，为了显示美观，我想将首页列表的标题都设置为1行，如果超出的在最后显示 …，开始的时候我使用 PHP 函数来计算文字个数，但是由于中英文字数算法和长度的问题，总是不能做.',
-                        liking: '22',
-                        questions: 0
-                    },
-                ];
                 this.constructionArticle = [
                         {content: '我的回答内容我的回答内容1我的回答内容我的回答内容1', time: '2013-11-11 22:33'},
                         {content: '我的回答内容我的回答内容1我的回答内容我的回答内容1', time: '2013-13-23 22:33'},

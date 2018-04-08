@@ -34,10 +34,10 @@
                       style="font-weight: bold">…</span>
             </span>
         </div>
-
-        <div class="info">
+        <!--文章的item-->
+        <div class="info" v-if="itemData.title">
             <div class="likes fa fa-heart ic"
-                 :ref="'liking'+itemData.id"
+                 :ref="'forum/liking/'+itemData.id"
                  @click="handleLikeAcollect('forum/liking/',itemData)">
                 &nbsp;{{itemData.liking}}人喜欢
             </div>
@@ -45,12 +45,27 @@
                 &nbsp;{{itemData.questions}}个问题
             </div>
             <div class="collection fa fa-star ic"
-                 :ref="'collect'+itemData.id"
-                 @click="handleLikeAcollect('forum/collect/',itemData)">
-                &nbsp;0个收藏
+                 :ref="'forum/collection/'+itemData.id"
+                 @click="handleLikeAcollect('forum/collection/',itemData)">
+                &nbsp;{{itemData.collections}}个收藏
             </div>
         </div>
-
+        <!--问题的item-->
+        <div class="info" v-else>
+            <div class="likes fa fa-heart ic"
+                 :ref="'question/liking/'+itemData.id"
+                 @click="handleLikeAcollect('question/liking/',itemData)">
+                &nbsp;{{itemData.liking}}人喜欢
+            </div>
+            <div class="comments fa fa-comments ic" @click="handleIn(itemData.id)">
+                &nbsp;{{itemData.questions}}个问题
+            </div>
+            <div class="collection fa fa-star ic"
+                 :ref="'question/liking/'+itemData.id"
+                 @click="handleLikeAcollect('question/collection/',itemData)">
+                &nbsp;{{itemData.collections}}个收藏
+            </div>
+        </div>
     </div>
 </template>
 

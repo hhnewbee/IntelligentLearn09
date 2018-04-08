@@ -96,8 +96,10 @@ let manageMixin = {
         handlePage(size) {
             //如果是搜索翻页
             if (this.ifSearch) {
+                this.pageSearch=size;
                 this.handleChangeArea('search' + size, this.urlSearch);
             } else {
+                this.page=size;
                 this.handleChangeArea('p' + size, this.url);
             }
         },
@@ -112,7 +114,7 @@ let manageMixin = {
          * 搜索数据
          */
         handleSearch() {
-            this.handleChangeArea(null, 'search0', this.url);
+            this.handleChangeArea('search0', this.url);
             //展示搜索的数据
             this.ifSearch = true;
         },
@@ -149,6 +151,7 @@ let manageMixin = {
                 }
                 case 'message': {
                     // this.content=target.row.content;
+                    console.log(scope);
                     break;
                 }
             }
