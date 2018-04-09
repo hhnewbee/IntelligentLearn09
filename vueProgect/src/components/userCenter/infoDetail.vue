@@ -28,13 +28,10 @@
         </el-popover>
         <avatar :username="account"
                 :src="avatarUrl"
+                style="cursor: pointer"
                 @click.native="handleShowInfo"
                 v-popover:popover1
                 :size="size"></avatar>
-        <!--<img :src="avatarUrl"-->
-             <!--@click="handleShowInfo"-->
-             <!--style="border-radius: 50%;height: 100%;width: 100%"-->
-             <!--v-popover:popover1>-->
     </div>
 </template>
 

@@ -11,18 +11,22 @@
                     <el-radio-button label="最热"></el-radio-button>
                 </el-radio-group>
             </div>
-            <articleItem
-                    v-for="item in listNow"
-                    :key="item.id"
-                    :itemData="item">
-            </articleItem>
+            <div style="flex-grow: 1">
+                <articleItem
+                        v-for="item in listNow.forums"
+                        :key="item.id"
+                        :itemData="item">
+                </articleItem>
+            </div>
             <el-pagination
                     @size-change="handlePage"
                     style="flex-shrink: 0;align-self: center;margin-bottom: 20px"
                     background
                     layout="prev, pager, next"
-                    :total="listNow.page">
+                    :page-size="1"
+                    :total="listNow.pages">
             </el-pagination>
+            <footer_></footer_>
         </div>
         <div class="right">
             <div class="rightItem">
@@ -51,11 +55,16 @@
 <script>
     import articleItem from './articleItem.vue';
     import rightItem from './rightItem.vue';
+    import footer_ from '../footer/footer.vue';
+    import backHeader from '../header/backHeader.vue';
     import {mapState} from 'vuex'
     import {areaCaching,pageRequire} from '../mixins.js';
 
     export default {
         created(){
+            this.url='forums';
+            //areaFocus没有在init前被初始化，所以放到事件循环最后加载
+            setTimeout(this.iniData,1);
             this.initRight();
         },
         data() {
@@ -66,6 +75,7 @@
         },
         computed:{
             ...mapState(['type']),
+            ...mapState('info',['areaFocus']),
         },
         methods:{
             /**
@@ -84,7 +94,9 @@
         },
         components: {
             articleItem,
-            rightItem
+            rightItem,
+            footer_,
+            backHeader
         },
         mixins:[areaCaching,pageRequire]
     }

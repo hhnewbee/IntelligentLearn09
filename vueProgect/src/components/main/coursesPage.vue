@@ -39,7 +39,8 @@
                 background
                 layout="prev, pager, next"
                 :key="listNow.page"
-                :total="listNow.page">
+                :page-size="1"
+                :total="listNow.pages">
         </el-pagination>
         <footer_></footer_>
     </div>
@@ -47,17 +48,23 @@
 
 <script>
     import courseItem from './courseItem.vue'
-    import {mapState} from 'vuex'
     import footer_ from '../footer/footer.vue';
+    import {mapState} from 'vuex'
     import {areaCaching,pageRequire} from '../mixins.js';
 
     export default {
+        created() {
+            this.url='courses';
+            //areaFocus没有在init前被初始化，所以放到事件循环最后加载
+            setTimeout(this.iniData,1);
+        },
         components: {
             courseItem,
             footer_,
         },
-        computed:{
+        computed: {
             ...mapState(['type']),
+            ...mapState('info',['areaFocus']),
         },
         mixins:[pageRequire,areaCaching]
     }

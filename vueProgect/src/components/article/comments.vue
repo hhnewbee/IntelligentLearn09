@@ -12,7 +12,7 @@
         <vue-scrollbar v-show="!ifReplysList"
                        class="my-scrollbar">
             <div class="commentsList">
-                <div v-if="commentItems.length===0">暂无问题</div>
+                <div v-if="commentItems.length===0" style="color: #8a8a8a">暂无问题</div>
                 <div class="item"
                      v-for="(comment,index) in commentItems"
                      :key="index">
@@ -214,10 +214,10 @@
                     //是获取评论的回复还是回复的回复
                     //如果标识中有video就是获取评论的回复
                     if(this.targetId.match('video')){
-                        url=`comment/${commentInfo.id}/page=0/size=20`;
+                        url=`comment/${commentInfo.id}/page=0/size=15`;
                         this.targetId ='comment-'+commentInfo.id;
                     }else{
-                        url=`reply/${commentInfo.id}/page=0/size=20`;
+                        url=`reply/${commentInfo.id}/page=0/size=15`;
                         this.targetId ='reply-'+commentInfo.id;
                     }
                     this.replysAreas.forEach((area) => {
@@ -409,17 +409,18 @@
         display: flex;
         flex-direction: column;
         border: 1px solid $borderColor;
-        background-color: #eeeeee;
+        background-color: #f0f4f7;
         .commentsHeader {
             font-size: 14px;
             padding: 10px;
             border-bottom: 1px solid $borderColor;
+            color: $secondaryText;
         }
         .my-scrollbar {
             height: 100%;
             width: 100%;
             flex-grow: 1;
-            background-color: #eeeeee;
+            background-color: #f0f4f7;
         }
 
         /*评论/回复的item*/

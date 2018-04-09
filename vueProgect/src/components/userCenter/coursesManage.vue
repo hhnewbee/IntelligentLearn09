@@ -72,6 +72,7 @@
         </div>
         <div class="content">
             <el-table
+                    ref="table"
                     v-show="ifTable"
                     @select-all="handleSelectAll"
                     @select="handleSelectBatch"
@@ -100,16 +101,9 @@
 
                 <el-table-column
                         align='center'
-                        prop="type"
-                        label="类型"
-                        width="60">
-                </el-table-column>
-
-                <el-table-column
-                        align='center'
                         prop="category"
                         label="类别"
-                        width="60">
+                        width="150">
                 </el-table-column>
 
                 <el-table-column
@@ -135,7 +129,7 @@
                         width="110">
                     <template slot-scope="scope">
                         <el-button
-                                @click="handleSee(scope)"
+                                @click="handleSee('course',scope)"
                                 type="text"
                                 size="small">
                             查看
@@ -159,7 +153,8 @@
                 @current-change="handlePage"
                 background
                 layout="prev, pager, next"
-                :total="1000">
+                :page-size="1"
+                :total="listNow.page">
         </el-pagination>
     </div>
 </template>
@@ -167,68 +162,8 @@
 <script>
     import {manageMixin} from './manageMixin.js';
     export default {
-        created() {
-            this.initData([
-                {
-                    date: '2016-05-03',
-                    name: 'vue与webpack初步1',
-                    type: '课程',
-                    category: '金融',
-                    status: true,
-                    chartData: {
-                        accessTimes: '30',
-                        likes: '22',
-                        collection: '20',
-                        question: '11'
-                    }
-                }, {
-                    date: '2016-05-03',
-                    name: 'vue与webpack初步2',
-                    type: '课程',
-                    category: '金融',
-                    status: true
-                }, {
-                    date: '2016-05-03',
-                    name: 'vue与webpack初步3',
-                    type: '课程',
-                    category: '金融',
-                    newDate: '2017-05-09',
-                    avatar: 'http://localhost:3100/img/avatar/softIcon.jpg',
-                    nickName: 'newbee',
-                    useTime: 90,
-                    accessTimes: 10,
-                }, {
-                    date: '2016-05-03',
-                    name: 'vue与webpack初步4',
-                    type: '课程',
-                    category: '金融',
-                    newDate: '2018-05-03',
-                    avatar: 'http://localhost:3100/img/avatar/softIcon.jpg',
-                    nickName: 'newbee',
-                    useTime: 30,
-                    accessTimes: 20,
-                }, {
-                    date: '2016-05-03',
-                    name: 'vue与webpack初步5',
-                    type: '课程',
-                    category: '金融',
-                    newDate: '2018-05-03',
-                    avatar: 'http://localhost:3100/img/avatar/softIcon.jpg',
-                    nickName: 'newbee',
-                    useTime: 10,
-                    accessTimes: 20,
-                }, {
-                    date: '2016-05-03',
-                    name: 'vue与webpack初步6',
-                    type: '课程',
-                    category: '金融',
-                    newDate: '2018-05-03',
-                    avatar: 'http://localhost:3100/img/avatar/softIcon.jpg',
-                    nickName: 'newbee',
-                    useTime: 40,
-                    accessTimes: 20,
-                }
-            ], [{value: '课程记录'}, {value: '课程详情'}]);
+        mounted() {
+            this.initData([{value: '课程记录'}, {value: '课程详情'}]);
         },
         methods: {
             /**
@@ -236,10 +171,61 @@
              */
             handleUpload() {
                 this.$router.push({path: '/userCenter/coursesManage/coursesUpload/#coursesManage'});
-            }
+            },
+            /**
+             * 设置图表数据
+             */
+            setChartData() {
+                //清空之前的数据
+                this.chartData = [[],[],[],[],[]];
+                this.tableData.forEach((data) => {
+                    this.chartData[0].push(data.name);
+                    this.chartData[1].push(data.accessTimes);
+                    this.chartData[2].push(data.likes);
+                    this.chartData[3].push(data.collection);
+                    this.chartData[4].push(data.question);
+                })
+            },
+            /**
+             * 设置获取数据的格式
+             */
+            setDataFormat(resDatas) {
+                return resDatas.courses.map((resdata)=>{
+                    return {
+                        id:resdata.id,
+                        date:this.$formatDate(resdata.creationTimestamp),
+                        name:resdata.title,
+                        status:true,
+                        category:resdata.type,
+
+                        accessTimes: resdata.learnCount,
+                        likes: resdata.liking,
+                        collection: resdata.collections,
+                        question: resdata.question
+                    }
+                });
+            },
         },
         components: {
-            courseChart: () => import( './courseChart.vue'),
+            courseChart: () => import(/* webpackChunkName: "courseChart.vue" */ './courseChart.vue'),
+        },
+        computed:{
+            url(){
+                return `/admin/cousers/page=${this.page-1}/size=${this.itemCount}`;
+            },
+            urlSearch(){
+                return `/admin/cousers/page=${this.pageSearch-1}/size=${this.itemCount}`;
+            }
+        },
+        watch:{
+            //监听加载的数据变化
+            listNow(){
+                if (this.ifSearch) {
+                    this.tableData = this.setDataFormat(this.listNow);
+                } else {
+                    this.pageData = this.tableData = this.setDataFormat(this.listNow);
+                }
+            }
         },
         mixins:[manageMixin]
     }

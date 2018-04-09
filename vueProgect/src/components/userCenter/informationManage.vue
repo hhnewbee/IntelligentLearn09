@@ -60,6 +60,7 @@
         </div>
         <div class="content">
             <el-table
+                    :row-class-name="setRowColor"
                     ref="table"
                     @select-all="handleSelectAll"
                     @select="handleSelectBatch"
@@ -80,34 +81,34 @@
                 </el-table-column>
 
                 <el-table-column
-                        align='center'
-                        prop="position"
-                        label="位置"
-                        :show-overflow-tooltip="true"
-                        width="190">
-                </el-table-column>
-
-                <el-table-column
                         align='left'
                         label="类型"
                         header-align="center"
-                        width="220">
+                        :show-overflow-tooltip="true"
+                        width="280">
                     <div slot-scope="scope"
-                         style="display: flex;align-items: center;">
-                        <div v-if="scope.row.type.content==='我回复了'" style="display: flex">
+                         style="display: flex;align-items: center;justify-content: center">
+
+                        <div v-if="scope.row.type.content==='我回复了'"
+                             style="display: flex;align-items: center">
                             {{scope.row.type.content}}&nbsp;
                             <info-detail :account="scope.row.type.account"
                                          :avatarUrl="scope.row.type.avatarUrl"
                                          :size="30">
                             </info-detail>
+                            <div style="color: #18C0DF">&nbsp;{{scope.row.type.account}}</div>
                         </div>
-                        <div v-else-if="scope.row.type.content==='回复了我'">
+
+                        <div v-else-if="scope.row.type.content==='回复了我'"
+                             style="display: flex;align-items: center">
+                            <div style="color: #18C0DF">{{scope.row.type.account}}&nbsp;</div>
                             <info-detail :account="scope.row.type.account"
                                          :avatarUrl="scope.row.type.avatarUrl"
                                          :size="25">
                             </info-detail>&nbsp;
                             {{scope.row.type.content}}
                         </div>
+
                         <div v-else>
                             {{scope.row.type}}
                         </div>
@@ -120,6 +121,13 @@
                         label="内容"
                         :show-overflow-tooltip="true"
                         min-width="120">
+                </el-table-column>
+
+                <el-table-column
+                        align='center'
+                        prop="status"
+                        label="状态"
+                        width="100">
                 </el-table-column>
 
                 <el-table-column
@@ -145,12 +153,21 @@
                 </el-table-column>
             </el-table>
         </div>
+        <el-dialog :visible.sync="dialogInfo">
+            <div style="font-size: 12px;color: #8a8a8a;text-align: left">
+                {{dialogTime | formatDateTime}}
+            </div>
+            <div style="margin-left: 2rem;font-size: 16px;color: black">
+                {{dialogContent}}
+            </div>
+        </el-dialog>
         <el-pagination
                 style="align-self: center"
                 @current-change="handlePage"
                 background
                 layout="prev, pager, next"
-                :total="1000">
+                :page-size="1"
+                :total="listNow.pages">
         </el-pagination>
     </div>
 </template>
@@ -173,6 +190,10 @@
             return {
                 //副标题
                 subTitle: '全部信息',
+                //弹出框的标识
+                dialogInfo:false,
+                dialogTime:'',
+                dialogContent:''
             }
         },
 
@@ -200,8 +221,11 @@
             setDataFormat(resDatas) {
                 return resDatas.messages.map((resdata)=>{
                     return {
+                        id:resdata.id,
                         date:this.$formatDate(resdata.creationTimestamp),
+                        time:resdata.creationTimestamp,
                         content:resdata.content,
+                        status:resdata.status==="No Read"?'未读':'已读',
                         type:(()=>{
                             //判断信息的类型
                             switch(resdata.type){
@@ -223,15 +247,24 @@
                                     }
                                 }
                                 case 'comment':{
-                                    return '发表';
+                                    return '我的发表';
                                 }
                                 case 'system':{
-                                    return '系统信息';
+                                    return '系统通知';
                                 }
                             }
                         })()
                     }
                 });
+            },
+            /**
+             * 设置表格背景
+             */
+            setRowColor({row}){
+                if (row.status === '未读') {
+                    return 'notRead-row';
+                }
+                return '';
             }
         },
         computed: {
@@ -261,6 +294,9 @@
 
 <style lang="scss">
     @import './manageStyle.scss';
+    .notRead-row {
+        background: #f0f9eb;
+    }
     .el-tooltip__popper{
         max-width: 30%;
         line-height: 1.5em;

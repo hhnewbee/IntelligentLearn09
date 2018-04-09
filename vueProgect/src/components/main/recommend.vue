@@ -34,13 +34,6 @@
                         </articleItem>
                     </div>
                 </div>
-                <el-pagination
-                        @size-change="handlePage"
-                        style="align-self: center;margin-top: 20px"
-                        background
-                        layout="prev, pager, next"
-                        :total="listNow.page">
-                </el-pagination>
             </div>
             <footer_></footer_>
             <backHeader></backHeader>
@@ -59,20 +52,10 @@
         created() {
             this.initData();
         },
-        data() {
-            return {
-            }
-        },
         methods: {
             initData() {
                 this.handleChangeArea('p1', 'recommend');
             },
-            /**
-             * 分页
-             */
-            handlePage(size){
-                this.handleChangeArea(`p${size}`, `recommend/page=${size-1}`);
-            }
         },
         components: {
             courseItem,

@@ -4,29 +4,33 @@
         <el-popover
                 ref="popover2"
                 placement="bottom"
-                width="360"
                 trigger="click">
-            <el-dialog
-                    title="通知"
-                    :modal='false'
-                    :visible.sync="dialogNotificationVisible">
-                {{notiContent}}
-            </el-dialog>
-            <div id="noticeInfoIL09">
+            <div id="noticeInfoIL09"
+                 v-if="notifications.length">
                 <div v-for="item in notifications"
                      @click="handleNotification(item)">
-                    <p v-if="item.answer!==undefined"
+                    <p v-if="item.type.content==='回复了我'"
                        style="color: #14c1e9">
-                        {{item.user}}：{{item.answer}}
+                        <info-detail :account="item.type.account"
+                                     :avatarUrl="item.type.avatarUrl"
+                                     :size="25">
+                        </info-detail>
+                        <span>{{item.type.account}}&nbsp;{{item.type.content}}</span>
                     </p>
-                    <p v-else style="color: red">{{item.user}}：</p>
+                    <p v-else style="color: red">{{item.type}}：</p>
                     <p>{{item.content}}</p>
                     <p class="el-icon-time">&nbsp;{{item.time}}</p>
+                    <!--查看详情-->
+                    <el-dialog :modal='false'
+                               :visible.sync="dialogNotificationVisible">
+                        {{item.content}}
+                    </el-dialog>
                 </div>
             </div>
+            <div v-else style="color: #8a8a8a;display: flex;justify-content: center">暂无信息</div>
         </el-popover>
-        <el-badge :value="10"
-                  :max="100"
+        <el-badge :max="100"
+                  :hidden="!notifications.length"
                   :is-dot="true">
             <el-button icon="el-icon-message"
                        plain
@@ -69,10 +73,9 @@
                     </div>
                 </div>
                 <div class="line3">
-                    <div v-if="records.length===0" style="text-align: center;color: #9b9b9b">暂无</div>
-                    <div
-                            class="content"
-                            v-for="content in records">
+                    <div v-if="records.length===0" style="text-align: center;color: #9b9b9b">暂无学习记录</div>
+                    <div class="content"
+                         v-for="content in records">
                         <div class="contentText">{{content.content}}</div>
                         <div class="el-icon-time">&nbsp;{{content.time}}</div>
                     </div>
@@ -100,6 +103,7 @@
 <script>
     import {mapMutations} from 'vuex';
     import {mapState} from 'vuex';
+    import infoDetail from '../userCenter/infoDetail.vue';
 
     export default {
         created() {
@@ -113,8 +117,6 @@
                 notifications: [],
                 //通知信息的弹出框
                 dialogNotificationVisible: false,
-                //当前打开的通知的内容
-                notiContent: '',
             }
         },
         computed: {
@@ -143,37 +145,72 @@
              * 初始化数据
              */
             initData() {
-                //todo 模拟记录的数据
-                this.records = [
-                    {content: '我的回答内容我的回答内容1我的回答内容我的回答内容1', time: '2013-11-11 22:33'},
-                    {content: '我的回答内容我的回答内容1我的回答内容我的回答内容1', time: '2013-13-23 22:33'},
-                    {content: '答内容我的回答内容1', time: '2013-12-3 22:33'},
-                ];
-                //todo 模拟通知的数据
-                this.notifications = [
-                    {
-                        user: '李敏',
-                        answer: '回答了你的问题',
-                        content: '泰国神级广告导演Thanonchai Sornsriwichai亲自操刀，马云大佬buff加持，然而不能改变我对这则广告很弱智的看法。难道我们现在对一个人的认识，不是注重个人对人接物的态度和自身良好的素养品德了吗？这则广告，在我看来就是在传达这么一个意思，有车有房才能结婚。广告的最后，才让人恍然醒悟，原来是滴滴出行，然而有啥关联吗？',
-                        time: '2013-12-3 22:33'
-                    },
-                    {user: '通知', content: '请开始学习"比特的原理"该文章', time: '2013-12-3 22:33'}
-                ];
-                //todo 加载推荐课程
-                //todo 加载推荐文章
+                //历史记录
+                this.$ajaxJava.get('/user/history/page=0/size=3').then((res)=>{
+                    let record={};
+                    this.records=res.data.history.map((data)=>{
+                        if(data.course){
+                            record.content=data.course.title;
+                        }else{
+                            record.content=data.forum.title;
+                        }
+                        record.time=this.$formatTime(data.updateTime);
+                        return record;
+                    });
+                });
+                //信息数据
+                this.$ajaxJava.get('user/messages/page=0/size=6').then((res)=>{
+                    //格式化数据
+                    res.data.messages.forEach((resdata)=>{
+                        //判断该信息是否未读
+                        if(resdata.status==='No Read'){
+                            this.notifications.push({
+                                id:resdata.id,
+                                time:resdata.creationTimestamp,
+                                content:resdata.content,
+                                type:(()=>{
+                                    //判断信息的类型
+                                    switch(resdata.type){
+                                        case 'reply':{
+                                            //判断是谁回谁
+                                            if(this.account!==resdata.from.account){
+                                                return {
+                                                    content:'回复了我',
+                                                    account:resdata.to.account,
+                                                    avatarUrl:resdata.to.selfInformation.imgPath
+                                                };
+                                            }
+                                            break;
+                                        }
+                                        case 'comment':{
+                                            return '系统通知';
+                                        }
+                                        case 'system':{
+                                            return '系统通知';
+                                        }
+                                    }
+                                })()
+                            });
+                        }
+                    })
+                });
             },
             /**
              * 查看消息
              * @param item
              */
             handleNotification(item) {
-                if (item.answer === undefined) {
-                    this.dialogNotificationVisible = true;
-                    this.notiContent = item.content;
-                }
+                this.dialogNotificationVisible = true;
+                //查看信息
+                this.$ajaxJava.get('message/'+item.id).then(()=>{
+                    //本地更新
+                    this.notifications.splice(this.notifications.indexOf(item),1);
+                });
             }
+        },
+        components:{
+            infoDetail
         }
-        ,
     }
 </script>
 

@@ -22,7 +22,7 @@ let manageMixin = {
             //图表与表格的切换
             ifTable: true,
             //图表的数据
-            chartData: [[], [], []],
+            chartData: [],
             //显示更多功能
             ifMoreFun: false,
             //图标类型选择
@@ -134,11 +134,11 @@ let manageMixin = {
             //判断是什么类型的查看
             switch (type) {
                 case 'course': {
-                    this.$router.push({path: `/course/${scope.row.account}`});
+                    this.$router.push({path: `/course/${scope.row.id}`});
                     break;
                 }
                 case 'article': {
-                    this.$router.push({path: `/articlePage/article/${scope.row.account}`});
+                    this.$router.push({path: `/articlePage/article/${scope.row.id}`});
                     break;
                 }
                 case 'user': {
@@ -150,8 +150,12 @@ let manageMixin = {
                     break;
                 }
                 case 'message': {
-                    // this.content=target.row.content;
-                    console.log(scope);
+                    this.$ajaxJava.get('message/'+scope.row.id).then(()=>{
+                        scope.row.status='已读'
+                    });
+                    this.dialogInfo=true;
+                    this.dialogTime=scope.row.time;
+                    this.dialogContent=scope.row.content;
                     break;
                 }
             }

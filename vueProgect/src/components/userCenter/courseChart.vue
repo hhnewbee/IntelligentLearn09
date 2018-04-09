@@ -28,20 +28,7 @@
                         text: null
                     },
                     xAxis: {
-                        categories: [
-                            '一月',
-                            '二月',
-                            '三月',
-                            '四月',
-                            '五月',
-                            '六月',
-                            '七月',
-                            '八月',
-                            '九月',
-                            '十月',
-                            '十一月',
-                            '十二月'
-                        ],
+                        categories: [],
                         labels: {
                             autoRotation: false
                         },
@@ -72,24 +59,34 @@
                     series: [
                         {
                             name: '观看数',
-                            data: [49.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 95.6, 54.4]
+                            data: []
                         }, {
                             name: '点赞数',
-                            data: [83.6, 78.8, 98.5, 93.4, 106.0, 84.5, 105.0, 104.3, 91.2, 83.5, 106.6, 92.3]
+                            data: []
                         }, {
                             name: '收藏数',
-                            data: [48.9, 38.8, 39.3, 41.4, 47.0, 48.3, 59.0, 59.6, 52.4, 65.2, 59.3, 51.2]
+                            data: []
                         }, {
                             name: '问题数',
-                            data: [42.4, 33.2, 34.5, 39.7, 52.6, 75.5, 57.4, 60.4, 47.6, 39.1, 46.8, 51.1]
+                            data: []
                         }]
                 }
             }
         },
         methods:{
             initChart() {
+                //课程名称
+                this.options.xAxis.categories = this.chartData[0];
+                //观看数
+                this.options.series[0].data = this.chartData[1];
+                //点赞数
+                this.options.series[1].data = this.chartData[2];
+                //收藏数
+                this.options.series[2].data = this.chartData[3];
+                //问题数
+                this.options.series[3].data = this.chartData[4];
                 //显示暂无数据
-                this.notData = !(this.chartData[1].length || this.chartData[2].length);
+                this.notData = !(this.chartData[0].length);
                 //生成图表
                 this.chart = new Highcharts.Chart("highcharts-container", this.options);
             }

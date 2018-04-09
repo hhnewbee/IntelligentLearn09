@@ -1,16 +1,16 @@
 <template>
     <div class="downLoad">
         <div class="header">
-            <div class="info name">文件</div>
-            <div class="info size">大小</div>
-            <div class="info date">时间</div>
+            <div class=" name">文件</div>
+            <div class=" size">大小</div>
+            <div class=" date">时间</div>
         </div>
-        <div
-                v-for="info in fileData"
-                class="item">
-            <div class="info name fa fa-file">&nbsp&nbsp{{info.file}}</div>
-            <div class="info size">{{info.size}}</div>
-            <div class="info date">{{info.date}}</div>
+        <div v-for="info in fileData"
+             title="下载"
+             class="item">
+            <div class=" name fa fa-file">&nbsp&nbsp{{info.file}}</div>
+            <div class=" size">{{info.size}}</div>
+            <div class=" date">{{info.date}}</div>
         </div>
     </div>
 </template>
@@ -46,14 +46,17 @@
         padding: 10px;
         .header, .item {
             font-size: 15px;
-            padding: 10px;
+            padding: 20px 10px;
             display: flex;
             justify-content: space-around;
             align-items: center;
-            border-bottom: 1px solid #2d3742;
+            border-bottom: 1px solid #1c2329;
         }
-        .info {
-
+        .item{
+            &:hover{
+                cursor: pointer;
+                background-color: #1c2329;
+            }
         }
     }
 </style>

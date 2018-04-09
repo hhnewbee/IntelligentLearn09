@@ -59,6 +59,7 @@
         </div>
         <div class="content">
             <el-table
+                    ref="table"
                     v-show="ifTable"
                     @select-all="handleSelectAll"
                     @select="handleSelectBatch"
@@ -149,7 +150,8 @@
                 @current-change="handlePage"
                 background
                 layout="prev, pager, next"
-                :total="1000">
+                :page-size="1"
+                :total="listNow.pages">
         </el-pagination>
     </div>
 </template>
@@ -157,7 +159,7 @@
 <script>
     import {manageMixin} from './manageMixin';
     export default {
-        created() {
+        mounted() {
             //todo 模拟初始化请求数据
             this.initData([
                 {
@@ -170,61 +172,42 @@
                     nickName: 'newbee',
                     useTime: 100,
                     accessTimes: 30,
-                }, {
-                    date: '2016-05-03',
-                    name: 'vue与webpack初步2',
-                    type: '课程',
-                    category: '金融',
-                    newDate: '2017-05-03',
-                    avatar: 'http://localhost:3100/img/avatar/softIcon.jpg',
-                    nickName: 'newbee',
-                    useTime: 130,
-                    accessTimes: 20,
-                }, {
-                    date: '2016-05-03',
-                    name: 'vue与webpack初步3',
-                    type: '课程',
-                    category: '金融',
-                    newDate: '2017-05-09',
-                    avatar: 'http://localhost:3100/img/avatar/softIcon.jpg',
-                    nickName: 'newbee',
-                    useTime: 90,
-                    accessTimes: 10,
-                }, {
-                    date: '2016-05-03',
-                    name: 'vue与webpack初步4',
-                    type: '课程',
-                    category: '金融',
-                    newDate: '2018-05-03',
-                    avatar: 'http://localhost:3100/img/avatar/softIcon.jpg',
-                    nickName: 'newbee',
-                    useTime: 30,
-                    accessTimes: 20,
-                }, {
-                    date: '2016-05-03',
-                    name: 'vue与webpack初步5',
-                    type: '课程',
-                    category: '金融',
-                    newDate: '2018-05-03',
-                    avatar: 'http://localhost:3100/img/avatar/softIcon.jpg',
-                    nickName: 'newbee',
-                    useTime: 10,
-                    accessTimes: 20,
-                }, {
-                    date: '2016-05-03',
-                    name: 'vue与webpack初步6',
-                    type: '课程',
-                    category: '金融',
-                    newDate: '2018-05-03',
-                    avatar: 'http://localhost:3100/img/avatar/softIcon.jpg',
-                    nickName: 'newbee',
-                    useTime: 40,
-                    accessTimes: 20,
-                }
-            ],[{value: '课程记录'}, {value: '课程详情'}]);
+                },
+            ],[{value: '收藏记录'}, {value: '学习详情'}]);
+        },
+        method:{
+            /**
+             * 设置获取数据的格式
+             */
+            setDataFormat(resDatas) {
+                return resDatas.messages.map((resData)=>{
+                    return {
+                        date:this.$formatDate(resData.creationTimestamp),
+                        time:resData.creationTimestamp,
+                        content:resData.content,
+                    }
+                });
+            }
+        },
+        computed: {
+            url() {
+                return `user/messages/page=${this.page - 1}/size=${this.itemCount}`;
+            },
+            urlSearch() {
+                return `user/messages/page=${this.pageSearch - 1}/size=${this.itemCount}`;
+            }
         },
         components: {
-            hightChart:()=>import( './hightChart.vue')
+            hightChart:()=>import(/* webpackChunkName: "hightChart.vue" */ './hightChart.vue')
+        },
+        watch:{
+            listNow() {
+                if (this.ifSearch) {
+                    this.tableData = this.setDataFormat(this.listNow);
+                } else {
+                    this.pageData = this.tableData = this.setDataFormat(this.listNow);
+                }
+            }
         },
         mixins:[manageMixin]
     }

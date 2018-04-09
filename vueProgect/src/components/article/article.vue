@@ -86,17 +86,7 @@
              * 数据初始化
              */
             initData() {
-                this.discussInfo={
-                    theme:'vue与webpack的学习',
-                    nickName:this.account,
-                    avatarUrl:this.avatarUrl
-                };
-                this.commentsInfo={
-                    nickName:this.account,
-                    avatarUrl:this.avatarUrl,
-                    targetId:'123',
-                    tag:'普通用户'
-                }
+
             },
             /**
              * 初始dom
@@ -122,10 +112,23 @@
                         break;
                     }
                     case '讨论': {
+                        this.discussInfo={
+                            theme:'vue与webpack的学习',
+                            nickName:this.account,
+                            avatarUrl:this.avatarUrl
+                        };
                         this.changePop = 'discuss';
                         break;
                     }
                     case '问题': {
+                        this.commentsInfo = {
+                            getCommentUrl:`article/${this.articleData.id}/page=`,
+                            postCommentUrl:`article/comment`,
+                            postData:{
+                                article:{id:this.articleData.id},
+                            },
+                            targetId:'video-'+this.articleData,
+                        };
                         this.changePop = 'questions';
                         break;
                     }
@@ -158,10 +161,10 @@
         justify-content: center;
         background-color: $mainPageColor;
         .left {
-            padding: 10px 20px;
-            margin-left: 20px;
+            padding: 10px 25px;
+            margin-left: 10px;
             margin-right: 350px;
-            width: 850px;
+            width: 900px;
             background-color: #ffffff;
             /*align-self如果不做设置，left布局无法被撑开*/
             align-self: start;

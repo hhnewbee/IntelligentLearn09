@@ -25,6 +25,10 @@ Vue.filter("formatFromNow", function (value) {
 Vue.prototype.$formatDate=function (value) {
     return Moment(new Date(value)).format("YYYY-MM-DD");
 };
+//精确到分钟
+Vue.prototype.$formatTime=function (value) {
+    return Moment(new Date(value)).format("YYYY-MM-DD HH:mm");
+};
 //得到小时时间
 Vue.prototype.$formatHouse=function (value) {
     return Moment.duration(value).asHours();

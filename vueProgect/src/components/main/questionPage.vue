@@ -11,18 +11,22 @@
                     <el-radio-button label="最热"></el-radio-button>
                 </el-radio-group>
             </div>
-            <articleItem
-                    v-for="question in listNow.questions"
-                    :key="question.id"
-                    :itemData="question">
-            </articleItem>
+            <div style="flex-grow: 1;">
+                <articleItem
+                        v-for="question in listNow.questions"
+                        :key="question.id"
+                        :itemData="question">
+                </articleItem>
+            </div>
             <el-pagination
                     @size-change="handlePage"
                     style="flex-shrink: 0;align-self: center;margin-bottom: 20px"
                     background
                     layout="prev, pager, next"
+                    :page-size="1"
                     :total="listNow.pages">
             </el-pagination>
+            <footer_></footer_>
         </div>
         <div class="right">
             <el-button type="primary"
@@ -63,12 +67,14 @@
     import articleItem from '../main/articleItem.vue';
     import rightItem from './rightItem.vue';
     import myLearnerEditor from '../edit/myLearnerEditor.vue';
+    import footer_ from '../footer/footer.vue';
     import {mapState} from 'vuex';
     import {areaCaching,pageRequire} from '../mixins.js';
 
 
     export default {
         created() {
+            this.url='questions';
             //areaFocus没有在init前被初始化，所以放到事件循环最后加载
             setTimeout(this.iniData,1);
             this.initRight();
@@ -108,7 +114,8 @@
         components: {
             articleItem,
             rightItem,
-            myLearnerEditor
+            myLearnerEditor,
+            footer_
         },
         mixins:[areaCaching,pageRequire]
     }

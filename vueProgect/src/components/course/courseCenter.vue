@@ -100,7 +100,6 @@
                             postData:{
                                 course:{id:this.courseData.id},
                                 file:{id:this.videoId},
-                                content:''
                             },
                             targetId:'video-'+this.videoId,
                         };

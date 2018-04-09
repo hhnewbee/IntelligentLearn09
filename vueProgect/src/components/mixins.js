@@ -114,6 +114,8 @@ export let pageRequire = {
             choose: '最新',
             //类型选择
             typeChoose: "",
+            //url
+            url:''
         }
     },
     methods: {
@@ -124,28 +126,28 @@ export let pageRequire = {
             }else{
                 this.typeChoose = this.areaFocus;
             }
-            this.handleChangeArea(`new${this.typeChoose}P1`, `questions/choose=new/type=${this.typeChoose}/page=0/size=10`);
+            this.handleChangeArea(`new${this.typeChoose}P1`, `${this.url}/choose=new/type=${this.typeChoose}/page=0/size=10`);
         },
         /**
          * 最新最热
          */
         handleChoose(label) {
             let valueChoose = label === '最新' ? 'new' : 'hot';
-            this.handleChangeArea(valueChoose + this.typeChoose + 'p1', `questions/choose=${valueChoose}/type=${this.typeChoose}/page=0/size=10`);
+            this.handleChangeArea(valueChoose + this.typeChoose + 'p1', `${this.url}/choose=${valueChoose}/type=${this.typeChoose}/page=0/size=10`);
         },
         /**
          * 类型选择
          */
         hanleType(label) {
             let valueChoose = this.choose === '最新' ? 'new' : 'hot';
-            this.handleChangeArea(valueChoose + label + 'p1', `questions/choose=${valueChoose}/type=${label}/page=0/size=10`);
+            this.handleChangeArea(valueChoose + label + 'p1', `${this.url}/choose=${valueChoose}/type=${label}/page=0/size=10`);
         },
         /**
          * 分页
          */
         handlePage(size) {
             let valueChoose = this.choose === '最新' ? 'new' : 'hot';
-            this.handleChangeArea(valueChoose + this.typeChoose + 'p' + size, `questions/choose=${valueChoose}/type=${this.typeChoose}/page=${size - 1}`);
+            this.handleChangeArea(valueChoose + this.typeChoose + 'p' + size, `${this.url}/choose=${valueChoose}/type=${this.typeChoose}/page=${size - 1}`);
         },
     },
 };
