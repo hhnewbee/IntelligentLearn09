@@ -109,7 +109,7 @@
                         align='center'
                         prop="category"
                         label="类别"
-                        width="50">
+                        width="150">
                 </el-table-column>
 
                 <el-table-column
@@ -161,40 +161,42 @@
     export default {
         mounted() {
             //todo 模拟初始化请求数据
-            this.initData([
-                {
-                    date: '2016-05-03',
-                    name: 'vue与webpack初步1',
-                    type: '课程',
-                    category: '金融',
-                    newDate: '2016-05-03',
-                    avatar: 'http://localhost:3100/img/avatar/softIcon.jpg',
-                    nickName: 'newbee',
-                    useTime: 100,
-                    accessTimes: 30,
-                },
-            ],[{value: '收藏记录'}, {value: '学习详情'}]);
+            this.initData([{value: '收藏记录'}, {value: '学习详情'}]);
         },
-        method:{
+        methods:{
             /**
              * 设置获取数据的格式
              */
             setDataFormat(resDatas) {
-                return resDatas.messages.map((resData)=>{
-                    return {
-                        date:this.$formatDate(resData.creationTimestamp),
-                        time:resData.creationTimestamp,
-                        content:resData.content,
+                return resDatas.lists.map((resData)=>{
+                        let collection={};
+                        collection.date=this.$formatDate(resData.createTime);
+                        collection.newDate=this.$formatDate(resData.updateTime);
+                        collection.useTime=Math.ceil(this.$formatMinutes(resData.learnTime));
+                        collection.accessTimes=resData.visitTime;
+                    if(resData.course){
+                        collection.type='课程';
+                        collection.name=resData.course.title;
+                        collection.category=resData.course.type;
+                        collection.avatar=resData.course.userIconUrl;
+                        collection.nickName=resData.course.uploadUsername;
+                    }else{
+                        collection.type='文章';
+                        collection.name=resData.forum.title;
+                        collection.category=resData.forum.type;
+                        collection.avatar=resData.forum.userIconUrl;
+                        collection.nickName=resData.forum.uploadUsername;
                     }
+                    return collection;
                 });
             }
         },
         computed: {
             url() {
-                return `user/collections/course/page=${this.page - 1}/size=${this.itemCount}`;
+                return `user/course/collections/page=${this.page - 1}/size=${this.itemCount}`;
             },
             urlSearch() {
-                return `user/collections/course/page=${this.pageSearch - 1}/size=${this.itemCount}`;
+                return `user/course/collections/page=${this.pageSearch - 1}/size=${this.itemCount}`;
             }
         },
         components: {

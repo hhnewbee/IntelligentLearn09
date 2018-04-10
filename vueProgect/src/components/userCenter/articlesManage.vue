@@ -105,7 +105,7 @@
                         align='center'
                         prop="category"
                         label="类别"
-                        width="150">
+                        width="180">
                 </el-table-column>
 
                 <el-table-column
@@ -199,12 +199,12 @@
                         date:this.$formatDate(resdata.creationTimestamp),
                         name:resdata.title,
                         status:true,
-                        category:resdata.type,
+                        category:resdata.categorys,
 
-                        accessTimes: resdata.learnCount,
+                        accessTimes: resdata.visitTime,
                         likes: resdata.liking,
                         collection: resdata.collections,
-                        question: resdata.question
+                        question: resdata.questions
                     }
                 });
             },
@@ -214,10 +214,10 @@
         },
         computed:{
             url(){
-                return `/forums/choose=new/type=全部/page=${this.page-1}/size=${this.itemCount}`;
+                return `admin/forums/page=${this.page-1}/size=${this.itemCount}`;
             },
             urlSearch(){
-                return `/forums/choose=new/type=全部/page=${this.pageSearch-1}/size=${this.itemCount}`;
+                return `admin/forums/page=${this.pageSearch-1}/size=${this.itemCount}`;
             }
         },
         watch:{

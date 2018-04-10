@@ -50,7 +50,7 @@
             }
         },
         methods: {
-            ...mapMutations('course',['setCourseTitle','setChapterTitle','setvideoUrl','setCourseData','setVideoId']),
+            ...mapMutations('course',['setCourseTitle','setChapterTitle','setvideoUrl','setCourseData','setVideoId','setSources']),
             /**
              * 视频章节切换
              * @param url
@@ -94,6 +94,8 @@
                         time: res.data.creationTimestamp,
                         chapters:[]
                     };
+                    //课程资源
+                    let sources=[];
                     //遍历每个视频文件
                     res.data.file.forEach((file) => {
                         //判断是否是章节,因为资源夹带在里面了
@@ -113,7 +115,7 @@
 //                            );
 
 
-                            //todo 判断数组中是否包含了目前的章节
+                            //判断数组中是否包含了目前的章节
                             //每个视频关联的信息
                             let video=
                                 {
@@ -133,20 +135,25 @@
                                 //如果有就直接添加
                                 chapterO.videos.push(video);
                             }
+                        }else{
+                            console.log(file);
+                            sources.push(file);
                         }
                     });
+                    //设置课程资源
+                    this.setSources(sources);
 
-                    //todo 章节名称排序
+                    //章节名称排序
                     this.chapter.chapters.sort((a,b)=>{
                         //切分章节的序号,章节排序
                         return a.name.split('-',1)-b.name.split('-',1);
                     });
-                    //todo 返回没有序号的章节名称
+                    //返回没有序号的章节名称
                     this.chapter.chapters=this.chapter.chapters.map((chapter)=>{
                         chapter.name=chapter.name.replace(/\d+-/,'');
                         return chapter;
                     });
-                    //todo 视频名称排序
+                    //视频名称排序
                     this.chapter.chapters.forEach((chapter)=>{
                         chapter.videos.sort();
                     });

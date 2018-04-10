@@ -209,14 +209,6 @@ let manageMixin = {
         delectRows() {
             this.ifDelect = this.delectRows.length === 0;
         },
-        //监听加载的数据变化
-        // listNow() {
-        //     if (this.ifSearch) {
-        //         this.tableData = this.setDataFormat(this.listNow);
-        //     } else {
-        //         this.pageData = this.tableData = this.setDataFormat(this.listNow);
-        //     }
-        // }
     },
     mixins: [areaCaching]
 };

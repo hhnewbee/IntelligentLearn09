@@ -378,18 +378,15 @@
                         background-color: #f6f6f6;
                     }
                     div:nth-child(3) {
-                        margin-left: 40px;
-                        background-color: #f56c6c;
-                        border-radius: 10px;
-                        color: #fff;
-                        display: inline-block;
+                        @include HHVcenter;
+                        margin-left: 65px;
+                        background-color: $primaryColor;
                         font-size: 12px;
-                        height: 18px;
-                        line-height: 18px;
-                        padding: 0 6px;
-                        text-align: center;
+                        height: 1.5em;
+                        width: 1.5em;
+                        color: white;
+                        border-radius: 50%;
                         white-space: nowrap;
-                        border: 1px solid #fff;
                     }
                 }
             }

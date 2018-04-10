@@ -8,7 +8,9 @@ export const course = {
         collections:0,
         courseId:'',
         courseData:{},
-        videoId:''
+        videoId:'',
+        //课程资源
+        sources:[]
     },
     mutations: {
         setCourseTitle(state,newCourseTitle){
@@ -34,6 +36,9 @@ export const course = {
         },
         setVideoId(state,newVideoId){
             state.videoId=newVideoId;
+        },
+        setSources(state,newSources){
+            state.sources=newSources;
         }
     },
     actions: {
