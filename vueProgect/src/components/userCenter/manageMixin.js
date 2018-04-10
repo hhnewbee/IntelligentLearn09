@@ -138,7 +138,7 @@ let manageMixin = {
                     break;
                 }
                 case 'article': {
-                    this.$router.push({path: `/articlePage/article/${scope.row.id}`});
+                    window.open(`http://localhost:3000/#/main/articlePage/article/${scope.row.id}`);
                     break;
                 }
                 case 'user': {

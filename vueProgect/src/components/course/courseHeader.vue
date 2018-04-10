@@ -11,6 +11,7 @@
         </div>
         <div class="info">
             <el-checkbox-group
+                    v-model="checkBoxGroup"
                     style="margin-right: 100px;width: 140px"
                     fill="#475669"
                     textColor="#409EFF"
@@ -22,10 +23,10 @@
                     {{courseData.liking}}&nbsp;喜欢
                 </el-checkbox-button>
                 <el-checkbox-button
-                        @click.native="handleLikeAcollect('course/collect/',courseData)"
+                        @click.native="handleLikeAcollect('course/collection/',courseData)"
                         label="collect"
                         key="collect">
-                    0&nbsp;收藏
+                    {{courseData.collections}}&nbsp;收藏
                 </el-checkbox-button>
             </el-checkbox-group>
             <info style="color: #4e6075"></info>

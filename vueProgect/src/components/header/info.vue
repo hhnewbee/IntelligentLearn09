@@ -5,6 +5,11 @@
                 ref="popover2"
                 placement="bottom"
                 trigger="click">
+            <!--查看详情-->
+            <el-dialog :modal='false'
+                       :visible.sync="dialogNotificationVisible">
+                {{notiContent}}
+            </el-dialog>
             <div id="noticeInfoIL09"
                  v-if="notifications.length">
                 <div v-for="item in notifications"
@@ -19,12 +24,7 @@
                     </p>
                     <p v-else style="color: red">{{item.type}}：</p>
                     <p>{{item.content}}</p>
-                    <p class="el-icon-time">&nbsp;{{item.time}}</p>
-                    <!--查看详情-->
-                    <el-dialog :modal='false'
-                               :visible.sync="dialogNotificationVisible">
-                        {{item.content}}
-                    </el-dialog>
+                    <p class="el-icon-time">&nbsp;{{item.time | formatDateTime}}</p>
                 </div>
             </div>
             <div v-else style="color: #8a8a8a;display: flex;justify-content: center">暂无信息</div>
@@ -67,7 +67,7 @@
                          @click="handleChoose('record')">
                         &nbsp;学习记录
                     </div>
-                    <div class="fa fa-info-circle item"
+                    <div class="fa fa-question-circle-o item"
                          @click="handleChoose('userInfo')">
                         &nbsp;个人信息
                     </div>
@@ -75,9 +75,9 @@
                 <div class="line3">
                     <div v-if="records.length===0" style="text-align: center;color: #9b9b9b">暂无学习记录</div>
                     <div class="content"
-                         v-for="content in records">
-                        <div class="contentText">{{content.content}}</div>
-                        <div class="el-icon-time">&nbsp;{{content.time}}</div>
+                         v-for="record in records">
+                        <div class="contentText" @click="handleRecord(record)">{{record.content}}</div>
+                        <div class="el-icon-time">&nbsp;{{record.time}}</div>
                     </div>
                 </div>
                 <div class="line4">
@@ -117,6 +117,8 @@
                 notifications: [],
                 //通知信息的弹出框
                 dialogNotificationVisible: false,
+                //查看信息详情
+                notiContent:''
             }
         },
         computed: {
@@ -146,51 +148,51 @@
              */
             initData() {
                 //历史记录
-                this.$ajaxJava.get('/user/history/page=0/size=3').then((res)=>{
-                    let record={};
-                    this.records=res.data.history.map((data)=>{
-                        if(data.course){
-                            record.content=data.course.title;
-                        }else{
-                            record.content=data.forum.title;
+                this.$ajaxJava.get('/user/history/page=0/size=3').then((res) => {
+                    this.records = res.data.history.map((data) => {
+                        let record = {};
+                        if (data.course) {
+                            record.id = data.course.id;
+                            record.type = 'course';
+                            record.content = data.course.title;
+                        } else {
+                            record.id = data.forum.id;
+                            record.type = 'article';
+                            record.content = data.forum.title;
                         }
-                        record.time=this.$formatTime(data.updateTime);
+                        record.time = this.$formatTime(data.updateTime);
                         return record;
                     });
                 });
                 //信息数据
-                this.$ajaxJava.get('user/messages/page=0/size=6').then((res)=>{
+                this.$ajaxJava.get('user/messages/page=0/size=6').then((res) => {
                     //格式化数据
-                    res.data.messages.forEach((resdata)=>{
+                    res.data.messages.forEach((resdata) => {
                         //判断该信息是否未读
-                        if(resdata.status==='No Read'){
-                            this.notifications.push({
-                                id:resdata.id,
-                                time:resdata.creationTimestamp,
-                                content:resdata.content,
-                                type:(()=>{
-                                    //判断信息的类型
-                                    switch(resdata.type){
-                                        case 'reply':{
-                                            //判断是谁回谁
-                                            if(this.account!==resdata.from.account){
+                        if (resdata.status === 'No Read') {
+                            //判断是回复信息
+                            if (this.account !== resdata.from.account||resdata.type==='system') {
+                                this.notifications.push({
+                                    id: resdata.id,
+                                    time: resdata.creationTimestamp,
+                                    content: resdata.content,
+                                    type: (() => {
+                                        //判断信息的类型
+                                        switch (resdata.type) {
+                                            case 'reply': {
                                                 return {
-                                                    content:'回复了我',
-                                                    account:resdata.to.account,
-                                                    avatarUrl:resdata.to.selfInformation.imgPath
+                                                    content: '回复了我',
+                                                    account: resdata.to.account,
+                                                    avatarUrl: resdata.to.selfInformation.imgPath
                                                 };
                                             }
-                                            break;
+                                            case 'system': {
+                                                return '系统通知';
+                                            }
                                         }
-                                        case 'comment':{
-                                            return '系统通知';
-                                        }
-                                        case 'system':{
-                                            return '系统通知';
-                                        }
-                                    }
-                                })()
-                            });
+                                    })()
+                                });
+                            }
                         }
                     })
                 });
@@ -202,13 +204,24 @@
             handleNotification(item) {
                 this.dialogNotificationVisible = true;
                 //查看信息
-                this.$ajaxJava.get('message/'+item.id).then(()=>{
+                this.notiContent=item.content;
+                this.$ajaxJava.get('message/' + item.id).then(() => {
                     //本地更新
-                    this.notifications.splice(this.notifications.indexOf(item),1);
+                    this.notifications.splice(this.notifications.indexOf(item), 1);
                 });
+            },
+            /**
+             * 记录跳转
+             */
+            handleRecord(record) {
+                if (record.type === 'course') {
+                    this.$router.push({path: `/course/${record.id}`});
+                } else {
+                    window.open(`http://localhost:3000/#/main/articlePage/article/${record.id}`);
+                }
             }
         },
-        components:{
+        components: {
             infoDetail
         }
     }
@@ -220,12 +233,12 @@
         justify-content: center;
         align-items: center;
         border-color: inherit;
-        .el-badge__content{
+        .el-badge__content {
             right: 12px;
             top: 7px;
             border: none;
         }
-        .el-badge__content.is-dot{
+        .el-badge__content.is-dot {
             height: 6px;
             width: 6px;
         }

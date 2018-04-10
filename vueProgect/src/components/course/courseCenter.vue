@@ -140,18 +140,18 @@
             },
         },
         watch: {
-            videoUrl() {
-                this.videoJs.pause();
+            //videoUrl() {
+                //this.videoJs.pause();
                 //获取视频节点（也就是video元素）
                 //值的注意的是，想通过id或者class获取该节点的时候，要注意video前后渲染的时候id和class改变了
                 //请使用渲染后的id或者class
                 //比如，这个原来的id是video，渲染后变成了video1_html5_api
                 //$video.attr('src', newVideo)
                 //重载视频
-                this.videoJs.load();
+                //this.videoJs.load();
                 //开始视频
-                this.videoJs.play();
-            }
+                //this.videoJs.play();
+            //}
         },
     }
 </script>

@@ -100,7 +100,7 @@ let router = new VueRouter(
             {
                 name: "test",
                 path: '/test',
-                component: () => import(/* webpackChunkName: "testAvatar.vue" */ '../components/test/testAvatar.vue'),
+                component: () => import(/* webpackChunkName: "testDiscuss.vue" */ '../components/test/testDiscuss.vue'),
             }
         ]
     }

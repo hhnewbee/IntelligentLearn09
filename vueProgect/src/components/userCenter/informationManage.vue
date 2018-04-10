@@ -294,8 +294,8 @@
 
 <style lang="scss">
     @import './manageStyle.scss';
-    .notRead-row {
-        background: #f0f9eb;
+    .el-table .notRead-row {
+        background: rgba(26, 220, 255, 0.11);
     }
     .el-tooltip__popper{
         max-width: 30%;

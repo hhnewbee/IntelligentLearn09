@@ -109,13 +109,13 @@
         }
         .coursesContent {
             display: flex;
-            justify-content: space-around;
+            justify-content: space-between;
             align-items: center;
             flex-shrink: 0;
             flex-wrap: wrap;
             width: 1100px;
             margin: 20px 60px;
-            padding: 15px ;
+            padding: 15px 60px;
             box-shadow: 4px 4px 18px rgba(136, 136, 136, 0.588235);
             cursor: pointer;
             box-sizing: content-box;

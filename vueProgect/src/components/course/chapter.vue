@@ -34,7 +34,7 @@
     import {recordLearning} from '../mixins.js';
 
     export default {
-        created() {
+        activated() {
             this.initData();
         },
         deactivated(){
@@ -143,7 +143,8 @@
                     });
                     //todo 返回没有序号的章节名称
                     this.chapter.chapters=this.chapter.chapters.map((chapter)=>{
-                        return chapter.name.replace(/\d+-/,'');
+                        chapter.name=chapter.name.replace(/\d+-/,'');
+                        return chapter;
                     });
                     //todo 视频名称排序
                     this.chapter.chapters.forEach((chapter)=>{

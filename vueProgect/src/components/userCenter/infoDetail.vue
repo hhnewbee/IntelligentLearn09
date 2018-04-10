@@ -48,7 +48,7 @@
         },
         methods: {
             handleShowInfo() {
-                this.$ajaxJava.get(`user/${this.account}/selfInformation`).then((res) => {
+                this.$ajax.created().get(`user/${this.account}/selfInformation`).then((res) => {
                     this.name = res.data.trueName;
                     this.focusArea = res.data.position;
                     this.eMail = res.data.email;

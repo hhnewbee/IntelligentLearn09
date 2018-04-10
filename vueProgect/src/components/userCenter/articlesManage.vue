@@ -193,7 +193,7 @@
              * 设置获取数据的格式
              */
             setDataFormat(resDatas) {
-                return resDatas.article.map((resdata)=>{
+                return resDatas.forums.map((resdata)=>{
                     return {
                         id:resdata.id,
                         date:this.$formatDate(resdata.creationTimestamp),
@@ -214,10 +214,10 @@
         },
         computed:{
             url(){
-                return `/admin/article/page=${this.page-1}/size=${this.itemCount}`;
+                return `/forums/choose=new/type=全部/page=${this.page-1}/size=${this.itemCount}`;
             },
             urlSearch(){
-                return `/admin/article/page=${this.pageSearch-1}/size=${this.itemCount}`;
+                return `/forums/choose=new/type=全部/page=${this.pageSearch-1}/size=${this.itemCount}`;
             }
         },
         watch:{

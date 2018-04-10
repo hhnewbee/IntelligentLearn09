@@ -8,18 +8,20 @@
 <script>
     import discuss1 from '../article/discuss.vue';
     import discuss2 from '../article/discuss.vue';
-    import config from '../../config/config';
+    import config from '../../config/config.js';
     export default {
         data(){
             return{
                 discussInfo1:{
                     theme:'vue与webpack的学习',
                     nickName:'newbee',
-                    avatarUrl:config.avatarUrl},
+                    avatarUrl:config.softIconUrl
+                },
                 discussInfo2:{
                     theme:'vue与webpack的学习',
                     nickName:'lscs',
-                    avatarUrl:config.avatarUrl}
+                    avatarUrl:config.softIconUrl
+                }
             }
         },
         components:{

@@ -191,10 +191,10 @@
         },
         computed: {
             url() {
-                return `user/messages/page=${this.page - 1}/size=${this.itemCount}`;
+                return `user/collections/course/page=${this.page - 1}/size=${this.itemCount}`;
             },
             urlSearch() {
-                return `user/messages/page=${this.pageSearch - 1}/size=${this.itemCount}`;
+                return `user/collections/course/page=${this.pageSearch - 1}/size=${this.itemCount}`;
             }
         },
         components: {

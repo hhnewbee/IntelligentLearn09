@@ -56,7 +56,7 @@ export let recordLearning = {
         keepLearning(url) {
             this.heartTime = setInterval(() => {
                 //todo 改进学习时长的心跳包，用websock代替
-                this.$ajaxJava.get(url, (res) => {
+                this.$ajax.create().get(url, (res) => {
                 });
             }, 2000);
         },
