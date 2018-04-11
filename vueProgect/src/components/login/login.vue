@@ -286,7 +286,7 @@
                 'setAccount',
                 'setAvatarUrl',
                 'setAreaFocus',
-                'setLimit'
+                'setRole'
             ]),
 
             /**
@@ -299,6 +299,7 @@
                 this.setAccount(data.account);
                 this.setAvatarUrl(data.avatarUrl);
                 this.setAreaFocus(data.areaFocus);
+                this.setRole(data.role);
                 //跳转页面
                 this.$router.push({path: '/main/recommend'});
             }

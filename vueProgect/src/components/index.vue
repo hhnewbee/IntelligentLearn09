@@ -19,7 +19,7 @@
                 'setAccount',
                 'setAvatarUrl',
                 'setAreaFocus',
-                'setLimit'
+                'setRole'
             ]),
             /**
              * 初始化vuex的数据
@@ -38,6 +38,8 @@
                             this.setAccount(res.data.account);
                             this.setAvatarUrl(res.data.avatarUrl);
                             this.setAreaFocus(res.data.areaFocus);
+                            this.setRole(res.data.role);
+
                         });
                     } else {
                         //如果是刷新，直接再次请求用户信息数据即可
@@ -45,6 +47,8 @@
                             this.setAccount(res.data.user.account);
                             this.setAvatarUrl(res.data.user.selfInformation.imgPath);
                             this.setAreaFocus(res.data.user.selfInformation.position);
+                            this.setRole(res.data.user.role);
+
                         });
                     }
                 } else {

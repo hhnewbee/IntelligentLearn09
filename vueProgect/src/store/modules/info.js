@@ -8,7 +8,7 @@ export const info = {
         areaFocus:'',
         eMail:'',
         //权限
-        limit:''
+        role:''
     },
     mutations: {
         setAccount(state,newAccount){
@@ -29,8 +29,8 @@ export const info = {
         setEMail(state,newEMail){
             state.eMail=newEMail;
         },
-        setLimit(state,newLimit){
-            state.limit=newLimit;
+        setRole(state,newRole){
+            state.role=newRole;
         }
     },
     actions: {

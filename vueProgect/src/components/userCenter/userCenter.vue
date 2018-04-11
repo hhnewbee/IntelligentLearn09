@@ -35,7 +35,7 @@
                         <i class="el-icon-message"></i>
                         <span slot="title">我的信息</span>
                     </el-menu-item>
-                    <el-submenu index="backManage">
+                    <el-submenu index="backManage" v-if="role!=='normal'">
                         <template slot="title">
                             <i class="el-icon-setting"></i>
                             <span>后台管理</span>
@@ -120,7 +120,7 @@
             }
         },
         computed:{
-            ...mapState('info',['limit'])
+            ...mapState('info',['role'])
         },
         methods: {
             /**

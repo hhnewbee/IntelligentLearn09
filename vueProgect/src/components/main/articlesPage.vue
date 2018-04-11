@@ -83,13 +83,16 @@
              */
             initRight(){
                 //侧边的推荐文章列表
-                this.constructionArticle = [
-                        {content: '我的回答内容我的回答内容1我的回答内容我的回答内容1', time: '2013-11-11 22:33'},
-                        {content: '我的回答内容我的回答内容1我的回答内容我的回答内容1', time: '2013-13-23 22:33'},
-                        {content: '答内容我的回答内容1', time: '2013-12-3 22:33'},
-                        {content: '我的回答内容我的回答内容1我的回答内容我的回答内容1', time: '2013-1-4 22:33'},
-                        {content: '我的回答内容我的回答内容1我的回答内容我的回答内容1', time: '2013-12-23 22:33'}
-                    ]
+                this.$ajaxJava.get('recommend').then((res)=>{
+                    this.constructionArticle=res.data.articles.map((fs)=>{
+                        return {
+                            title:fs.title,
+                            id:fs.id,
+                            content:fs.title,
+                            time:fs.creationTimestamp
+                        }
+                    })
+                });
             }
         },
         components: {

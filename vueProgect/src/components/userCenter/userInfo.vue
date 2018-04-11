@@ -16,7 +16,7 @@
                 </div>
                 <avatar-cropper trigger="#setAvatar"
                                 @uploaded="handleUploaded"
-                                upload-url="/files/upload">
+                                upload-url="http://172.16.148.27:8080/user/icon">
                 </avatar-cropper>
             </div>
             <div style="margin: 0 30px">
@@ -26,6 +26,7 @@
                 <div>专注领域：
                     <el-select v-model="areaFocus_"
                                multiple
+                               @change="handleFocusChange"
                                placeholder="请选择专注领域">
                         <el-option v-for="item in filterType('全部')"
                                    :key="item"
@@ -49,9 +50,9 @@
                         class="control">修改</span>
             </div>
             <div class="item2">邮箱：
-                <span ref="eMail" style="padding: 5px">{{eMail}}</span>
+                <span ref="email" style="padding: 5px">{{email}}</span>
                 <span
-                        @click="handleEditInfo('eMail',$event)"
+                        @click="handleEditInfo('email',$event)"
                         class="control">修改</span>
             </div>
         </div>
@@ -66,17 +67,19 @@
         data() {
             return {
                 name: '',
-                eMail: '',
+                email: '',
                 learnTime:0,
-                visitTime:0
+                visitTime:0,
+                selfInformation:{}
             }
         },
         activated(){
             setTimeout(()=>{
                 if(this.account){
                     this.$ajaxJava.get('user').then((res)=>{
-                        this.name=res.data.user.selfInformation.trueName;
-                        this.eMail=res.data.user.selfInformation.email;
+                        this.selfInformation=res.data.user.selfInformation;
+                        this.name=res.data.user.selfInformation.name;
+                        this.email=res.data.user.selfInformation.email;
                         this.learnTime=this.$formatHouse(res.data.user.learnTime);
                         this.visitTime=res.data.user.visitTime;
                     })
@@ -117,6 +120,10 @@
                     content.contentEditable = false;
                     target.style.color = '#00abf9';
                     target.innerText = "修改";
+                    this.selfInformation[tar]=content.textContent;
+                    this.$ajax.create().post('user/selfInformation',this.selfInformation).then(()=>{
+                        this.$message.success('修改成功');
+                    })
                 }
             },
             /**
@@ -136,7 +143,18 @@
              * @param resp
              */
             handleUploaded(resp) {
-                this.setAvatarUrl(resp.relative_url);
+                this.setAvatarUrl(resp);
+                this.selfInformation.imgPath=resp;
+                this.$ajax.create().post('user/selfInformation',this.selfInformation).then(()=>{
+                    this.$message.success('头像修改成功');
+                })
+            },
+            /**
+             * 修改关注领域
+             * @param focus
+             */
+            handleFocusChange(focus){
+                console.log(focus);
             }
         },
         components:{

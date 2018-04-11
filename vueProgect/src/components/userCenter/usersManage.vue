@@ -28,6 +28,8 @@
 
             <!--添加用户-->
             <el-button type="success"
+                       v-if="role==='superadmin'"
+                       @click="handleAddAdmin"
                        style="margin-left: 10px"
                        size="small">
                 添加管理员
@@ -335,6 +337,7 @@
 
 <script>
     import {manageMixin} from './manageMixin.js';
+    import {mapState} from 'vuex';
     import ElButton from "../../../../node_modules/element-ui/packages/button/src/button.vue";
     import ElInput from "../../../../node_modules/element-ui/packages/input/src/input.vue";
 
@@ -381,6 +384,7 @@
             }
         },
         computed: {
+            ...mapState('info',['role']),
             url() {
                 return `/admin/users/page=${this.page - 1}/size=${this.itemCount}`;
             },
@@ -402,8 +406,9 @@
              */
             setDataFormat(resDatas) {
                 let tableData = [];
-                resDatas.forEach((data) => {
+                resDatas.forEach((data,index) => {
                     let newData = {};
+                    newData.index=index;
                     newData.id = data.id;
                     newData.date = this.$formatDate(data.creationTimestamp);
                     newData.account = data.account;
@@ -521,6 +526,21 @@
                 }).then(()=>{
                     this.$message.success('发送成功');
                     this.infoPush='';
+                })
+            },
+            /**
+             * 添加管理员
+             */
+            handleAddAdmin(){
+                //todo 如果打开弹出框再添加管理员，listNow的数据不是原来的
+                this.delectRows.forEach((de)=>{
+                    let user=this.listNow.users[de.index];
+                    //修改user属性，并且返回
+                    user.admin=user.role;
+                    delete user.role;
+                    this.$ajax.create().post('superAdmin/user',user).then(()=>{
+                        this.$message.success(`${user.account}成为管理人员`);
+                    });
                 })
             }
         },
