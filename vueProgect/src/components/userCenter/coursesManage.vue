@@ -135,7 +135,7 @@
                             查看
                         </el-button>
                         <el-button
-                                @click="handleDeleteRow(scope.$index)"
+                                @click="handleDeleteRow(scope)"
                                 type="text"
                                 style="color: red;"
                                 size="small">
@@ -215,16 +215,15 @@
             },
             urlSearch(){
                 return `/admin/cousers/page=${this.pageSearch-1}/size=${this.itemCount}`;
+            },
+            urlDelect(){
+                return `/admin/courses`
             }
         },
         watch:{
             //监听加载的数据变化
             listNow(){
-                if (this.ifSearch) {
-                    this.tableData = this.setDataFormat(this.listNow);
-                } else {
-                    this.pageData = this.tableData = this.setDataFormat(this.listNow);
-                }
+                this.tableData = this.setDataFormat(this.listNow);
             }
         },
         mixins:[manageMixin]

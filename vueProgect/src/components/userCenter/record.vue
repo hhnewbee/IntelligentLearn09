@@ -129,13 +129,13 @@
                                  width="110">
                     <template slot-scope="scope">
                         <el-button
-                                @click="handleSee(scope)"
+                                @click="handleSee('record',scope)"
                                 type="text"
                                 size="small">
                             查看
                         </el-button>
                         <el-button
-                                @click="handleDeleteRow(scope.$index)"
+                                @click="handleDeleteRow(scope)"
                                 type="text"
                                 style="color: red;"
                                 size="small">
@@ -155,6 +155,7 @@
                 @current-change="handlePage"
                 background
                 layout="prev, pager, next"
+                :current-page="currentPage"
                 :page-size="1"
                 :total="listNow.page">
         </el-pagination>
@@ -178,18 +179,21 @@
                 resDatas.history.forEach((data)=>{
                     let newData={};
                     if(data.course){
+                        newData.courseId=data.course.id;
                         newData.type='课程';
                         newData.name=data.course.title;
                         newData.category=data.course.type;
                         newData.avatar=data.course.userIconUrl;
                         newData.nickName=data.course.uploadUsername;
                     }else{
+                        newData.forumId=data.forum.id;
                         newData.type='文章';
                         newData.name=data.forum.title;
                         newData.category=data.forum.categorys;
                         newData.nickName=data.forum.userName;
                         newData.avatar=data.forum.userIconUrl;
                     }
+                    newData.id=data.id;
                     newData.date=this.$formatDate(data.createTime);
                     newData.newDate=this.$formatDate(data.updateTime);
                     newData.useTime=Math.ceil(this.$formatMinutes(data.learnTime));
@@ -208,17 +212,16 @@
                 return `/user/history/page=${this.page-1}/size=${this.itemCount}`;
             },
             urlSearch(){
-                return `/user/history/page=${this.pageSearch-1}/size=${this.itemCount}`;
+                return `/user/history/page=${this.pageSearch-1}/size=${this.itemCount}/${this.searchInput}`;
+            },
+            urlDelect(){
+                return `/admin/forums`
             }
         },
         watch:{
              //监听加载的数据变化
              listNow(){
-                 if (this.ifSearch) {
-                     this.tableData = this.setDataFormat(this.listNow);
-                 } else {
-                     this.pageData = this.tableData = this.setDataFormat(this.listNow);
-                 }
+                 this.tableData = this.setDataFormat(this.listNow);
              }
         },
         mixins: [manageMixin],

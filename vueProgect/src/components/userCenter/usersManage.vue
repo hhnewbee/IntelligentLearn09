@@ -527,22 +527,17 @@
         watch: {
             //监听加载的数据变化
             listNow() {
-                //如果是搜索的缓存数据
-                if (this.ifSearch) {
+                //如果是主页的数据
+                if (!this.dialogUserVisible) {
                     this.tableData = this.setDataFormat(this.listNow.users);
                     this.tableMainPage = this.listNow.page;
                     //如果是弹出框的缓存数据
-                } else if (this.dialogUserVisible) {
+                } else{
                     if (this.typeSelect === '表格') {
                         this.setTableData(this.listNow);
                     } else {
                         this.setChatData(this.listNow);
                     }
-                }
-                //如果主页的缓存数据
-                else {
-                    this.pageData = this.tableData = this.setDataFormat(this.listNow.users);
-                    this.tableMainPage = this.listNow.page;
                 }
             },
         },

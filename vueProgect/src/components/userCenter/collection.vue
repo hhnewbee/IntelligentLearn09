@@ -126,13 +126,13 @@
                         width="110">
                     <template slot-scope="scope">
                         <el-button
-                                @click="handleSee(scope)"
+                                @click="handleSee('record',scope)"
                                 type="text"
                                 size="small">
                             查看
                         </el-button>
                         <el-button
-                                @click="handleDeleteRow(scope.$index)"
+                                @click="handleDeleteRow(scope)"
                                 type="text"
                                 style="color: red;"
                                 size="small">
@@ -170,17 +170,20 @@
             setDataFormat(resDatas) {
                 return resDatas.lists.map((resData)=>{
                         let collection={};
+                        collection.id=resData.id;
                         collection.date=this.$formatDate(resData.createTime);
                         collection.newDate=this.$formatDate(resData.updateTime);
                         collection.useTime=Math.ceil(this.$formatMinutes(resData.learnTime));
                         collection.accessTimes=resData.visitTime;
                     if(resData.course){
+                        collection.courseId=resData.course.id;
                         collection.type='课程';
                         collection.name=resData.course.title;
                         collection.category=resData.course.type;
                         collection.avatar=resData.course.userIconUrl;
                         collection.nickName=resData.course.uploadUsername;
                     }else{
+                        collection.forumId=resData.forum.id;
                         collection.type='文章';
                         collection.name=resData.forum.title;
                         collection.category=resData.forum.type;
@@ -197,6 +200,9 @@
             },
             urlSearch() {
                 return `user/course/collections/page=${this.pageSearch - 1}/size=${this.itemCount}`;
+            },
+            urlDelect(){
+                return `user/course/collections`
             }
         },
         components: {
@@ -204,11 +210,7 @@
         },
         watch:{
             listNow() {
-                if (this.ifSearch) {
-                    this.tableData = this.setDataFormat(this.listNow);
-                } else {
-                    this.pageData = this.tableData = this.setDataFormat(this.listNow);
-                }
+                this.tableData = this.setDataFormat(this.listNow);
             }
         },
         mixins:[manageMixin]

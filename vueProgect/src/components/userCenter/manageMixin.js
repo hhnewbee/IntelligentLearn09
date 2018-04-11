@@ -9,8 +9,6 @@ let manageMixin = {
             ifDelect: true,
             //当前列表要显示的数据
             tableData: [],
-            //正常分页时显示的数据,
-            pageData: [],
             //是否删除当前列表的所有数据
             ifSelecttALl: false,
             //显示搜索状态
@@ -50,22 +48,30 @@ let manageMixin = {
          * 删除选择的数据
          */
         handleDelectRows() {
-            //如果全部选择
-            if (this.ifSelecttALl) {
-                //清空数据
-                this.tableData = [];
-                //删除按钮禁用
-                this.ifDelect = true;
-                return;
-            }
-            //遍历出相同元素所处的位置并且删除
-            for (let i = 0; i < this.tableData.length; i++) {
-                for (let x = 0; x < this.delectRows.length; x++) {
-                    if (this.delectRows[x] === this.tableData[i]) {
-                        this.tableData.splice(i, 1);
+            //形成id数组
+            let deleteId=this.delectRows.map((de)=>{
+                return de.id;
+            });
+            this.$ajax.create().post(this.urlDelect,deleteId).then(()=>{
+                this.$message.success('删除成功');
+                //本地更新删除效果
+                //如果全部选择
+                if (this.ifSelecttALl) {
+                    //清空数据
+                    this.tableData = [];
+                    //删除按钮禁用
+                    this.ifDelect = true;
+                    return;
+                }
+                //如果是部分选择，遍历出相同元素所处的位置并且删除
+                for (let i = 0; i < this.tableData.length; i++) {
+                    for (let x = 0; x < this.delectRows.length; x++) {
+                        if (this.delectRows[x] === this.tableData[i]) {
+                            this.tableData.splice(i, 1);
+                        }
                     }
                 }
-            }
+            });
             //清空数据防止重复遍历
             this.delectRows = [];
         },
@@ -79,10 +85,13 @@ let manageMixin = {
         },
         /**
          * 单行删除
-         * @param index
+         * @param scope
          */
-        handleDeleteRow(index) {
-            this.tableData.splice(index, 1);
+        handleDeleteRow(scope) {
+            this.$ajax.create().post(this.urlDelect,[scope.row.id]).then(()=>{
+                this.$message.success('删除成功');
+                this.tableData.splice(scope.$index, 1);
+            })
         },
         /**
          * 删除所有数据
@@ -97,7 +106,7 @@ let manageMixin = {
             //如果是搜索翻页
             if (this.ifSearch) {
                 this.pageSearch=size;
-                this.handleChangeArea('search' + size, this.urlSearch);
+                this.handleChangeArea('search' + size+this.searchInput, this.urlSearch);
             } else {
                 this.page=size;
                 this.handleChangeArea('p' + size, this.url);
@@ -114,16 +123,24 @@ let manageMixin = {
          * 搜索数据
          */
         handleSearch() {
-            this.handleChangeArea('search0', this.url);
+            //重置搜索的页数
+            this.pageSearch=1;
+            //搜索的链接
+            this.handleChangeArea('search1'+this.searchInput, this.urlSearch);
             //展示搜索的数据
             this.ifSearch = true;
+            //设置当前所在页数
+            this.currentPage=this.pageSearch;
         },
         /**
          * 搜索返回
          */
         handleBackSearch() {
             this.ifSearch = false;
-            this.tableData = this.pageData;
+            //加载之前的数据
+            this.handleChangeArea('p' + this.page, this.url);
+            //设置当前所在页数
+            this.currentPage=this.page;
         },
         /**
          * 当个查看
@@ -157,6 +174,13 @@ let manageMixin = {
                     this.dialogTime=scope.row.time;
                     this.dialogContent=scope.row.content;
                     break;
+                }
+                case 'record':{
+                    if(scope.row.courseId){
+                        this.$router.push({path: `/course/${scope.row.courseId}`});
+                    }else{
+                        window.open(`http://localhost:3000/#/main/articlePage/article/${scope.row.forumId}`);
+                    }
                 }
             }
         },

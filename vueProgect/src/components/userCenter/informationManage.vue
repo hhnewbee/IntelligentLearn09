@@ -143,7 +143,7 @@
                             查看
                         </el-button>
                         <el-button
-                                @click="handleDeleteRow(scope.$index)"
+                                @click="handleDeleteRow(scope)"
                                 type="text"
                                 style="color: red;"
                                 size="small">
@@ -281,11 +281,7 @@
         },
         watch:{
              listNow() {
-                 if (this.ifSearch) {
-                     this.tableData = this.setDataFormat(this.listNow);
-                 } else {
-                     this.pageData = this.tableData = this.setDataFormat(this.listNow);
-                 }
+                 this.tableData = this.setDataFormat(this.listNow);
              }
         },
         mixins: [manageMixin]

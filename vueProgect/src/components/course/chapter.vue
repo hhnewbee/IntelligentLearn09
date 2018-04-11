@@ -136,7 +136,6 @@
                                 chapterO.videos.push(video);
                             }
                         }else{
-                            console.log(file);
                             sources.push(file);
                         }
                     });
