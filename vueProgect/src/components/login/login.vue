@@ -285,7 +285,8 @@
             ...mapMutations('info', [
                 'setAccount',
                 'setAvatarUrl',
-                'setAreaFocus'
+                'setAreaFocus',
+                'setLimit'
             ]),
 
             /**

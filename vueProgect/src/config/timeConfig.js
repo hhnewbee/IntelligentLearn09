@@ -29,11 +29,11 @@ Vue.prototype.$formatDate=function (value) {
 Vue.prototype.$formatTime=function (value) {
     return Moment(new Date(value)).format("YYYY-MM-DD HH:mm");
 };
-//得到小时时间
+//得到小时时间时间段
 Vue.prototype.$formatHouse=function (value) {
-    return Moment.duration(value).asHours();
+    return Moment.duration(value).asHours().toFixed(1);
 };
-//得到分钟时间
+//得到分钟时间时间段
 Vue.prototype.$formatMinutes=function (value) {
     return Math.ceil(Moment.duration(value).asMinutes());
 };

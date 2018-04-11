@@ -68,6 +68,7 @@
     import rightItem from './rightItem.vue';
     import myLearnerEditor from '../edit/myLearnerEditor.vue';
     import footer_ from '../footer/footer.vue';
+    import backHeader from '../header/backHeader.vue';
     import {mapState} from 'vuex';
     import {areaCaching,pageRequire} from '../mixins.js';
 
@@ -115,7 +116,8 @@
             articleItem,
             rightItem,
             myLearnerEditor,
-            footer_
+            footer_,
+            backHeader
         },
         mixins:[areaCaching,pageRequire]
     }

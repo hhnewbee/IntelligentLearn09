@@ -69,6 +69,7 @@
 
 <script>
     import {pageBack} from '../mixins.js';
+    import {mapState} from 'vuex';
     export default {
         mounted() {
             //路由到达时判断模拟点击的选择（用hash）的选项
@@ -112,11 +113,14 @@
                     this.$refs.menu.activeIndex = "usersManage";
                     break;
                 }
-            };
+            }
             //是从哪里跳转过来的
             if(this.$route.query.path){
                 localStorage["backUrl"]=this.$route.query.path;
             }
+        },
+        computed:{
+            ...mapState('info',['limit'])
         },
         methods: {
             /**
@@ -217,4 +221,5 @@
         }
     }
 </style>
+<style></style>
 

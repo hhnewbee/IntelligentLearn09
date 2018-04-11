@@ -12,12 +12,15 @@
         <vue-scrollbar v-show="!ifReplysList"
                        class="my-scrollbar">
             <div class="commentsList">
-                <div v-if="commentItems.length===0" style="color: #8a8a8a">暂无问题</div>
+                <div v-if="commentItems.length===0&&!loadDown.ifLongding" style="color: #8a8a8a">暂无问题</div>
                 <div class="item"
                      v-for="(comment,index) in commentItems"
                      :key="index">
                     <div class="header">
-                        <img :src="comment.userIconUrl">
+                        <info-detail :avatarUrl="comment.userIconUrl"
+                                     :account="comment.username"
+                                     :size="30">
+                        </info-detail>
                         <div class="name">
                             {{comment.username}}
                         </div>
@@ -54,8 +57,9 @@
                 </div>
 
                 <!--加载内容中-->
-                <div v-if="loadDown.ifLongding" class="loadMore el-icon-loading">&nbsp;
-                    &nbsp;加载中
+                <div v-if="loadDown.ifLongding">
+                    <div class="loadMore el-icon-loading"></div>
+                    <div class="loadMore" style="float: right;font-size: 12px">&nbsp;加载中</div>
                 </div>
                 <div v-else-if="commentItems.length!==0" class="loadMore">
                     <div v-if="loadDown.ifNothing">已经全部加载</div>
@@ -74,7 +78,11 @@
                      @click="handleAreaChange(false)"></div>
                 <div class="info">
                     <div class="listName">{{area.username}}</div>
-                    <img class="listAvatar" :src="area.userIconUrl">
+                    <info-detail style="margin: 5px 0;"
+                                 :account="area.username"
+                                 :avatarUrl="area.userIconUrl"
+                                 :size="25">
+                    </info-detail>
                 </div>
             </div>
             <div class="listContent">
@@ -97,7 +105,10 @@
                     <div class="item"
                          v-for="item in area.itemsList">
                         <div class="header">
-                            <img :src="item.userIconUrl"/>
+                            <info-detail :account="item.username"
+                                         :avatarUrl="item.userIconUrl"
+                                         :size="30">
+                            </info-detail>
                             <div class="name">{{item.username}}</div>
                             <div class="time">{{item.creationTimestamp | formatFromNow}}</div>
                         </div>
@@ -151,6 +162,7 @@
 
 <script>
     import VueScrollbar from 'vue2-scrollbar'
+    import infoDetail from '../userCenter/infoDetail.vue';
     import {mapState} from 'vuex'
 
     export default {
@@ -176,7 +188,7 @@
                 //当前评论区的id，用于回复的标识
                 targetId: '',
                 //评论的页数
-                pageComment: 0,
+                pageComment: 1,
                 //下拉加载跟多
                 loadDown: {
                     //是否正在加载
@@ -214,10 +226,10 @@
                     //是获取评论的回复还是回复的回复
                     //如果标识中有video就是获取评论的回复
                     if(this.targetId.match('video')){
-                        url=`comment/${commentInfo.id}/page=0/size=15`;
+                        url=`comment/${commentInfo.id}/page=0`;
                         this.targetId ='comment-'+commentInfo.id;
                     }else{
-                        url=`reply/${commentInfo.id}/page=0/size=15`;
+                        url=`reply/${commentInfo.id}/page=0`;
                         this.targetId ='reply-'+commentInfo.id;
                     }
                     this.replysAreas.forEach((area) => {
@@ -330,19 +342,19 @@
             initData() {
                 this.ajxaComments = this.$ajax.create();
                 //新的请求拦截器
-                this.ajxaComments.interceptors.request.use(function (config) {
+                this.ajxaComments.interceptors.request.use((config)=>{
                     this.loadDown.ifLongding=true;
                     return config;
                 });
-                this.ajxaComments.interceptors.response.use(function (config) {
+                this.ajxaComments.interceptors.response.use((config)=>{
                     this.loadDown.ifLongding=false;
                     return config;
                 });
                 //请求comment数据
-                this.ajxaComments.get(this.commentsInfo.getCommentUrl + this.pageComment).then((response) => {
-                    this.itemsListNow = this.commentItems = response.data;
+                this.ajxaComments.get(this.commentsInfo.getCommentUrl + (this.pageComment-1)+'/size=10').then((response) => {
+                    this.itemsListNow = this.commentItems = response.data.comments;
                     //判断是否还有内容
-                    this.loadDown.ifNothing=this.pageComment>=response.data.page;
+                    this.loadDown.ifNothing=this.pageComment>=response.data.pages;
                 });
                 this.targetId = this.commentsInfo.targetId;
             },
@@ -350,9 +362,9 @@
              * 加载更多
              */
             handleLoadMore() {
-                this.ajxaComments.get(this.commentsInfo.getCommentUrl + ++this.pageComment, (res) => {
+                this.ajxaComments.get(this.commentsInfo.getCommentUrl +(this.pageComment-1)+'/size=10', (res) => {
                     this.commentItems.push(...(res.data));
-                    this.loadDown.ifNothing=this.pageComment>=res.data.page;
+                    this.loadDown.ifNothing=this.pageComment>=res.data.pages;
                 });
             },
             /**
@@ -394,7 +406,8 @@
             }
         },
         components: {
-            VueScrollbar
+            VueScrollbar,
+            infoDetail
         }
     }
 </script>
@@ -435,12 +448,6 @@
                 align-items: center;
                 position: relative;
                 border-radius: 4px 4px 0 0;
-                img {
-                    width: 30px;
-                    height: 30px;
-                    border-radius: 50%;
-                    z-index: 2;
-                }
                 .name {
                     margin-left: 8px;
                     font-size: 16px;
@@ -492,6 +499,7 @@
             flex-direction: column;
             align-items: center;
             padding: 10px 0;
+            padding-right: 8px;
             color: #000000;
             /*加载更多*/
             .loadMore {
@@ -527,16 +535,11 @@
                     justify-content: center;
                     width: 100%;
                     flex-grow: 1;
+                    padding: 10px;
                     .listName {
                         color: $primaryColor;
                         font-size: 16px;
                         margin-right: 5px;
-                    }
-                    .listAvatar {
-                        margin: 5px 0;
-                        width: 25px;
-                        height: 25px;
-                        border-radius: 50%;
                     }
                 }
             }

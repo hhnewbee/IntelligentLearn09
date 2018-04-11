@@ -52,6 +52,7 @@
 </template>
 
 <script>
+    import backHeader from '../header/backHeader.vue';
     import {mapState} from 'vuex'
     import {likeAcollect} from '../mixins.js';
     export default {
@@ -113,7 +114,7 @@
                     }
                     case '讨论': {
                         this.discussInfo={
-                            theme:'vue与webpack的学习',
+                            theme:this.articleData.title,
                             nickName:this.account,
                             avatarUrl:this.avatarUrl
                         };
@@ -122,8 +123,8 @@
                     }
                     case '问题': {
                         this.commentsInfo = {
-                            getCommentUrl:`article/${this.articleData.id}/page=`,
-                            postCommentUrl:`article/comment`,
+                            getCommentUrl:`forum/${this.articleData.id}/page=`,
+                            postCommentUrl:`forum/comment`,
                             postData:{
                                 article:{id:this.articleData.id},
                             },
@@ -150,6 +151,7 @@
             'chapter': () => import(/* webpackChunkName: "chapter.vue" */ './chapter.vue'),
             'discuss': () => import(/* webpackChunkName: "discuss.vue" */ './discuss.vue'),
             'questions': () => import(/* webpackChunkName: "comments.vue" */ './comments.vue'),
+            backHeader,
         },
         mixins:[likeAcollect]
     }

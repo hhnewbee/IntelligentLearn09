@@ -18,7 +18,8 @@
             ...mapMutations('info', [
                 'setAccount',
                 'setAvatarUrl',
-                'setAreaFocus'
+                'setAreaFocus',
+                'setLimit'
             ]),
             /**
              * 初始化vuex的数据
@@ -39,7 +40,7 @@
                             this.setAreaFocus(res.data.areaFocus);
                         });
                     } else {
-                        //TODO 如果是刷新，直接再次请求用户信息数据即可
+                        //如果是刷新，直接再次请求用户信息数据即可
                         this.$ajaxJava.get('user').then((res) => {
                             this.setAccount(res.data.user.account);
                             this.setAvatarUrl(res.data.user.selfInformation.imgPath);

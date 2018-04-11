@@ -71,9 +71,9 @@ let manageMixin = {
                         }
                     }
                 }
+                //清空数据防止重复遍历
+                this.delectRows = [];
             });
-            //清空数据防止重复遍历
-            this.delectRows = [];
         },
         /**
          * 选择所有时

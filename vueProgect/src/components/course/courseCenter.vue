@@ -86,7 +86,7 @@
                     }
                     case 2: {
                         this.discussInfo = {
-                            theme: 'vue与webpack的学习',
+                            theme: this.courseData.title,
                             nickName: this.account,
                             avatarUrl: this.avatarUrl
                         };

@@ -217,8 +217,8 @@
                         <div>专注领域：{{infoData.areaFocus}}</div>
                     </div>
                     <div class="learnInfo">
-                        <div>学习时长：<span>48h</span></div>
-                        <div>访问次数：<span>48次</span></div>
+                        <div>学习时长：<span>{{infoData.learnTime}}h</span></div>
+                        <div>访问次数：<span>{{infoData.accessTimes}}次</span></div>
                     </div>
                 </div>
                 <div class="item">
@@ -413,7 +413,8 @@
                     //查看更多才显示的
                     newData.eMail = data.selfInformation.email;
                     newData.avatarUrl = data.selfInformation.imgPath;
-                    newData.useTime = Math.ceil(this.$formatMinutes(data.learnTime));
+                    newData.useTime = this.$formatMinutes(data.learnTime);
+                    newData.learnTime = this.$formatHouse(data.learnTime);
                     newData.accessTimes = data.visitTime;
                     tableData.push(newData);
                 });

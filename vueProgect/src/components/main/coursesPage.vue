@@ -49,6 +49,7 @@
 <script>
     import courseItem from './courseItem.vue'
     import footer_ from '../footer/footer.vue';
+    import backHeader from '../header/backHeader.vue';
     import {mapState} from 'vuex'
     import {areaCaching,pageRequire} from '../mixins.js';
 
@@ -61,6 +62,7 @@
         components: {
             courseItem,
             footer_,
+            backHeader
         },
         computed: {
             ...mapState(['type']),

@@ -37,8 +37,8 @@
             </div>
 
             <div class="learnInfo">
-                <div>学习时长：<span>48h</span></div>
-                <div>访问次数：<span>48次</span></div>
+                <div>学习时长：<span>{{learnTime}}h</span></div>
+                <div>访问次数：<span>{{visitTime}}次</span></div>
             </div>
         </div>
         <div class="item">
@@ -67,14 +67,18 @@
             return {
                 name: '',
                 eMail: '',
+                learnTime:0,
+                visitTime:0
             }
         },
         activated(){
             setTimeout(()=>{
                 if(this.account){
-                    this.$ajaxJava.get(`/user/${this.account}/selfInformation`).then((res)=>{
-                        this.name=res.data.trueName;
-                        this.eMail=res.data.email;
+                    this.$ajaxJava.get('user').then((res)=>{
+                        this.name=res.data.user.selfInformation.trueName;
+                        this.eMail=res.data.user.selfInformation.email;
+                        this.learnTime=this.$formatHouse(res.data.user.learnTime);
+                        this.visitTime=res.data.user.visitTime;
                     })
                 }
             },1);

@@ -176,7 +176,7 @@
              */
             setDataFormat(resDatas){
                 let tableData=[];
-                resDatas.history.forEach((data)=>{
+                resDatas.history.forEach((data,index)=>{
                     let newData={};
                     if(data.course){
                         newData.courseId=data.course.id;
@@ -193,7 +193,7 @@
                         newData.nickName=data.forum.userName;
                         newData.avatar=data.forum.userIconUrl;
                     }
-                    newData.id=data.id;
+                    newData.index=index;
                     newData.date=this.$formatDate(data.createTime);
                     newData.newDate=this.$formatDate(data.updateTime);
                     newData.useTime=Math.ceil(this.$formatMinutes(data.learnTime));
@@ -201,7 +201,49 @@
                     tableData.push(newData);
                 });
                 return tableData;
-            }
+            },
+            /**
+             * 单行删除
+             * @param scope
+             */
+            handleDeleteRow(scope) {
+                this.$ajax.create().post(this.urlDelect,[this.listNow.history[scope.$index]]).then(()=>{
+                    this.$message.success('删除成功');
+                    this.tableData.splice(scope.$index, 1);
+                })
+            },
+            /**
+             * 删除选择的数据
+             */
+            handleDelectRows() {
+                //形成删除对象数组
+                let deletes=this.delectRows.map((de)=>{
+                    return this.listNow.history[de.index];
+                });
+                this.$ajax.create().post(this.urlDelect,deletes).then(()=>{
+                    this.$message.success('删除成功');
+                    //本地更新删除效果
+                    //如果全部选择
+                    if (this.ifSelecttALl) {
+                        //清空数据
+                        this.tableData = [];
+                        //删除按钮禁用
+                        this.ifDelect = true;
+                        return;
+                    }
+                    //如果是部分选择，遍历出相同元素所处的位置并且删除
+                    for (let i = 0; i < this.tableData.length; i++) {
+                        for (let x = 0; x < this.delectRows.length; x++) {
+                            if (this.delectRows[x] === this.tableData[i]) {
+                                this.tableData.splice(i, 1);
+                            }
+                        }
+                    }
+                    //清空数据防止重复遍历
+                    this.delectRows = [];
+                });
+
+            },
         },
         components: {
             hightChart:()=>import(/* webpackChunkName: "hightChart.vue" */ './hightChart.vue'),
@@ -215,7 +257,7 @@
                 return `/user/history/page=${this.pageSearch-1}/size=${this.itemCount}/${this.searchInput}`;
             },
             urlDelect(){
-                return `/admin/forums`
+                return `/user/history`
             }
         },
         watch:{

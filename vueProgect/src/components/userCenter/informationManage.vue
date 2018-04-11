@@ -274,6 +274,9 @@
             },
             urlSearch() {
                 return `user/messages/page=${this.pageSearch - 1}/size=${this.itemCount}`;
+            },
+            urlDelect(){
+                return 'messages';
             }
         },
         components:{
