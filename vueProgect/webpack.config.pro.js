@@ -27,7 +27,7 @@ module.exports = merge(common, {
         //图片压缩配置
         new ImageminPlugin({
             test: './vueProgect/src/static/imgs/**' ,
-            destination: 'static/images'
+            destination: 'static/404page'
         }),
         //指定生产环境
         new webpack.DefinePlugin({

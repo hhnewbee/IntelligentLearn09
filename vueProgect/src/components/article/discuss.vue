@@ -222,7 +222,7 @@
              * webSocket链接
              */
             webso() {
-                this.wss = new WebSocket("ws://172.16.116.18:3200");
+                this.wss = new WebSocket("ws://127.0.0.1:3200");
                 //链接成功后回调，通知后端有用户加入
                 this.wss.onopen = () => {
                     this.wss.send(JSON.stringify({

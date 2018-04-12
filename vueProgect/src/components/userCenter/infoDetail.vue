@@ -7,7 +7,10 @@
             <div class="userInfo">
                 <div class="item item1">
                     <div>
-                        <img :src="avatarUrl">
+                        <avatar :username="account"
+                                :src="avatarUrl"
+                                :size="60">
+                        </avatar>
                     </div>
                     <div style="margin: 0 15px">
                         <div style="margin-bottom: 3px">账号：
@@ -68,11 +71,6 @@
         .item {
             padding: 8px;
             border-bottom: 1px solid #f8f4f4;
-            img {
-                width: 60px;
-                height: 60px;
-                border-radius: 50%;
-            }
             .item2 {
                 margin: 8px;
                 font-size: 13px;
