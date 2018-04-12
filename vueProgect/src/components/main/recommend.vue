@@ -4,10 +4,10 @@
             <!--轮播图-->
             <el-carousel
                     type="card"
-                    height="220px"
+                    height="200px"
                     indicator-position="inside"
                     class="carousel">
-                <el-carousel-item v-for="item in listNow.courses" :key="item.id">
+                <el-carousel-item v-for="item in carousel" :key="item.id">
                     <img :src="item.icon" @click="handleCarousel(item)"/>
                 </el-carousel-item>
             </el-carousel>
@@ -51,6 +51,17 @@
     export default {
         created() {
             this.initData();
+        },
+        data(){
+            return{
+                carousel:[]
+            }
+        },
+        watch:{
+            //轮播图的数据
+            listNow(){
+                this.carousel= this.listNow.courses.slice(0,5);
+            }
         },
         methods: {
             initData() {
