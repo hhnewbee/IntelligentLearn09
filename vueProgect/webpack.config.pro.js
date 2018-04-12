@@ -1,8 +1,6 @@
 const merge = require('webpack-merge');
 const common = require('./webpack.config.common.js');
 const webpack=require('webpack');
-//图片压缩
-const ImageminPlugin = require('imagemin-webpack-plugin').default;
 
 module.exports = merge(common, {
     plugins: [
@@ -23,11 +21,6 @@ module.exports = merge(common, {
                 // 提取出出现多次但是没有定义成变量去引用的静态值
                 reduce_vars: true,
             }
-        }),
-        //图片压缩配置
-        new ImageminPlugin({
-            test: './vueProgect/src/static/imgs/**' ,
-            destination: 'static/404page'
         }),
         //指定生产环境
         new webpack.DefinePlugin({
