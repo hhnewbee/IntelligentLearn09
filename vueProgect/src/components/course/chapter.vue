@@ -5,23 +5,22 @@
                 {{chapter.title}}
             </div>
             <div class="info">
-                <img src="http://localhost:3100/img/avatar/avatar.jpg">
-                <span>{{chapter.info.name}}</span>
-                <span>时间：{{chapter.info.time}}</span>
+                <span>上传者：{{chapter.name}}</span>
+                <span>时间：&nbsp;{{chapter.time | formatDateTime}}</span>
             </div>
             <div class="intro">
-                简介:{{chapter.intro}}
+                简介：&nbsp;{{chapter.intro}}
             </div>
             <div class="catalog"
-                 v-for="(item1,index1) in chapter.chapters"
-                 :key="index1">
-                <div>{{'第'+ ++index1+'章&nbsp;'+item1.t1}}</div>
+                 v-for="(chapterItem,index1) in chapter.chapters"
+                 :key="chapterItem.name">
+                <div>{{'第' + ++index1 + '章&nbsp;&nbsp;' + chapterItem.name}}</div>
                 <div class="fa fa-play"
-                     v-for="(item2,index2) in item1.t2"
-                     :key="index2"
-                     :ref="item2.name"
-                     @click="handleChapterChange(item2)">
-                    {{index1+'-'+ ++index2}}&nbsp;&nbsp;{{item2.name}}
+                     v-for="(item2,index2) in chapterItem.videos"
+                     :key="item2.title"
+                     :ref="index1+'to'+ ++index2"
+                     @click="handleChapterChange(item2.videoUrl,index1+'to'+index2,item2.title,item2.id)">
+                    &nbsp;&nbsp;{{index1 + '-' + index2}}&nbsp;&nbsp;{{item2.title}}
                 </div>
             </div>
         </div>
@@ -31,89 +30,148 @@
 <script>
     import VueScrollbar from 'vue2-scrollbar'
     import "vue2-scrollbar/dist/style/vue2-scrollbar.css";
+    import { mapMutations } from 'vuex'
+    import {recordLearning} from '../mixins.js';
 
     export default {
-        created(){
+        activated() {
             this.initData();
         },
-        mounted(){
-            this.initDom();
+        deactivated(){
+            //清楚心跳包
+            clearInterval(this.heartTime);
         },
         data() {
             return {
                 //章节数组
-                chapter: {
-                    title: 'vue和webpack下的学习',
-                    intro: '大数据背景下，对我们的系统性能提出了更高的要求，包括我们的数据存储和应用，都提出了性能上的需求，尤其是对IO通信方面，更是成为了大数据通信下的瓶颈，为此，我们对系统进行相关的分布式改造。那么，如何进一步提升我们的系统IO性能呢？这里，就为大家介绍大数据时代构建高可用分布式系统的利器——Netty',
-                    info: {name: 'newbee', time: '2015-1-1'},
-                    chapters: [
-                        {
-                            t1: '课程介绍 ',
-                            t2: [
-                                {name: '课程介绍 (06:47)', videoUrl: ''},
-                                {name: '课程介绍 (06:46)', videoUrl: ''}
-                            ]
-                        },
-                        {
-                            t1: '课程介绍 ',
-                            t2: [
-                                {name: '课程介绍 (06:47)', videoUrl: ''},
-                                {name: '课程介绍 (06:46)', videoUrl: ''}
-                            ]
-                        },
-                        {
-                            t1: '课程介绍 ',
-                            t2: [
-                                {name: '课程介绍 (06:47)', videoUrl: ''},
-                                {name: '课程介绍 (06:46)', videoUrl: ''}
-                            ]
-                        },
-                        {
-                            t1: '课程介绍 ',
-                            t2: [
-                                {name: '课程介绍 (06:47)', videoUrl: ''},
-                                {name: '课程介绍 (06:46)', videoUrl: ''}
-                            ]
-                        }
-                    ],
-                },
+                chapter: {},
                 //选择的章节状态保存
                 lastCh: ''
             }
         },
-        methods:{
+        methods: {
+            ...mapMutations('course',['setCourseTitle','setChapterTitle','setvideoUrl','setCourseData','setVideoId','setSources']),
             /**
              * 视频章节切换
-             * @param t2
+             * @param url
+             * @param index
+             * @param chapterName
+             * @param fileId
              */
-            handleChapterChange(t2){
+            handleChapterChange(url, index,chapterName,fileId) {
                 //点击章节的状态改变
-                this.$refs[this.lastCh][0].style.color='#b5b9bc';
-                this.$refs[t2.name][0].style.color='#409EFF';
-                this.lastCh=t2.name;
+                this.$refs[this.lastCh][0].style.color = '#b5b9bc';
+                this.$refs[index][0].style.color = '#409EFF';
+                this.lastCh = index;
+                //设置章节名称
+                this.setChapterTitle(chapterName);
                 //视频url的改变
-                this.$emit('changeUrl',t2.url);
+                this.setvideoUrl(url);
+                //设置视频id，评论需要使用到
+                this.setVideoId(fileId);
             },
             /**
              * 初始化数据
              */
-            initData(){
-                //初始化第一个选择章节
-                let t2=((this.chapter.chapters)[0].t2)[0];
-                this.lastCh=t2.name;
-                //初始化视的url
-                this.$emit('changeUrl',t2.url);
+            initData() {
+                this.initChapter();
             },
             /**
-             * 初始化dom
+             * 生成章节
              */
-            initDom(){
-                this.$refs[this.lastCh][0].style.color='#409EFF';
+            initChapter() {
+                //初始化章节信息
+                this.$ajaxJava.get(`course/${this.$route.params.courseId}`).then((res) => {
+                    //设置整个课程的数据
+                    this.setCourseData(res.data);
+                    //设置课程标题
+                    this.setCourseTitle(res.data.title);
+                    //初始化章节数据
+                    this.chapter = {
+                        title: res.data.title,
+                        intro: res.data.description,
+                        name: res.data.uploadUsername,
+                        time: res.data.creationTimestamp,
+                        chapters:[]
+                    };
+                    //课程资源
+                    let sources=[];
+                    //遍历每个视频文件
+                    res.data.file.forEach((file) => {
+                        //判断是否是章节,因为资源夹带在里面了
+                        if (file.chapter) {
+
+//                            //判断该章节数组是否存在(旧的章节数据保存机制)
+//                            if (!this.chapter.chapters[file.chapter]) {
+//                                this.chapter.chapters[file.chapter] = [];
+//                            }
+//                            this.chapter.chapters[file.chapter].push(
+//                                //切掉后缀名
+//                                {
+//                                    title: `${file.title.replace(`.${file.type}`, '')} (${file.totalTime})`,
+//                                    videoUrl: file.path,
+//                                    id:file.id
+//                                }
+//                            );
+
+
+                            //判断数组中是否包含了目前的章节
+                            //每个视频关联的信息
+                            let video=
+                                {
+                                    //去掉视频的后缀，只保留名称，并加入视频时长
+                                    title: `${file.title.replace(`.${file.type}`, '')} (${file.totalTime})`,
+                                    videoUrl: file.path,
+                                    id:file.id
+                                };
+                            //接收已经存在的章节对象，判断章节对象是否存在
+                            let chapterO=this.chapter.chapters.find((chapter)=>{
+                                return chapter.name===file.chapter;
+                            });
+                            //如果没有包含，undefined,则重新创建
+                            if(!chapterO){
+                                this.chapter.chapters.push({name:file.chapter,videos:[video]});
+                            }else{
+                                //如果有就直接添加
+                                chapterO.videos.push(video);
+                            }
+                        }else{
+                            sources.push(file);
+                        }
+                    });
+                    //设置课程资源
+                    this.setSources(sources);
+
+                    //章节名称排序
+                    this.chapter.chapters.sort((a,b)=>{
+                        //切分章节的序号,章节排序
+                        return a.name.split('-',1)-b.name.split('-',1);
+                    });
+                    //返回没有序号的章节名称
+                    this.chapter.chapters=this.chapter.chapters.map((chapter)=>{
+                        chapter.name=chapter.name.replace(/\d+-/,'');
+                        return chapter;
+                    });
+                    //视频名称排序
+                    this.chapter.chapters.forEach((chapter)=>{
+                        chapter.videos.sort();
+                    });
+
+                    //初始化第一个选择章节的内容
+                    this.lastCh = '1to1';
+                    //初始化视频的url，等待数据加载完成在更新dom
+                    this.$nextTick(()=>{
+                        this.$refs[this.lastCh][0].click();
+                    });
+                    //课程学习时长心跳包
+                    this.keepLearning(`/user/learnCourse/${res.data.id}`);
+                });
             }
         },
         components: {
             VueScrollbar
-        }
+        },
+        mixins:[recordLearning]
     }
 </script>
 
@@ -133,19 +191,17 @@
             margin-left: 10px;
             display: flex;
             align-items: center;
-            color: #3f4d5b;
+            color: $secondaryText;
+            font-size: 13px;
             img {
                 width: 20px;
                 height: 20px;
                 border-radius: 50%;
             }
             span {
-                margin-left: 10px;
+                margin-left: 15px;
             }
-            span:nth-child(2) {
-                font-size: 14px;
-            }
-            span:nth-child(3) {
+            span:nth-child(2){
                 font-size: 12px;
             }
         }

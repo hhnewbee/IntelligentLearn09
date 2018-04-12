@@ -7,7 +7,7 @@
                 mode="horizontal"
                 :router='true'>
             <div class="img" style="border-bottom: 2px solid transparent;">
-                <img src="../../static/imgs/avatar.jpg">
+                <img src="../../static/imgs/softIcon.jpg">
             </div>
             <el-menu-item index="/main/recommend">首页</el-menu-item>
             <el-menu-item index="/main/coursesPage">课程</el-menu-item>
@@ -15,7 +15,7 @@
             <el-menu-item index="/main/questionPage">问答</el-menu-item>
             <searchItem style="align-self: center;width: 300px;cursor: text;"> </searchItem>
             <div class="img">
-                <avatarInfo></avatarInfo>
+                <avatarInfo style="color: #adafb3"></avatarInfo>
             </div>
         </el-menu>
     </div>

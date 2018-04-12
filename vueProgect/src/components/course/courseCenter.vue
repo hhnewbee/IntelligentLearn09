@@ -1,12 +1,14 @@
 <template>
     <div id="courseCenterIL09">
         <div class="videoItem">
-            <video
-                    class="video-js vjs-big-play-centered"
-                    controls
-                    preload="auto"
-                    data-setup='{"playbackRates": [0.7, 1, 1.5, 1.7, 2],"techOrder": ["html5","flash"]}'>
-                <source src="http://172.16.116.18:3100/video/studySource/video1.mp4">
+            <video id="videojs"
+                   style="height: 100%;width: 100%"
+                   class="video-js vjs-big-play-centered"
+                   controls
+                   preload="auto"
+                   :src="videoUrl"
+                   data-setup='{"playbackRates": [0.7, 1, 1.5, 1.7, 2]}'>
+                <source :src="videoUrl"/>
             </video>
         </div>
         <div class="rightPop">
@@ -30,10 +32,10 @@
                 </div>
             </div>
             <keep-alive>
-                <component :is="changePop"
+                <component style="min-width: 300px"
+                           :is="changePop"
                            :commentsInfo="commentsInfo"
-                           :discussInfo="discussInfo"
-                           @changeUrl="changeVideoUrl">
+                           :discussInfo="discussInfo">
                 </component>
             </keep-alive>
         </div>
@@ -41,15 +43,11 @@
 </template>
 
 <script>
-    import 'video.js/dist/video.min.js'
-    import 'videojs-flash/dist/videojs-flash.min.js'
+    import 'video.js/dist/video.min.js';
     import 'video.js/dist/video-js.min.css'
     import {mapState} from 'vuex'
 
     export default {
-        created() {
-            this.initData();
-        },
         mounted() {
             this.reloadVideo();
             this.initDom();
@@ -58,21 +56,23 @@
             return {
                 changePop: 'chapter',
                 discuss: {},
-                videoUrl: '',
                 //讨论的信息
-                discussInfo:{},
+                discussInfo: {},
                 //评论的信息
-                commentsInfo:{}
+                commentsInfo: {},
+                //videoJs的实例
+                videoJs: {}
             }
         },
         computed:{
             ...mapState('info',['account,avatarUrl']),
+            ...mapState('course',['videoUrl','courseData','videoId']),
         },
         components: {
-            chapter: () => import('./chapter.vue'),
-            discuss: () => import('../article/discuss.vue'),
-            comments: () => import('../article/comments.vue'),
-            downLoad: () => import('../resources/downLoad.vue')
+            chapter: () => import(/* webpackChunkName: "chapter.vue" */ './chapter.vue'),
+            discuss: () => import(/* webpackChunkName: "discuss.vue" */ '../article/discuss.vue'),
+            comments: () => import(/* webpackChunkName: "comments.vue" */ '../article/comments.vue'),
+            downLoad: () => import(/* webpackChunkName: "downLoad.vue" */'../resources/downLoad.vue')
         },
         methods: {
             /**
@@ -85,10 +85,24 @@
                         break;
                     }
                     case 2: {
+                        this.discussInfo = {
+                            theme: this.courseData.title,
+                            nickName: this.account,
+                            avatarUrl: this.avatarUrl
+                        };
                         this.changePop = 'discuss';
                         break;
                     }
                     case 3: {
+                        this.commentsInfo = {
+                            getCommentUrl:`course/${this.courseData.id}/video/${this.videoId}/page=`,
+                            postCommentUrl:`course/comment`,
+                            postData:{
+                                course:{id:this.courseData.id},
+                                file:{id:this.videoId},
+                            },
+                            targetId:'video-'+this.videoId,
+                        };
                         this.changePop = 'comments';
                         break;
                     }
@@ -113,17 +127,10 @@
                 //dom加载完毕的时候，该id还没有被附加，用js的事件循环机制放获取放到最后去
                 setTimeout(() => {
                     //判断viedojs是否加载成功
-                    if (document.querySelector('.videoItem').childNodes[0].id !== 'vjs_video_3') {
+                    if (document.querySelector('.videoItem').childNodes[0].childNodes[0].id !== 'videojs_html5_api') {
                         window.location.reload();
                     }
                 }, 1)
-            },
-            /**
-             * 改变视频的链接，切换视频
-             * @param url
-             */
-            changeVideoUrl(url) {
-                this.videoUrl = url;
             },
             /**
              * 初始化dom
@@ -131,24 +138,21 @@
             initDom() {
                 document.querySelector('.op').style.backgroundColor = '#14191e';
             },
-            /**
-             * 初始化数据
-             */
-            initData(){
-                this.discussInfo={
-                    theme:'vue与webpack的学习',
-                    nickName:this.account,
-                    avatarUrl:this.avatarUrl
-                };
-                this.commentsInfo={
-                    nickName:this.account,
-                    avatarUrl:this.avatarUrl,
-                    targetId:'123',
-                    tag:'普通用户'
-                }
-            }
         },
-
+        watch: {
+            //videoUrl() {
+                //this.videoJs.pause();
+                //获取视频节点（也就是video元素）
+                //值的注意的是，想通过id或者class获取该节点的时候，要注意video前后渲染的时候id和class改变了
+                //请使用渲染后的id或者class
+                //比如，这个原来的id是video，渲染后变成了video1_html5_api
+                //$video.attr('src', newVideo)
+                //重载视频
+                //this.videoJs.load();
+                //开始视频
+                //this.videoJs.play();
+            //}
+        },
     }
 </script>
 

@@ -5,6 +5,7 @@
                 分类：
             </div>
             <el-radio-group
+                    @change="hanleType"
                     v-model="typeChoose"
                     style="padding:0 10px"
                     size="small">
@@ -12,11 +13,13 @@
                         v-for="ty in type"
                         :key=ty
                         :label=ty
-                        class="chooseItem"></el-radio-button>
+                        class="chooseItem">
+                </el-radio-button>
             </el-radio-group>
         </div>
         <div class="choose">
             <el-radio-group
+                    @change="handleChoose"
                     v-model="choose"
                     size="small"
                     style="margin-right: 20px">
@@ -26,43 +29,46 @@
         </div>
 
         <div class="coursesContent">
-            <course class="courseItem"></course>
-            <course class="courseItem"></course>
-            <course class="courseItem"></course>
-            <course class="courseItem"></course>
-            <course class="courseItem"></course>
-            <course class="courseItem"></course>
-            <course class="courseItem"></course>
-            <course class="courseItem"></course>
+            <courseItem :data="item"
+                        v-for="item in listNow.courses"
+                        :key="item.title">
+            </courseItem>
         </div>
         <el-pagination
+                @size-change="handlePage"
                 background
                 layout="prev, pager, next"
-                :total="1000">
+                :key="listNow.page"
+                :page-size="1"
+                :total="listNow.pages">
         </el-pagination>
         <footer_></footer_>
     </div>
 </template>
 
 <script>
-    import course from './courseItem.vue'
-    import {mapState} from 'vuex'
+    import courseItem from './courseItem.vue'
     import footer_ from '../footer/footer.vue';
+    import backHeader from '../header/backHeader.vue';
+    import {mapState} from 'vuex'
+    import {areaCaching,pageRequire} from '../mixins.js';
+
     export default {
-        data() {
-            return {
-                choose:'最新',
-                //类型选择
-                typeChoose: "全部"
-            }
-        },
-        computed:{
-            ...mapState(['type']),
+        created() {
+            this.url='courses';
+            //areaFocus没有在init前被初始化，所以放到事件循环最后加载
+            setTimeout(this.iniData,1);
         },
         components: {
-            course,
+            courseItem,
             footer_,
-        }
+            backHeader
+        },
+        computed: {
+            ...mapState(['type']),
+            ...mapState('info',['areaFocus']),
+        },
+        mixins:[pageRequire,areaCaching]
     }
 </script>
 
@@ -105,13 +111,13 @@
         }
         .coursesContent {
             display: flex;
-            justify-content: space-around;
+            justify-content: space-between;
             align-items: center;
             flex-shrink: 0;
             flex-wrap: wrap;
             width: 1100px;
             margin: 20px 60px;
-            padding: 15px ;
+            padding: 15px 60px;
             box-shadow: 4px 4px 18px rgba(136, 136, 136, 0.588235);
             cursor: pointer;
             box-sizing: content-box;

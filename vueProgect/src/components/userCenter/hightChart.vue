@@ -121,6 +121,8 @@
 
 <style scoped lang="scss">
     .highchart {
+        max-height: 600px;
+        max-width: 1200px;
         height: 100%;
         width: 100%;
         padding: 40px;
@@ -133,11 +135,12 @@
         }
         .notData {
             position: absolute;
-            font-size: 18px;
+            font-size: 15px;
             z-index: 10000;
             top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%)
+            transform: translate(-50%, -50%);
+            color: $secondaryText;
         }
     }
 </style>

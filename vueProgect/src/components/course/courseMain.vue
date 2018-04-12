@@ -9,17 +9,6 @@
     import courseheader from './courseHeader.vue';
     import courseCenter from './courseCenter.vue';
     export default {
-        created(){
-            //TODO 获取数据
-//        this.$ajax.get('').then((response)=>{
-//            this.info=response.data;
-//        })
-        },
-        data(){
-            return{
-
-            }
-        },
         components:{
             courseheader,
             courseCenter,

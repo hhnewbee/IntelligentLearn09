@@ -11,7 +11,10 @@
                             v-for="user in Array.from(this.usersOnlineList)"
                             class="item"
                             @mousedown="handleChatChange(user[0])">
-                        <img class="avatar" :src="user[1].avatarUrl"/>
+                        <info-detail :account="user[0]"
+                                     :avatarUrl="user[1].avatarUrl"
+                                     :size="28">
+                        </info-detail>
                         <div class="name">
                             {{user[0]}}
                         </div>
@@ -62,7 +65,10 @@
                          class="item">
                         <div class="info">
                             <div class="avatar">
-                                <img :src="messageItem.avatarUrl"/>
+                                <info-detail :avatarUrl="messageItem.avatarUrl"
+                                             :account="messageItem.nickName"
+                                             :size="35">
+                                </info-detail>
                             </div>
                             <div class="name">
                                 {{messageItem.nickName}}
@@ -76,7 +82,10 @@
                          class="item item-right">
                         <div class="info">
                             <div class="avatar">
-                                <img :src="messageItem.avatarUrl"/>
+                                <info-detail :avatarUrl="messageItem.avatarUrl"
+                                             :account="messageItem.nickName"
+                                             :size="35">
+                                </info-detail>
                             </div>
                             <div class="name">
                                 {{messageItem.nickName}}
@@ -110,12 +119,14 @@
         </div>
 
         <!--帮助vue对map做响应-->
-        <div v-if="statusHelp"></div>
+        <div v-show="statusHelp"></div>
+
     </div>
 </template>
 
 <script>
     import VueScrollbar from 'vue2-scrollbar'
+    import infoDetail from '../userCenter/infoDetail.vue';
     export default {
         created() {
             this.initData();
@@ -315,7 +326,8 @@
             }
         },
         components: {
-            VueScrollbar
+            VueScrollbar,
+            infoDetail
         }
     }
 </script>
@@ -362,11 +374,6 @@
                     align-items: center;
                     cursor: pointer;
                     border-bottom: 1px solid #f6f6f6;
-                    .avatar {
-                        height: 30px;
-                        width: 30px;
-                        border-radius: 50%;
-                    }
                     .name {
                         margin-left: 10px;
                         font-size: 13px;
@@ -377,18 +384,15 @@
                         background-color: #f6f6f6;
                     }
                     div:nth-child(3) {
-                        margin-left: 40px;
-                        background-color: #f56c6c;
-                        border-radius: 10px;
-                        color: #fff;
-                        display: inline-block;
+                        @include HHVcenter;
+                        margin-left: 65px;
+                        background-color: $primaryColor;
                         font-size: 12px;
-                        height: 18px;
-                        line-height: 18px;
-                        padding: 0 6px;
-                        text-align: center;
+                        height: 1.5em;
+                        width: 1.5em;
+                        color: white;
+                        border-radius: 50%;
                         white-space: nowrap;
-                        border: 1px solid #fff;
                     }
                 }
             }
@@ -456,14 +460,9 @@
                     .info {
                         display: flex;
                         align-items: center;
-                        margin-bottom: 8px;
+                        margin-bottom: 12px;
                         .avatar {
                             margin-right: 10px;
-                            img {
-                                border-radius: 50%;
-                                width: 35px;
-                                height: 35px;
-                            }
                         }
                         .name {
                             font-size: 15px;

@@ -39,8 +39,27 @@
                 </el-option>
             </el-select>
         </div>
+        <div class="moreFun"
+             v-if='ifMoreFun'>
+            <el-button
+                    :disabled="ifDelect"
+                    @click="handleDelectRows"
+                    type="primary"
+                    size="small"
+                    icon="el-icon-delete">
+                批量删除
+            </el-button>
+            <el-button
+                    @click="handleDelectAll"
+                    type="danger"
+                    size="small"
+                    icon="el-icon-delete">
+                全部删除
+            </el-button>
+        </div>
         <div class="content">
             <el-table
+                    ref="table"
                     v-show="ifTable"
                     @select-all="handleSelectAll"
                     @select="handleSelectBatch"
@@ -90,7 +109,7 @@
                         align='center'
                         prop="category"
                         label="类别"
-                        width="50">
+                        width="150">
                 </el-table-column>
 
                 <el-table-column
@@ -107,13 +126,13 @@
                         width="110">
                     <template slot-scope="scope">
                         <el-button
-                                @click="handleSee(scope)"
+                                @click="handleSee('record',scope)"
                                 type="text"
                                 size="small">
                             查看
                         </el-button>
                         <el-button
-                                @click="handleDeleteRow(scope.$index)"
+                                @click="handleDeleteRow(scope)"
                                 type="text"
                                 style="color: red;"
                                 size="small">
@@ -131,7 +150,8 @@
                 @current-change="handlePage"
                 background
                 layout="prev, pager, next"
-                :total="1000">
+                :page-size="1"
+                :total="listNow.pages">
         </el-pagination>
     </div>
 </template>
@@ -139,74 +159,59 @@
 <script>
     import {manageMixin} from './manageMixin';
     export default {
-        created() {
+        mounted() {
             //todo 模拟初始化请求数据
-            this.initData([
-                {
-                    date: '2016-05-03',
-                    name: 'vue与webpack初步1',
-                    type: '课程',
-                    category: '金融',
-                    newDate: '2016-05-03',
-                    avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
-                    nickName: 'newbee',
-                    useTime: 100,
-                    accessTimes: 30,
-                }, {
-                    date: '2016-05-03',
-                    name: 'vue与webpack初步2',
-                    type: '课程',
-                    category: '金融',
-                    newDate: '2017-05-03',
-                    avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
-                    nickName: 'newbee',
-                    useTime: 130,
-                    accessTimes: 20,
-                }, {
-                    date: '2016-05-03',
-                    name: 'vue与webpack初步3',
-                    type: '课程',
-                    category: '金融',
-                    newDate: '2017-05-09',
-                    avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
-                    nickName: 'newbee',
-                    useTime: 90,
-                    accessTimes: 10,
-                }, {
-                    date: '2016-05-03',
-                    name: 'vue与webpack初步4',
-                    type: '课程',
-                    category: '金融',
-                    newDate: '2018-05-03',
-                    avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
-                    nickName: 'newbee',
-                    useTime: 30,
-                    accessTimes: 20,
-                }, {
-                    date: '2016-05-03',
-                    name: 'vue与webpack初步5',
-                    type: '课程',
-                    category: '金融',
-                    newDate: '2018-05-03',
-                    avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
-                    nickName: 'newbee',
-                    useTime: 10,
-                    accessTimes: 20,
-                }, {
-                    date: '2016-05-03',
-                    name: 'vue与webpack初步6',
-                    type: '课程',
-                    category: '金融',
-                    newDate: '2018-05-03',
-                    avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
-                    nickName: 'newbee',
-                    useTime: 40,
-                    accessTimes: 20,
-                }
-            ],[{value: '课程记录'}, {value: '课程详情'}]);
+            this.initData([{value: '收藏记录'}, {value: '学习详情'}]);
+        },
+        methods:{
+            /**
+             * 设置获取数据的格式
+             */
+            setDataFormat(resDatas) {
+                return resDatas.lists.map((resData)=>{
+                        let collection={};
+                        collection.id=resData.id;
+                        collection.date=this.$formatDate(resData.createTime);
+                        collection.newDate=this.$formatDate(resData.updateTime);
+                        collection.useTime=Math.ceil(this.$formatMinutes(resData.learnTime));
+                        collection.accessTimes=resData.visitTime;
+                    if(resData.course){
+                        collection.courseId=resData.course.id;
+                        collection.type='课程';
+                        collection.name=resData.course.title;
+                        collection.category=resData.course.type;
+                        collection.avatar=resData.course.userIconUrl;
+                        collection.nickName=resData.course.uploadUsername;
+                    }else{
+                        collection.forumId=resData.forum.id;
+                        collection.type='文章';
+                        collection.name=resData.forum.title;
+                        collection.category=resData.forum.type;
+                        collection.avatar=resData.forum.userIconUrl;
+                        collection.nickName=resData.forum.uploadUsername;
+                    }
+                    return collection;
+                });
+            }
+        },
+        computed: {
+            url() {
+                return `user/course/collections/page=${this.page - 1}/size=${this.itemCount}`;
+            },
+            urlSearch() {
+                return `user/course/collections/page=${this.pageSearch - 1}/size=${this.itemCount}`;
+            },
+            urlDelect(){
+                return `user/course/collections`
+            }
         },
         components: {
-            hightChart:()=>import( './hightChart.vue')
+            hightChart:()=>import(/* webpackChunkName: "hightChart.vue" */ './hightChart.vue')
+        },
+        watch:{
+            listNow() {
+                this.tableData = this.setDataFormat(this.listNow);
+            }
         },
         mixins:[manageMixin]
     }

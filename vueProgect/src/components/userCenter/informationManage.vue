@@ -60,6 +60,8 @@
         </div>
         <div class="content">
             <el-table
+                    :row-class-name="setRowColor"
+                    ref="table"
                     @select-all="handleSelectAll"
                     @select="handleSelectBatch"
                     :data="tableData"
@@ -79,28 +81,37 @@
                 </el-table-column>
 
                 <el-table-column
-                        align='center'
-                        prop="position"
-                        label="位置"
-                        :show-overflow-tooltip="true"
-                        width="190">
-                </el-table-column>
-
-                <el-table-column
                         align='left'
                         label="类型"
                         header-align="center"
-                        width="220">
-                    <div
-                            slot-scope="scope"
-                            style="display: flex;align-items: center">
-                        <span>{{scope.row.type1}}&nbsp</span>
-                        <img
-                                :src="scope.row.avatar"
-                                style="width: 20px;height: 20px;border-radius: 50%;">
-                        <span>&nbsp<span style="color:#00abf9;">
-                            {{scope.row.nickName}}</span>&nbsp{{scope.row.type2}}
-                        </span>
+                        :show-overflow-tooltip="true"
+                        width="280">
+                    <div slot-scope="scope"
+                         style="display: flex;align-items: center;justify-content: center">
+
+                        <div v-if="scope.row.type.content==='我回复了'"
+                             style="display: flex;align-items: center">
+                            {{scope.row.type.content}}&nbsp;
+                            <info-detail :account="scope.row.type.account"
+                                         :avatarUrl="scope.row.type.avatarUrl"
+                                         :size="30">
+                            </info-detail>
+                            <div style="color: #18C0DF">&nbsp;{{scope.row.type.account}}</div>
+                        </div>
+
+                        <div v-else-if="scope.row.type.content==='回复了我'"
+                             style="display: flex;align-items: center">
+                            <div style="color: #18C0DF">{{scope.row.type.account}}&nbsp;</div>
+                            <info-detail :account="scope.row.type.account"
+                                         :avatarUrl="scope.row.type.avatarUrl"
+                                         :size="25">
+                            </info-detail>&nbsp;
+                            {{scope.row.type.content}}
+                        </div>
+
+                        <div v-else>
+                            {{scope.row.type}}
+                        </div>
                     </div>
                 </el-table-column>
 
@@ -114,18 +125,25 @@
 
                 <el-table-column
                         align='center'
+                        prop="status"
+                        label="状态"
+                        width="100">
+                </el-table-column>
+
+                <el-table-column
+                        align='center'
                         fixed="right"
                         label="操作"
                         width="110">
                     <template slot-scope="scope">
                         <el-button
-                                @click="handleSee(scope)"
+                                @click="handleSee('message',scope)"
                                 type="text"
                                 size="small">
                             查看
                         </el-button>
                         <el-button
-                                @click="handleDeleteRow(scope.$index)"
+                                @click="handleDeleteRow(scope)"
                                 type="text"
                                 style="color: red;"
                                 size="small">
@@ -135,89 +153,47 @@
                 </el-table-column>
             </el-table>
         </div>
+        <el-dialog :visible.sync="dialogInfo">
+            <div style="font-size: 12px;color: #8a8a8a;text-align: left">
+                {{dialogTime | formatDateTime}}
+            </div>
+            <div style="margin-left: 2rem;font-size: 16px;color: black">
+                {{dialogContent}}
+            </div>
+        </el-dialog>
         <el-pagination
                 style="align-self: center"
                 @current-change="handlePage"
                 background
                 layout="prev, pager, next"
-                :total="1000">
+                :page-size="1"
+                :total="listNow.pages">
         </el-pagination>
     </div>
 </template>
 
 <script>
     import {manageMixin} from './manageMixin.js';
-
+    import {mapState} from 'vuex';
+    import infoDetail from './infoDetail.vue';
     export default {
-        created() {
-            //todo 模拟初始化请求数据
+        mounted() {
             this.initData([
-                {
-                    date: '2016-05-03',
-                    position: 'vue与webpack初步1',
-                    type1: '我回答了',
-                    avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
-                    nickName: 'newbee',
-                    type2: '的问题',
-                    content: '通常情况下，我们用空格键来打出多个空格，而在编写代码时，通过空格键、Tab键以及回车键打出的空格，都会被HTML（超文本标记语言）自动忽略。HTML将这样的键视为空白字符，并显示为单个空白间隔。尽管CSS提供了多种样式的空格和缩进，但是在HTML中也有一些工具可以让你自己定义空格。'
-
-                }, {
-                    date: '2017-05-03',
-                    position: 'vue与webpack初步2',
-                    type1: '我向',
-                    avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
-                    nickName: 'newbee1',
-                    type2: '提问',
-                    content: '插入一个非间断空格。一般来说，无论你按多少次空格键，HTML也只会在单词之间显示一个空白间隔。当你需要插入多个空格时，请输入&nbsp;或&#160;代码。[1] 它们名为“空格占位符”，你输入几个，就能在页面中显示几个空格。\n' +
-                    '之所以称之为非间断空格，是因为这样不会产生换行符。如果你滥用这种空格，浏览器可能无法以整齐易读的方式插入换行符'
-                }, {
-                    date: '2018-05-03',
-                    position: 'vue与webpack初步3',
-                    type1: '',
-                    avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
-                    nickName: 'newbee2',
-                    type2: '回答了我的问题',
-                    content: '插入一个非间断空格。一般来说，无论你按多少次空格键，HTML也只会在单词之间显示一个空白间隔。当你需要插入多个空格时，请输入&nbsp;或&#160;代码。[1] 它们名为“空格占位符”，你输入几个，就能在页面中显示几个空格。\n' +
-                    '之所以称之为非间断空格，是因为这样不会产生换行符。如果你滥用这种空格，浏览器可能无法以整齐易读的方式插入换行符'
-                }, {
-                    date: '2016-05-03',
-                    position: 'vue与webpack初步4',
-                    avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
-                    nickName: 'newbee3',
-                    type1: '',
-                    type2: '向我提问',
-                    content: '插入一个非间断空格。一般来说，无论你按多少次空格键，HTML也只会在单词之间显示一个空白间隔。当你需要插入多个空格时，请输入&nbsp;或&#160;代码。[1] 它们名为“空格占位符”，你输入几个，就能在页面中显示几个空格。\n' +
-                    '之所以称之为非间断空格，是因为这样不会产生换行符。如果你滥用这种空格，浏览器可能无法以整齐易读的方式插入换行符'
-                }, {
-                    date: '2016-09-03',
-                    position: 'vue与webpack初步5',
-                    avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
-                    nickName: '系统信息',
-                    content: '插入一个非间断空格。一般来说，无论你按多少次空格键，HTML也只会在单词之间显示一个空白间隔。当你需要插入多个空格时，请输入&nbsp;或&#160;代码。[1] 它们名为“空格占位符”，你输入几个，就能在页面中显示几个空格。\n' +
-                    '之所以称之为非间断空格，是因为这样不会产生换行符。如果你滥用这种空格，浏览器可能无法以整齐易读的方式插入换行符'
-                }, {
-                    date: '2016-09-03',
-                    position: 'vue与webpack初步6',
-                    avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
-                    nickName: '通知信息',
-                    content: '插入一个非间断空格。一般来说，无论你按多少次空格键，HTML也只会在单词之间显示一个空白间隔。当你需要插入多个空格时，请输入&nbsp;或&#160;代码。[1] 它们名为“空格占位符”，你输入几个，就能在页面中显示几个空格。\n' +
-                    '之所以称之为非间断空格，是因为这样不会产生换行符。如果你滥用这种空格，浏览器可能无法以整齐易读的方式插入换行符'
-                }
-            ], [
                 {value: '所有信息'},
-                {value: '我的问题'},
-                {value: '我的回答'},
-                {value: '我的解答'},
-                {value: '向我提问'},
+                {value: '我发布的'},
+                {value: '回复我的'},
                 {value: '给我点赞'},
                 {value: '系统信息'},
-                {value: '通知信息'}
             ],);
         },
         data() {
             return {
                 //副标题
-                subTitle: '全部信息'
+                subTitle: '全部信息',
+                //弹出框的标识
+                dialogInfo:false,
+                dialogTime:'',
+                dialogContent:''
             }
         },
 
@@ -238,13 +214,91 @@
 //                        break;
 //                    }
 //                }
+            },
+            /**
+             * 设置获取数据的格式
+             */
+            setDataFormat(resDatas) {
+                return resDatas.messages.map((resdata)=>{
+                    return {
+                        id:resdata.id,
+                        date:this.$formatDate(resdata.creationTimestamp),
+                        time:resdata.creationTimestamp,
+                        content:resdata.content,
+                        status:resdata.status==="No Read"?'未读':'已读',
+                        type:(()=>{
+                            //判断信息的类型
+                            switch(resdata.type){
+                                case 'reply':{
+                                    //判断是谁回谁
+                                    if(this.account===resdata.from.account){
+                                        return {
+                                            content:'我回复了',
+                                            account:resdata.to.account,
+                                            avatarUrl:resdata.to.selfInformation.imgPath
+                                        };
+                                    }else{
+
+                                        return {
+                                            account:resdata.from.account,
+                                            avatarUrl:resdata.from.selfInformation.imgPath,
+                                            content:'回复了我'
+                                        };
+                                    }
+                                }
+                                case 'comment':{
+                                    return '我的发表';
+                                }
+                                case 'system':{
+                                    return '系统通知';
+                                }
+                            }
+                        })()
+                    }
+                });
+            },
+            /**
+             * 设置表格背景
+             */
+            setRowColor({row}){
+                if (row.status === '未读') {
+                    return 'notRead-row';
+                }
+                return '';
             }
+        },
+        computed: {
+            ...mapState('info',['account']),
+            url() {
+                return `user/messages/page=${this.page - 1}/size=${this.itemCount}`;
+            },
+            urlSearch() {
+                return `user/messages/page=${this.pageSearch - 1}/size=${this.itemCount}`;
+            },
+            urlDelect(){
+                return 'messages';
+            }
+        },
+        components:{
+            infoDetail
+        },
+        watch:{
+             listNow() {
+                 this.tableData = this.setDataFormat(this.listNow);
+             }
         },
         mixins: [manageMixin]
     }
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
     @import './manageStyle.scss';
+    .el-table .notRead-row {
+        background: rgba(26, 220, 255, 0.11);
+    }
+    .el-tooltip__popper{
+        max-width: 30%;
+        line-height: 1.5em;
+    }
 </style>
 

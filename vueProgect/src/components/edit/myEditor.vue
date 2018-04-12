@@ -42,11 +42,14 @@
                         contenteditable="true"
                         @click="getSelection"
                         ref="editarea">
+                    <div></div>
                 </div>
             </div>
             <div class="uploadList" ref="uploadList">
                 <el-upload
                         :action='uploadUrl'
+                        :name="uploadType"
+                        :with-credentials="true"
                         :before-remove="beforeRemove"
                         :before-upload='beforeUpload'
                         :on-success='upScuccess'
@@ -220,8 +223,6 @@
                 let newRange = this.createRange(this.range);
                 newRange.insertNode(newNode);
                 this.addRange = newRange.cloneRange();//复制范围保存供下次使用
-                //更改文件名称加上id
-//                file.name+=this.articleId;
             },
 
             /**
@@ -371,13 +372,10 @@
              * 文章发布
              */
             publish() {
-                this.$ajax.post("posts", {
-                    id: this.articleId,
-                    theme: this.theme,
-                    author: "name",
+                this.$ajaxJava.post("upload/forum", {
+                    title: this.theme,
                     categorys: this.categorys.join('/'),
                     content: this.editarea.innerHTML,
-                    time: Date()
                 }).then(() => {
                     this.$message({
                         type: 'success',
@@ -387,6 +385,7 @@
                     this.editarea.innerHTML = '';
                     localStorage.removeItem('editContent');
                     localStorage.removeItem('editContentId');
+                    this.theme='文章标题';
                 }).catch(() => {
                     this.$message({
                         type: 'error',
@@ -414,7 +413,7 @@
                             class="video-js vjs-big-play-centered"
                             controls
                             preload="auto"
-                            data-setup='{"playbackRates": [0.7, 1, 1.5, 1.7, 2],"techOrder": ["html5","flash"]}'>
+                            data-setup='{"playbackRates": [0.7, 1, 1.5, 1.7, 2]}'>
                                 <source src="${response.url}">
                             </video>`;
                 target.innerHTML = tem;
@@ -454,7 +453,7 @@
             editCommand(type) {
                 if (type === 'img' | type === 'video' | type === 'file') {
                     this.uploadType = type;
-                    this.uploadUrl = `http://localhost:3100/upload/${type}`;//设置上传地址
+                    this.uploadUrl = `http://172.16.148.27:8080/upload/forumFile`;//设置上传地址
                     //模拟点击上传组件的文件选择按钮
                     document.querySelector('#uploadButton').click();
                     return;

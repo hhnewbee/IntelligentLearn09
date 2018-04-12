@@ -7,45 +7,33 @@
                     height="200px"
                     indicator-position="inside"
                     class="carousel">
-                <el-carousel-item v-for="item in 6" :key="item">
-                    <h3>{{ item }}</h3>
+                <el-carousel-item v-for="item in carousel" :key="item.id">
+                    <img :src="item.icon" @click="handleCarousel(item)"/>
                 </el-carousel-item>
             </el-carousel>
             <div class="recommendContent">
                 <div class="type">智能推荐</div>
                 <div class="course">
                     <div class="ListType">课程推荐</div>
-                    <div class="more">更多&nbsp;<span class="fa fa-chevron-right"></span></div>
+                    <div class="more" @click="handleMore('coursesPage')">更多&nbsp;<span class="fa fa-chevron-right"></span></div>
                     <div class="courseList">
-                        <router-link :to="{name:'course'}">
-                            <course></course>
-                        </router-link>
-                        <course></course>
-                        <course></course>
-                        <course></course>
-                        <course></course>
-                        <course></course>
-                        <course></course>
-                        <course></course>
+                        <courseItem v-for="item in listNow.courses"
+                                    :key="item.title"
+                                    :data="item">
+                        </courseItem>
                     </div>
                 </div>
                 <div class="article">
                     <div class="ListType">文章推荐</div>
-                    <div class="more">更多&nbsp;<span class="fa fa-chevron-right"></span></div>
+                    <div class="more" @click="handleMore('articlesPage')">更多&nbsp;<span class="fa fa-chevron-right"></span></div>
                     <div class="articleList">
                         <articleItem
-                                v-for="item in articleItems"
-                                :key="item.nickname"
-                                :itemContent="item">
+                                v-for="item in listNow.articles"
+                                :key="item.title"
+                                :itemData="item">
                         </articleItem>
                     </div>
                 </div>
-                <el-pagination
-                        style="align-self: center;margin-top: 20px"
-                        background
-                        layout="prev, pager, next"
-                        :total="1000">
-                </el-pagination>
             </div>
             <footer_></footer_>
             <backHeader></backHeader>
@@ -54,98 +42,76 @@
 </template>
 
 <script>
-    import course from './courseItem.vue';
+    import courseItem from './courseItem.vue';
     import articleItem from './articleItem.vue';
-    import {mapState} from 'vuex';
     import footer_ from '../footer/footer.vue';
     import backHeader from '../header/backHeader.vue';
+    import {areaCaching} from '../mixins.js';
 
     export default {
         created() {
             this.initData();
         },
-        data() {
-            return {
-                //当前要滚动的页面dom
-                pageNow: {},
-                courseItems: [],
-                articleItems: []
+        data(){
+            return{
+                carousel:[]
             }
         },
-        computed: {
-            ...mapState('info', [
-                'account',
-                'avatarUrl'
-            ])
+        watch:{
+            //轮播图的数据
+            listNow(){
+                this.carousel= this.listNow.courses.slice(0,5);
+            }
         },
         methods: {
             initData() {
-                this.articleItems = [
-                    {
-                        title: 'vue和webpack的使用',
-                        avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
-                        nickname: 'newbee1',
-                        time: '2018-1-1',
-                        pic: '',
-                        content: '这几天在修改 WPJAM 问答网站首页列表的时候，发现一个问题，就是有些问题的标题比较长，为了显示美观，我想将首页列表的标题都设置为1行，如果超出的在最后显示 …，开始的时候我使用 PHP 函数来计算文字个数，但是由于中英文字数算法和长度的问题，总是不能做.',
-                        likes: '22',
-                        answers: '22',
-                        collections: '22'
-                    },
-                    {
-                        title: 'vue和webpack的使用',
-                        avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
-                        nickname: 'newbee2',
-                        time: '2018-1-1',
-                        pic: 'http://localhost:3100/img/avatar/avatar.jpg',
-                        content: '这几天在修改 WPJAM 问答网站首页列表的时候，发现一个问题，就是有些问题的标题比较长，为了显示美观，我想将首页列表的标题都设置为1行，如果超出的在最后显示 …，开始的时候我使用 PHP 函数来计算文字个数，但是由于中英文字数算法和长度的问题，总是不能做到很完美的效果，后来发现可以通过定义元素的 test-overflow 这个 CSS 属性实现文本溢出省略号。这几天在修改 WPJAM 问答网站首页列表的时候，发现一个问题，就是有些问题的标题比较长，为了显示美观，我想将首页列表的标题都设置为...',
-                        likes: '22',
-                        answers: '22',
-                        collections: '22'
-                    },
-                    {
-                        title: 'vue和webpack的使用',
-                        avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
-                        nickname: 'newbee3',
-                        time: '2018-1-1',
-                        pic: 'http://localhost:3100/img/avatar/avatar.jpg',
-                        content: '这几天在修改 WPJAM 问答网站首页列表的时候，发现一个问题，就是有些问题的标题比较长，为了显示美观，我想将首页列表的标题都设置为1行，如果超出的在最后显示 …，开始的时候我使用 PHP 函数来计算文字个数，但是由于中英文字数算法和长度的问题，总是不能做到很完美的效果，后来发现可以通过定义元素的 test-overflow 这个 CSS 属性实现文本溢出省略号。这几天在修改 WPJAM 问答网站首页列表的时候，发现一个问题，就是有些问题的标题比较长，为了显示美观，我想将首页列表的标题都设置为...',
-                        likes: '22',
-                        answers: '22',
-                        collections: '22'
-                    }
-                ];
+                this.handleChangeArea('p1', 'recommend');
             },
+            /**
+             * 轮播图进入
+             */
+            handleCarousel(item) {
+                this.$router.push({path: `/course/${item.id}`, query: {path: this.$route.path}});
+            },
+            /**
+             * 更多
+             */
+            handleMore(path){
+                this.$router.push({path: `/main/${path}`});
+            }
         },
         components: {
-            course,
+            courseItem,
             articleItem,
             footer_,
             backHeader
-        }
+        },
+        mixins: [areaCaching]
     }
 </script>
 
 <style scoped lang="scss">
     $cnntentWith: 1200px;
     .fade-enter-active, .fade-leave-active {
-        transition: opacity .5s;
+        //transition: opacity .5s;
     }
+
     .fade-enter, .fade-leave-to {
-        opacity: 0;
+        //opacity: 0;
     }
+
     .recommend {
         display: flex;
         flex-direction: column;
         align-items: center;
-        background-color: #f6f6f6;
+        background-color: $mainPageColor;
         a {
             text-decoration: none;
         }
         //轮播图
         .carousel {
             width: $cnntentWith;
-            margin: 30px 40px 0;
+            margin: 20px 40px 0;
             flex-shrink: 0;
             .el-carousel__item h3 {
                 color: #475669;
@@ -180,7 +146,7 @@
                 font-weight: bold;
                 margin-left: 40px;
                 margin-bottom: 5px;
-                color: #00a0e9;
+                color: $primaryColor;
             }
             /*分类标题*/
             .ListType {
@@ -188,14 +154,20 @@
                 font-weight: bold;
                 margin: 10px 0;
                 align-self: center;
+                color: $primaryColor;
             }
             .more {
                 align-self: flex-end;
                 margin-right: 100px;
-                color: #00a0e9;
                 cursor: pointer;
+                font-size: 14px;
+                color: #8a8a8a;
+                &:hover{
+                    color:$primaryColor
+                }
             }
             .course {
+                width: 100%;
                 display: flex;
                 flex-direction: column;
                 align-items: center;

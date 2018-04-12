@@ -1,7 +1,7 @@
 <template>
     <div class="record" style="height: 100%">
         <div class="header">
-            <div class="back fa fa-angle-left"></div>
+            <div class="back fa fa-angle-left" @click="handlePageBack"></div>
             <div class="title">用户中心</div>
         </div>
         <div class="content">
@@ -35,7 +35,7 @@
                         <i class="el-icon-message"></i>
                         <span slot="title">我的信息</span>
                     </el-menu-item>
-                    <el-submenu index="backManage">
+                    <el-submenu index="backManage" v-if="role!=='normal'">
                         <template slot="title">
                             <i class="el-icon-setting"></i>
                             <span>后台管理</span>
@@ -68,6 +68,8 @@
 </template>
 
 <script>
+    import {pageBack} from '../mixins.js';
+    import {mapState} from 'vuex';
     export default {
         mounted() {
             //路由到达时判断模拟点击的选择（用hash）的选项
@@ -112,7 +114,13 @@
                     break;
                 }
             }
-
+            //是从哪里跳转过来的
+            if(this.$route.query.path){
+                localStorage["backUrl"]=this.$route.query.path;
+            }
+        },
+        computed:{
+            ...mapState('info',['role'])
         },
         methods: {
             /**
@@ -161,8 +169,9 @@
                         break;
                     }
                 }
-            }
+            },
         },
+        mixins:[pageBack]
     }
 </script>
 
@@ -176,11 +185,13 @@
             align-items: center;
             border-bottom: 1px solid #e6e6e6;
             height: 70px;
+            color: $secondaryText;
             .back {
                 font-size: 25px;
                 font-weight: bold;
                 padding-right: 30px;
-                padding-left: 20px;
+                padding-left: 30px;
+                cursor: pointer;
             }
             .title {
                 font-size: 22px;
@@ -197,16 +208,18 @@
                 .menu {
                     height: 100%;
                     .children{
-                        background-color: rgba(249, 249, 250, 0.65);
+                        background-color: rgba(236, 239, 243, 0.65);
                     }
                 }
             }
             .chart {
                 width: 1%;
+                min-width: 920px;
                 flex-grow: 1;
                 padding: 20px;
             }
         }
     }
 </style>
+<style></style>
 

@@ -1,5 +1,6 @@
 <template>
-    <div class="upload">
+    <div class="upload"
+         :key="flashKey">
         <el-breadcrumb class="breadcrumb">
             <el-breadcrumb-item class="el-icon-setting">
                 &nbsp;后台管理
@@ -49,17 +50,17 @@
                 </div>
                 <div class="icon item">
                     <div class="span">课程图标:</div>
-                    <el-upload
-                            ref="iconUpload"
-                            :action=iconUrl
-                            class="iconUpload content"
-                            list-type="picture-card"
-                            :auto-upload="false"
-                            :on-preview="handlePictureCardPreview"
-                            :on-change="handleIconBefore"
-                            :before-upload="handleLimitFileType('image','只能上传文件')"
-                            :on-success="handleIconSuccess"
-                            :on-remove="handleIconRemove">
+                    <el-upload ref="iconUpload"
+                               :action=iconUrl
+                               class="iconUpload content"
+                               list-type="picture-card"
+                               :auto-upload="false"
+                               :on-preview="handlePictureCardPreview"
+                               :on-change="handleIconBefore"
+                               :before-upload="handleLimitFileType('image','只能上传文件'),handleIconUpload"
+                               :on-success="handleIconSuccess"
+                               :with-credentials="true"
+                               :on-remove="handleIconRemove">
                         <i class="el-icon-plus" v-show="iconAdd"></i>
                     </el-upload>
                     <!--visible是子组件的接收参数，sync是语法糖，即加sync的子组件参数可以通过子组显示的更改dialogVisible（父组件传递进来的值）-->
@@ -88,35 +89,37 @@
                     </el-button>
                 </div>
                 <div style="overflow: auto;height: 1%;flex-grow: 1;margin-top: 10px;">
-                    <el-upload
-                            :name='chapterName'
-                            :action='courseUrl'
-                            v-for="(upload,index) in videosUpload"
-                            :key="index"
-                            :ref="'videoUpload'+index"
-                            class="content"
-                            list-type="text"
-                            :on-success="handleVideoSuccess(upload)"
-                            :multiple="true"
-                            :auto-upload="false">
+                    <el-upload :name='index+"-"+upload.chapterName'
+                               :action='courseUrl'
+                               v-for="(upload,index) in videosUpload"
+                               :key="index"
+                               :ref="'videoUpload'+index"
+                               class="content"
+                               list-type="text"
+                               :on-success="handleVideoSuccess"
+                               :multiple="true"
+                               :with-credentials="true"
+                               :auto-upload="false">
                         <el-tag
                                 closable
                                 :disable-transitions="true"
-                                @close="handleCloseChapter(upload)">{{upload.chapterName}}</el-tag>
+                                @close="handleCloseChapter(upload)">{{upload.chapterName}}
+                        </el-tag>
                     </el-upload>
                 </div>
             </div>
             <div class="sourceList item">
                 <div class="span">资料上传:</div>
                 <div style="height:1%;flex-grow:1;overflow: auto">
-                    <el-upload
-                            :action="sourseUrl"
-                            ref="sourceUpload"
-                            class="content"
-                            list-type="text"
-                            :on-success="handleSourseSuccess"
-                            :multiple="true"
-                            :auto-upload="false">
+                    <el-upload :action="sourseUrl"
+                               ref="sourceUpload"
+                               class="content"
+                               list-type="text"
+                               :on-success="handleSourseSuccess"
+                               :before-upload="handleSourseUpload"
+                               :multiple="true"
+                               :with-credentials="true"
+                               :auto-upload="false">
                         <el-button size="small" type="primary">选择资料</el-button>
                     </el-upload>
                 </div>
@@ -137,6 +140,9 @@
     import {mapGetters} from 'vuex'
 
     export default {
+        created() {
+            this.initData();
+        },
         mounted() {
             //upload组件自动添加的子元素的样式
             this.iconDivS = this.$refs.iconUpload.$el.lastChild.style;
@@ -150,27 +156,35 @@
                 dialogImageUrl: '',
                 dialogVisible: false,
                 //章节名称
-                chapterName:'',
+                chapterName: '',
                 //各个章节的视频
-                videosUpload:[],
+                videosUpload: [],
                 //课程类型
                 categorys: [],
                 //infoUrl
-                infoUrl:'upload/course',
+                infoUrl: 'upload/course',
                 //iconUrl
-                iconUrl:'http://172.16.148.27:8080/upload/icon',
+                iconUrl: '',
                 //courseUrl
-                courseUrl:'http://172.16.148.27:8080/upload/videoFile',
+                courseUrl: '',
                 //sourseUrl
-                sourseUrl:'http://172.16.148.27:8080/upload/officeFile',
-                //资料上传成功的标志
-                sourseStatus:false
+                sourseUrl: '',
+                //资料上传成功的标志，默认是不上传的
+                sourseStatus: true,
+                //图片上传成功的标志，默认是不上传的
+                iconStatus: true,
+                //url
+                url: 'http://172.16.148.27:8080/',
+                //上传中的通知
+                uploadingMessage: {},
+                //强制刷新
+                flashKey:false
             };
         },
         computed: {
             //判断章节是否为空
-            chapterNameAdd(){
-                return this.chapterName==='';
+            chapterNameAdd() {
+                return this.chapterName === '';
             },
             //类型的过滤器
             ...mapGetters(['filterType']),
@@ -186,7 +200,7 @@
             /**
              * 重新添加图标
              */
-            handleIconRemove(file, fileList) {
+            handleIconRemove() {
                 this.iconDivS.display = "block";
                 this.iconAdd = true;
             },
@@ -205,48 +219,63 @@
              * 上传
              */
             upload() {
-                if(!(this.courseTitle&&this.courseIntr)){
+                if (!(this.courseTitle && this.courseIntr)) {
                     this.$message.error('标题和简介不能为空');
                     return;
                 }
                 //icon上传
                 this.$refs.iconUpload.submit();
                 //视频上传
-                for(let i=0;i<this.videosUpload.length;i++){
-                    this.$refs['videoUpload'+i][0].submit();
+                for (let i = 0; i < this.videosUpload.length; i++) {
+                    this.$refs['videoUpload' + i][0].submit();
                 }
                 //资料上传
                 this.$refs.sourceUpload.submit();
+                this.uploadingMessage = this.$message({
+                    dangerouslyUseHTMLString: true,
+                    message: '<span class="el-icon-loading"></span>' + '<span style="margin-left: 10px">课程正在上传中<span>',
+                    type: 'warning',
+                    duration: 0
+                });
             },
             /**
              * icon上传成功后
              */
             handleIconSuccess() {
+                this.successAll();
             },
             /**
              * 视频上传成功后
              */
-            handleVideoSuccess(upload){
-                upload.status=true;
+            handleVideoSuccess(res, f, fileList) {
+                //每次上传成功都删除一个
+                //这每个视频都判断一次的，不是单独判断一个视频
+                for (let i = 0; i < fileList.length; i++) {
+                    if (fileList[i].status !== 'success') {
+                        return;
+                    }
+                }
+                this.videosUpload.splice(0, 1);
                 this.successAll();
             },
             /**
              * 资源上传成功后
              */
-            handleSourseSuccess(){
+            handleSourseSuccess() {
+                this.sourseStatus = true;
                 this.successAll();
             },
             /**
              * 返回课程管理
              */
-            handleBackManage(){
+            handleBackManage() {
                 this.$router.push({path: '/userCenter/coursesManage/#coursesManage'});
             },
             /**
              * 添加章节
              */
-            handleAddChapter(){
-                this.videosUpload.push({chapterName:this.chapterName,status:false})
+            handleAddChapter() {
+                this.videosUpload.push({chapterName: this.chapterName, status: false})
             },
             /**
              * 删除章节
@@ -259,28 +288,50 @@
              * 全部上传成功
              *
              */
-            successAll(){
-                //资料上传是否成功
-                if(this.sourseStatus){
-                    //再判断视频是否全部上传成功
-                    this.videosUpload.forEach((uploadVideo)=>{
-                        if(!uploadVideo.status){
-                            return;
+            successAll() {
+                //图标是否上传成功
+                if (this.iconStatus) {
+                    //资料上传是否成功
+                    if (this.sourseStatus) {
+                        //再判断视频是否全部上传成功
+                        if (this.videosUpload.length === 0) {
+                            this.$ajaxJava.post(this.infoUrl, {
+                                title: this.courseTitle,
+                                description: this.courseIntr,
+                                type: this.categorys.join('/')
+                            }).then(() => {
+                                this.uploadingMessage.close();
+                                this.$message({
+                                    message: '上传完成',
+                                    type: 'success'
+                                });
+                                //刷新视图
+                                this.flashKey=!this.flashKey;
+                            });
                         }
-                    });
+                    }
                 }
-                this.$ajaxJava.post(this.infoUrl,{
-                    user:'newbee',
-                    title:this.courseTitle,
-                    description:this.courseIntr,
-                    type:this.categorys.join('/')
-                });
-                this.$message({
-                    message: '上传完成',
-                    type: 'success'
-                });
+            },
+            /**
+             * 初始化数据
+             */
+            initData() {
+                this.iconUrl = this.url + 'upload/icon';
+                this.courseUrl = this.url + 'upload/videoFile';
+                this.sourseUrl = this.url + 'upload/officeFile';
+            },
+            /**
+             * 是否上传资料
+             */
+            handleSourseUpload() {
+                this.sourseStatus = false;
+            },
+            /**
+             * 是否上传图标
+             */
+            handleIconUpload() {
+                this.iconStatus = false;
             }
-
         },
     }
 </script>
@@ -291,8 +342,8 @@
         flex-direction: column;
         padding: 20px;
         height: 100%;
-        .uploadContent{
-            height:1%;
+        .uploadContent {
+            height: 1%;
             flex-grow: 1;
             display: flex;
             justify-content: space-around;
@@ -313,7 +364,7 @@
                     width: 100%;
                 }
             }
-            .item{
+            .item {
                 width: 300px;
                 margin-top: 15px;
                 margin-left: 20px;
@@ -323,13 +374,13 @@
                 font-weight: bold;
                 color: #606266;
             }
-            .sourceList{
+            .sourceList {
                 display: flex;
                 flex-direction: column;
             }
-            .content{
+            .content {
                 margin-left: 20px;
-                margin-top:8px;
+                margin-top: 8px;
             }
         }
         .uploadButton {

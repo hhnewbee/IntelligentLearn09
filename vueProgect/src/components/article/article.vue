@@ -1,21 +1,23 @@
 <template>
     <div id="articleIL09">
         <div class="left">
-            <div class="title">{{articleData.theme}}</div>
+            <div class="title">{{articleData.title}}</div>
             <div class="info">
-                <img :src="articleData.avatar" style="width: 25px;height: 25px;border-radius: 50%"/>
-                <div style="margin: 0 10px">{{articleData.nickName}}</div>
-                <div style="margin-right: 10px">时间：{{articleData.time|formatDateTime}}</div>
-                <div>类型：{{articleData.type}}</div>
+                <img :src="articleData.userIconUrl" style="width: 25px;height: 25px;border-radius: 50%"/>
+                <div style="margin: 0 10px">{{articleData.userName}}</div>
+                <div style="margin-right: 10px">时间：{{articleData.creationTimestamp|formatDateTime}}</div>
+                <div>类型：{{articleData.categorys}}</div>
 
                 <div style="position: absolute;right: 0">
                     <el-checkbox-group v-model="checkboxGroup" size="small">
                         <el-checkbox-button
+                                @click.native="handleLikeAcollect('forum/liking/',articleData)"
                                 label="likes"
                                 key="likes">
-                            {{articleData.likes}}&nbsp;喜欢
+                            {{articleData.liking}}&nbsp;喜欢
                         </el-checkbox-button>
                         <el-checkbox-button
+                                @click.native="handleLikeAcollect('forum/collection/',articleData)"
                                 label="collections"
                                 key="collections">
                             {{articleData.collections}}&nbsp;收藏
@@ -50,8 +52,9 @@
 </template>
 
 <script>
+    import backHeader from '../header/backHeader.vue';
     import {mapState} from 'vuex'
-
+    import {likeAcollect} from '../mixins.js';
     export default {
         created() {
             this.initData();
@@ -84,27 +87,15 @@
              * 数据初始化
              */
             initData() {
-                this.discussInfo={
-                    theme:'vue与webpack的学习',
-                    nickName:this.account,
-                    avatarUrl:this.avatarUrl
-                };
-                this.commentsInfo={
-                    nickName:this.account,
-                    avatarUrl:this.avatarUrl,
-                    targetId:'123',
-                    tag:'普通用户'
-                }
+
             },
             /**
              * 初始dom
              */
             initDom() {
-                //从跳转的url中获取文章的id
-                let articleId = this.$route.params.articleId;
                 //请求获取文章
-                this.$ajax.get(`http://localhost:3100/IL09api/posts/${articleId}`).then((response) => {
-                    this.articleData = response.data[0];
+                this.$ajaxJava.get(`forum/${this.$route.params.articleId}`).then((response) => {
+                    this.articleData = response.data;
                     //设置文章内容
                     this.$refs.content.innerHTML = this.articleData.content;
                     //生成目录
@@ -122,10 +113,23 @@
                         break;
                     }
                     case '讨论': {
+                        this.discussInfo={
+                            theme:this.articleData.title,
+                            nickName:this.account,
+                            avatarUrl:this.avatarUrl
+                        };
                         this.changePop = 'discuss';
                         break;
                     }
                     case '问题': {
+                        this.commentsInfo = {
+                            getCommentUrl:`forum/${this.articleData.id}/page=`,
+                            postCommentUrl:`forum/comment`,
+                            postData:{
+                                article:{id:this.articleData.id},
+                            },
+                            targetId:'video-'+this.articleData,
+                        };
                         this.changePop = 'questions';
                         break;
                     }
@@ -141,13 +145,15 @@
                     header.id=hi;
                     this.headers.push({id:hi,label:header.textContent});
                 })
-            }
+            },
         },
         components: {
-            'chapter': () => import('./chapter.vue'),
-            'discuss': () => import('./discuss.vue'),
-            'questions': () => import('./comments.vue'),
+            'chapter': () => import(/* webpackChunkName: "chapter.vue" */ './chapter.vue'),
+            'discuss': () => import(/* webpackChunkName: "discuss.vue" */ './discuss.vue'),
+            'questions': () => import(/* webpackChunkName: "comments.vue" */ './comments.vue'),
+            backHeader,
         },
+        mixins:[likeAcollect]
     }
 </script>
 
@@ -155,12 +161,12 @@
     #articleIL09 {
         display: flex;
         justify-content: center;
-        background-color: #f6f6f6;
+        background-color: $mainPageColor;
         .left {
-            padding: 10px 20px;
-            margin-left: 20px;
+            padding: 10px 25px;
+            margin-left: 10px;
             margin-right: 350px;
-            width: 850px;
+            width: 900px;
             background-color: #ffffff;
             /*align-self如果不做设置，left布局无法被撑开*/
             align-self: start;
@@ -193,6 +199,7 @@
                     position: relative;
                     cursor: default;
                     user-select: none;
+                    outline: none;
                     img {
                         height: 100%;
                         width: 100%;
@@ -270,7 +277,7 @@
                     border: 1px solid #00a0e9;
                     border-radius: 4px;
                     color: rgb(63, 135, 166);
-                    cursor: text;
+                    cursor: pointer;
                 }
                 pre {
                     padding: 20px;

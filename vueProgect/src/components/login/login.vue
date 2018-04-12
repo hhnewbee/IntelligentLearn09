@@ -126,12 +126,22 @@
     export default {
         data() {
             //自定义的验证在表单前面不会有红色的星星
-            //账号的验证
+            //登录账号的验证
             let validateAcco = (rule, value, callback) => {
                 if (value === '') {
                     callback(new Error('请输入账号'));
                 }
                 callback();
+            };
+            //注册账号是否重复的验证
+            let validateAccoRe = (rule, value, callback) => {
+                this.$ajaxJava.post('accountCheck',{account:value}).then((res)=>{
+                    if(res.data) {
+                        callback(new Error('你输入的账号已经存在'));
+                    }else{
+                        callback();
+                    }
+                });
             };
             //密码的验证
             let validatePass = (rule, value, callback) => {
@@ -181,7 +191,8 @@
                 //注册的验证规则
                 rulesSign: {
                     accountLogin: [
-                        {required: true, message: '请输入账号', trigger: 'change'}
+                        {required: true, message: '请输入账号', trigger: 'change'},
+                        {validator: validateAccoRe, trigger: 'blur'}
                     ],
                     name: [
                         {required: true, message: '请输入真实姓名', trigger: 'change'}
@@ -200,7 +211,7 @@
                     ],
                     checkPasswd: [
                         {required: true, message: '请再次输入密码', trigger: 'change'},
-                        {validator: validateCheckPass, trigger: 'change'}
+                        {validator: validateCheckPass, trigger: 'blur'}
                     ]
                 },
                 //注册还是登录
@@ -226,36 +237,38 @@
                         if (formName === 'loginForm') {
                             data = {
                                 account: this.formDataLogin.account,
-                                passwd: sha256(this.formDataLogin.passwd)
+                                password: sha256(this.formDataLogin.passwd)
                             };
-                            this.$ajax.post('login', data).then((response) => {
+                            this.$ajaxJava.post('login', data).then((response) => {
                                 //如果返回的是0
-                                if (!response.data) {
+                                if (!response.data.accountHashMap) {
                                     this.$message({
                                         type: 'error',
                                         message: `账号或者密码错误`
                                     });
-                                }else{//登录成功
+                                } else {//登录成功
                                     this.successhandle(response.data);
                                 }
                             });
                         } else {//注册
                             data = {
                                 account: this.formDataSign.accountLogin,
-                                name: this.formDataSign.name,
                                 //把数组切割成字符串
-                                areaFocus: this.formDataSign.areaFocus.join('/'),
-                                eMail: this.formDataSign.eMail,
-                                passwd: sha256(this.formDataSign.passwdLogin)
+                                selfInformation: {
+                                    position: this.formDataSign.areaFocus.join('/'),
+                                    email: this.formDataSign.eMail,
+                                    trueName: this.formDataSign.name,
+                                },
+                                password: sha256(this.formDataSign.passwdLogin)
                             };
-                            this.$ajax.post('sign', data).then((response) => {
-                                //如果是一些错误，如账号重复
-                                if(response.data.type==='error'){
+                            this.$ajaxJava.post('register', data).then((response) => {
+                                //不知道的错误
+                                if (!response.data) {
                                     this.$message({
                                         type: 'error',
-                                        message: `${response.data.message}`
+                                        message: '注册失败'
                                     });
-                                }else{//注册成功
+                                } else {//注册成功
                                     this.successhandle(response.data);
                                 }
                             });
@@ -270,16 +283,25 @@
              *设置返回的用户数据
              */
             ...mapMutations('info', [
-                'setAccountHashMap',
+                'setAccount',
+                'setAvatarUrl',
+                'setAreaFocus',
+                'setRole'
             ]),
 
             /**
              *当成功登录或者注册时的处理
              */
-            successhandle(data){
-                localStorage["ifLogin"] =data.accountHashMap;//作为下次不用登录的依据
-                this.setAccountHashMap(data.accountHashMap);//当前登录状态下共享
-                this.$router.push({path: '/main/recommend'});//跳转到主页
+            successhandle(data) {
+                //作为下次不用登录的依据
+                localStorage["ifLogin"] = data.accountHashMap;
+                //初始化页面信息
+                this.setAccount(data.account);
+                this.setAvatarUrl(data.avatarUrl);
+                this.setAreaFocus(data.areaFocus);
+                this.setRole(data.role);
+                //跳转页面
+                this.$router.push({path: '/main/recommend'});
             }
         },
         components: {

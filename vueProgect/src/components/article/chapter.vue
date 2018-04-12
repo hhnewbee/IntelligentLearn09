@@ -10,6 +10,9 @@
                 :name="header.id"
                 :label="header.label">
         </el-tab-pane>
+        <div v-if="headers.length===0" style="color: #8a8a8a">
+            该文章无目录
+        </div>
     </el-tabs>
 </template>
 

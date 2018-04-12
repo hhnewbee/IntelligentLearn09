@@ -1,4 +1,6 @@
-let manageMixin={
+import {areaCaching} from "../mixins";
+
+let manageMixin = {
     data() {
         return {
             //要删除的行
@@ -7,8 +9,6 @@ let manageMixin={
             ifDelect: true,
             //当前列表要显示的数据
             tableData: [],
-            //正常分页时显示的数据,
-            pageData: [],
             //是否删除当前列表的所有数据
             ifSelecttALl: false,
             //显示搜索状态
@@ -19,14 +19,20 @@ let manageMixin={
             selectValue: '',
             //图表与表格的切换
             ifTable: true,
-            //图表类型切换
-            userTypes: [{value: '管理员'}, {value: '普通用户'}],
             //图表的数据
-            chartData: [[], [], []],
+            chartData: [],
             //显示更多功能
             ifMoreFun: false,
             //图标类型选择
-            options:''
+            options: [],
+            //每次获取的item条数
+            itemCount: 0,
+            //当前页数
+            page: 1,
+            //搜索的页数
+            pageSearch: 1,
+            //显示的页数
+            currentPage:1
         }
     },
     methods: {
@@ -42,38 +48,50 @@ let manageMixin={
          * 删除选择的数据
          */
         handleDelectRows() {
-            //如果全部选择
-            if (this.ifSelecttALl) {
-                //清空数据
-                this.tableData = [];
-                //删除按钮禁用
-                this.ifDelect = true;
-                return;
-            }
-            //遍历出相同元素所处的位置并且删除
-            for (let i = 0; i < this.tableData.length; i++) {
-                for (let x = 0; x < this.delectRows.length; x++) {
-                    if (this.delectRows[x] === this.tableData[i]) {
-                        this.tableData.splice(i, 1);
+            //形成id数组
+            let deleteId=this.delectRows.map((de)=>{
+                return de.id;
+            });
+            this.$ajax.create().post(this.urlDelect,deleteId).then(()=>{
+                this.$message.success('删除成功');
+                //本地更新删除效果
+                //如果全部选择
+                if (this.ifSelecttALl) {
+                    //清空数据
+                    this.tableData = [];
+                    //删除按钮禁用
+                    this.ifDelect = true;
+                    return;
+                }
+                //如果是部分选择，遍历出相同元素所处的位置并且删除
+                for (let i = 0; i < this.tableData.length; i++) {
+                    for (let x = 0; x < this.delectRows.length; x++) {
+                        if (this.delectRows[x] === this.tableData[i]) {
+                            this.tableData.splice(i, 1);
+                        }
                     }
                 }
-            }
-            //清空数据防止重复遍历
-            this.delectRows = [];
+                //清空数据防止重复遍历
+                this.delectRows = [];
+            });
         },
         /**
          * 选择所有时
          */
-        handleSelectAll() {
+        handleSelectAll(selction) {
+            this.delectRows = selction;
             this.ifDelect = !this.ifDelect;
             this.ifSelecttALl = true;
         },
         /**
          * 单行删除
-         * @param index
+         * @param scope
          */
-        handleDeleteRow(index) {
-            this.tableData.splice(index, 1);
+        handleDeleteRow(scope) {
+            this.$ajax.create().post(this.urlDelect,[scope.row.id]).then(()=>{
+                this.$message.success('删除成功');
+                this.tableData.splice(scope.$index, 1);
+            })
         },
         /**
          * 删除所有数据
@@ -85,39 +103,14 @@ let manageMixin={
          * @param size
          */
         handlePage(size) {
-            this.pageData = [{
-                date: '2016-05-03',
-                name: 'vue与webpack初步7',
-                type: '课程',
-                category: '金融',
-                newDate: '2016-05-03',
-                avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
-                nickName: 'newbee',
-                useTime: 100,
-                accessTimes: 30,
-            }, {
-                date: '2016-05-03',
-                name: 'vue与webpack初步8',
-                type: '课程',
-                category: '金融',
-                newDate: '2017-05-03',
-                avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
-                nickName: 'newbee',
-                useTime: 130,
-                accessTimes: 20,
-            }, {
-                date: '2016-05-03',
-                name: 'vue与webpack初步9',
-                type: '课程',
-                category: '金融',
-                newDate: '2017-05-09',
-                avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
-                nickName: 'newbee',
-                useTime: 90,
-                accessTimes: 10,
-            }];
-            //先存入分页数据然后在赋予当前所展示的数据
-            this.tableData = this.pageData;
+            //如果是搜索翻页
+            if (this.ifSearch) {
+                this.pageSearch=size;
+                this.handleChangeArea('search' + size+this.searchInput, this.urlSearch);
+            } else {
+                this.page=size;
+                this.handleChangeArea('p' + size, this.url);
+            }
         },
         /**
          * 判断是展示图表还是表格
@@ -130,44 +123,66 @@ let manageMixin={
          * 搜索数据
          */
         handleSearch() {
-            this.tableData = [
-                {
-                    date: '2016-05-03',
-                    name: 'vue与webpack初步1',
-                    type: '课程',
-                    category: '金融',
-                    newDate: '2016-05-03',
-                    avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
-                    nickName: 'newbee',
-                    useTime: 100,
-                    accessTimes: 30,
-                }, {
-                    date: '2016-05-03',
-                    name: 'vue与webpack初步2',
-                    type: '课程',
-                    category: '金融',
-                    newDate: '2017-05-03',
-                    avatar: 'http://localhost:3100/img/avatar/avatar.jpg',
-                    nickName: 'newbee',
-                    useTime: 130,
-                    accessTimes: 20,
-                },];
+            //重置搜索的页数
+            this.pageSearch=1;
+            //搜索的链接
+            this.handleChangeArea('search1'+this.searchInput, this.urlSearch);
             //展示搜索的数据
             this.ifSearch = true;
+            //设置当前所在页数
+            this.currentPage=this.pageSearch;
         },
         /**
          * 搜索返回
          */
         handleBackSearch() {
             this.ifSearch = false;
-            this.tableData = this.pageData;
+            //加载之前的数据
+            this.handleChangeArea('p' + this.page, this.url);
+            //设置当前所在页数
+            this.currentPage=this.page;
         },
         /**
          * 当个查看
-         * @param row
+         * @param type - 查看数据的类型
+         * @param scope - 课程/文章的id/用户账号
          */
-        handleSee(row) {
-            console.log(row);
+        handleSee(type, scope) {
+            //判断是什么类型的查看
+            switch (type) {
+                case 'course': {
+                    this.$router.push({path: `/course/${scope.row.id}`});
+                    break;
+                }
+                case 'article': {
+                    window.open(`http://localhost:3000/#/main/articlePage/article/${scope.row.id}`);
+                    break;
+                }
+                case 'user': {
+                    this.infoData = scope.row;
+                    //获取数据
+                    this.handleChangeArea(`dialog${scope.row.id}最近一周`, `admin/user/${scope.row.id}/week`);
+                    //展现数据
+                    this.dialogUserVisible = true;
+                    break;
+                }
+                case 'message': {
+                    this.$ajaxJava.get('message/'+scope.row.id).then(()=>{
+                        scope.row.status='已读'
+                    });
+                    this.dialogInfo=true;
+                    this.dialogTime=scope.row.time;
+                    this.dialogContent=scope.row.content;
+                    break;
+                }
+                case 'record':{
+                    if(scope.row.courseId){
+                        this.$router.push({path: `/course/${scope.row.courseId}`});
+                    }else{
+                        window.open(`http://localhost:3000/#/main/articlePage/article/${scope.row.forumId}`);
+                    }
+                }
+            }
         },
         /**
          * 设置图表数据
@@ -181,7 +196,6 @@ let manageMixin={
                 this.chartData[2].push(data.accessTimes);
             })
         },
-
         /**
          * 显示更多功能
          */
@@ -190,16 +204,23 @@ let manageMixin={
         },
         /**
          * 表格初始化
-         * @param data
          * @param tableOptions - 表格类型选项
          */
-        initData(data,tableOptions) {
-            //todo 模拟初始化请求数据
-            this.pageData =data;
-            this.tableData = this.pageData;
+        initData(tableOptions) {
+            //获取加载item的条数
+            this.setItemCount();
+            //加载数据
+            this.handleChangeArea('p1', this.url);
             //初始图表类型选项的值
-            this.options=tableOptions;
-            this.selectValue=tableOptions[0].value;
+            this.options = tableOptions;
+            this.selectValue = tableOptions[0].value;
+        },
+        /**
+         * 根据屏幕判断item加载的数目
+         */
+        setItemCount() {
+            //获取表格的高度，表头固定是48，每个单元固定是60
+            this.itemCount = Math.floor((this.$refs['table'].$el.clientHeight - 48) / 60);
         },
     },
     watch: {
@@ -212,10 +233,7 @@ let manageMixin={
         delectRows() {
             this.ifDelect = this.delectRows.length === 0;
         },
-        //监听路由变化
-        routerPath() {
-            this.$router.push(this.routerPath);
-        },
     },
+    mixins: [areaCaching]
 };
 export {manageMixin};

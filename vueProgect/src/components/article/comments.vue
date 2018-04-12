@@ -12,20 +12,23 @@
         <vue-scrollbar v-show="!ifReplysList"
                        class="my-scrollbar">
             <div class="commentsList">
-                <div v-if="commentItems.length===0">暂无问题</div>
+                <div v-if="commentItems.length===0&&!loadDown.ifLongding" style="color: #8a8a8a">暂无问题</div>
                 <div class="item"
                      v-for="(comment,index) in commentItems"
                      :key="index">
                     <div class="header">
-                        <img :src="comment.avatarUrl">
+                        <info-detail :avatarUrl="comment.userIconUrl"
+                                     :account="comment.username"
+                                     :size="30">
+                        </info-detail>
                         <div class="name">
-                            {{comment.nickName}}
+                            {{comment.username}}
                         </div>
-                        <div class="tag" v-if="comment.tag!=='普通用户'">
+                        <div class="tag" v-if="comment.tag">
                             {{comment.tag}}
                         </div>
                         <div class="time">
-                            {{comment.time | formatFromNow}}
+                            {{comment.creationTimestamp | formatFromNow}}
                         </div>
                     </div>
                     <div class="content">
@@ -35,23 +38,34 @@
                         <span class="count fa fa-heart"
                               :ref="comment.id"
                               @click="handleSupport(comment)">
-                            {{comment.supports}}人喜欢
+                            &nbsp;0人赞成
                         </span>
 
                         <span
                                 @click="handleAreaChange(true,comment)"
                                 class="count fa fa-comments"
                                 style="margin-left: 10px">
-                            {{ comment.replys}}人回答
+                            &nbsp;{{comment.replies}}人回答
                         </span>
 
                         <span
                                 @click="reply(comment)"
                                 class="count fa fa-reply"
-                                style="margin-left: 10px"> 回答
+                                style="margin-left: 10px">&nbsp;回答
                         </span>
                     </div>
                 </div>
+
+                <!--加载内容中-->
+                <div v-if="loadDown.ifLongding">
+                    <div class="loadMore el-icon-loading"></div>
+                    <div class="loadMore" style="float: right;font-size: 12px">&nbsp;加载中</div>
+                </div>
+                <div v-else-if="commentItems.length!==0" class="loadMore">
+                    <div v-if="loadDown.ifNothing">已经全部加载</div>
+                    <div v-else @click="handleLoadMore">加载更多</div>
+                </div>
+
             </div>
         </vue-scrollbar>
         <!--回复列表items-->
@@ -63,23 +77,27 @@
                 <div class="home fa fa-home"
                      @click="handleAreaChange(false)"></div>
                 <div class="info">
-                    <img class="listAvatar" :src="area.avatarUrl">
-                    <div class="listName">{{area.nickName}}</div>
+                    <div class="listName">{{area.username}}</div>
+                    <info-detail style="margin: 5px 0;"
+                                 :account="area.username"
+                                 :avatarUrl="area.userIconUrl"
+                                 :size="25">
+                    </info-detail>
                 </div>
             </div>
             <div class="listContent">
                 {{area.content}}
                 <span class="cheart el-icon-time"
                       style="color:#b5b9bc;left: 10px;bottom: 5px">
-                    &nbsp;{{area.time | formatDateTime}}
+                    &nbsp;{{area.creationTimestamp | formatDateTime}}
                 </span>
                 <span class="cheart fa fa-heart"
                       @click="handleSupport(area)">
-                    &nbsp;{{area.supports}}
+                    &nbsp;0
                 </span>
             </div>
             <div class="itemCount">
-                {{area.itemsList.length}}个回答
+                {{area.itemsList.length}}&nbsp;个回答
             </div>
             <vue-scrollbar class="my-scrollbar"
                            style="background-color: white">
@@ -87,23 +105,26 @@
                     <div class="item"
                          v-for="item in area.itemsList">
                         <div class="header">
-                            <img :src="item.avatarUrl"/>
-                            <div class="name">{{item.nickName}}</div>
-                            <div class="time">{{item.time | formatFromNow}}</div>
+                            <info-detail :account="item.username"
+                                         :avatarUrl="item.userIconUrl"
+                                         :size="30">
+                            </info-detail>
+                            <div class="name">{{item.username}}</div>
+                            <div class="time">{{item.creationTimestamp | formatFromNow}}</div>
                         </div>
-                        <div class="content">
+                        <div class="content" style="color:black">
                             {{item.content}}
                         </div>
                         <div class="footer">
                             <span class="count fa fa-heart"
                                   @click="handleSupport(item)">
-                                &nbsp;{{ item.supports}}人赞同
+                                &nbsp;0人赞同
                             </span>
 
                             <span class="count fa fa-comments"
                                   @click="handleAreaChange(true,item)"
                                   style="margin-left: 10px">
-                                &nbsp;{{ item.replys}}人回复
+                                &nbsp;{{item.replies}}人回复
                             </span>
 
                             <span class="count fa fa-reply"
@@ -116,7 +137,6 @@
                 </div>
             </vue-scrollbar>
         </div>
-
         <!--发送-->
         <div class="control"
              ref="commentSend">
@@ -136,26 +156,25 @@
                 评论
             </el-button>
         </div>
+
     </div>
 </template>
 
 <script>
     import VueScrollbar from 'vue2-scrollbar'
-    import uuidv1 from 'uuid/v1';
+    import infoDetail from '../userCenter/infoDetail.vue';
+    import {mapState} from 'vuex'
 
     export default {
         created() {
-            this.ajxaComments.get('getComments/' + this.commentsInfo.targetId + "?pageIndex=0").then((response) => {
-                this.itemsListNow = this.commentItems = response.data;
-            });
-            this.targetId=this.commentsInfo.targetId;
+            this.initData();
         },
         //当前评论的基本信息
         props: ['commentsInfo'],
         data() {
             return {
                 //不能用全局的ajax实例，因为去全局的搜索等待是全页面显示的
-                ajxaComments: this.$ajax.create(),
+                ajxaComments: {},
                 //是否打开回复列表
                 ifReplysList: false,
                 //评论的列表
@@ -167,7 +186,18 @@
                 //发送评论/回复的数据
                 sendData: '',
                 //当前评论区的id，用于回复的标识
-                targetId:''
+                targetId: '',
+                //评论的页数
+                pageComment: 1,
+                //下拉加载跟多
+                loadDown: {
+                    //是否正在加载
+                    ifLongding: false,
+                    //是否没有内容了
+                    ifNothing: false,
+                    //下拉加载的axios
+                    ajax: {}
+                },
             }
         },
 
@@ -187,10 +217,21 @@
                     });
                     this.itemsListNow = this.commentItems;
                     //切换回复的评论区id
-                    this.targetId=this.commentsInfo.targetId;
+                    this.targetId = this.commentsInfo.targetId;
                 } else {
                     //列表的切换,判断当前列表是否打开过，如果已打开，复用，否则新添加
                     let ifAddN = false;
+                    //加载的url
+                    let url='';
+                    //是获取评论的回复还是回复的回复
+                    //如果标识中有video就是获取评论的回复
+                    if(this.targetId.match('video')){
+                        url=`comment/${commentInfo.id}/page=0`;
+                        this.targetId ='comment-'+commentInfo.id;
+                    }else{
+                        url=`reply/${commentInfo.id}/page=0`;
+                        this.targetId ='reply-'+commentInfo.id;
+                    }
                     this.replysAreas.forEach((area) => {
                         if (area.id === commentInfo.id) {
                             area.show = ifAddN = true;
@@ -200,83 +241,173 @@
                         }
                     });
                     if (!ifAddN) {
-                        this.$ajax.get('getComments/' + commentInfo.id+ "?pageIndex=0").then((response) => {
-                            let newArea = {...commentInfo, show: true, itemsList: response.data};
+                        this.ajxaComments.get(url).then((response) => {
+                            let newArea = {...commentInfo, show: true, itemsList: response.data, page: 0};
                             this.replysAreas.push(newArea);
                             this.itemsListNow = newArea.itemsList;
                         });
                     }
-                    this.targetId=commentInfo.id;
                 }
             },
             /**
              * 发送评论
              */
             send() {
-                let data = {
-                    ...this.commentsInfo,
-                    time: Date(),
-                    replys:0,
-                    supports:0,
-                    content: this.sendData
-                };
-                //确定当前评论区的id
-                data.targetId=this.targetId;
+                //发送的数据
+                let data = {};
+                //地址链接
+                let url = '';
                 //如果不是回复当前评论区的
-                if(this.$refs['commentSend'].targetId){
-                    data.targetId=this.$refs['commentSend'].targetId;
-                    //更新本地显示
-                    this.itemsListNow.forEach(item=>{
-                        if(item.id===data.targetId){
-                            item.replys++;
+                if (this.ajxaComments.targetId) {
+                    //回复的链接
+                    url = '/reply';
+                    //如果是回复评论的
+                    if(this.targetId.match('video')){
+                        data.comment = {id:this.ajxaComments.targetId};
+                    //如果是回复回复的
+                    }else{
+                        data.parent = {id: this.ajxaComments.targetId};
+                    }
+                    this.itemsListNow.forEach(comment => {
+                        if (comment.id === this.ajxaComments.targetId) {
+                            comment.replies++;
                         }
-                    })
+                    });
+
+                    //如果是回复当前评论区的
+                } else {
+                    //如果是回复评论的
+                    if (this.targetId.match('comment')) {
+                        data.comment = {id: this.targetId.replace('comment-','')};
+                        url = '/reply';
+                    //如果是评论的
+                    } else if(this.targetId.match('video')){
+                        data = this.commentsInfo.postData;
+                        url = this.commentsInfo.postCommentUrl;
+                    //如果是回复回复的
+                    }else{
+                        data.parent = {id: this.targetId.replace('reply-','')};
+                        url = '/reply';
+                    }
                 }
+                //内容
+                data.content = this.sendData;
+                //本地显示的封装
+                let localData = Object.assign({}, data);
+                localData.creationTimestamp = new Date();
+                localData.userIconUrl = this.avatarUrl;
+                localData.username = this.account;
+                localData.replies = 0;
                 //本地添加数据
-                this.itemsListNow.unshift(data);
+                this.itemsListNow.unshift(localData);
                 //发送数据
-                this.ajxaComments.post('addComments', data);
+                this.ajxaComments.post(url, data);
                 //清空发送的临时设置数据
                 this.sendData = '';
-                this.$refs['commentSend'].targetId=null;
+                this.ajxaComments.targetId = null;
             },
             /**
              * 回复
              * @param comment
              */
             reply(comment) {
-                this.sendData = "@" + comment.nickName + " ";
-                this.$refs['commentSend'].targetId=comment.id;
+                this.sendData = "@" + comment.username + " ";
+                //每个评论的id
+                this.ajxaComments.targetId = comment.id;
             },
             /**
              * 支持
              * @param comment
              */
-            handleSupport(comment){
-                let style=this.$refs[comment.id][0].style;
+            handleSupport(comment) {
+                let style = this.$refs[comment.id][0].style;
                 //判断是否已经点赞
-                if(style.color==='rgb(64, 158, 255)'){
+                if (style.color === 'rgb(64, 158, 255)') {
                     //本地显示更新
-                    style.color='#9E9E9E';
+                    style.color = '#9E9E9E';
                     comment.supports--;
-                    this.ajxaComments.delete('deleteSupporter/'+comment.id);
-                }else{
-                    style.color='#409EFF';
+                    this.ajxaComments.delete('deleteSupporter/' + comment.id);
+                } else {
+                    style.color = '#409EFF';
                     comment.supports++;
-                    this.ajxaComments.post('addSupporter',{
-                        commentsId:comment.id,
-                        nickName:this.commentsInfo.nickName
+                    this.ajxaComments.post('addSupporter', {
+                        commentsId: comment.id,
+                        nickName: this.commentsInfo.nickName
                     });
                 }
-            }
+            },
+            /**
+             * 初始化数据
+             */
+            initData() {
+                this.ajxaComments = this.$ajax.create();
+                //新的请求拦截器
+                this.ajxaComments.interceptors.request.use((config)=>{
+                    this.loadDown.ifLongding=true;
+                    return config;
+                });
+                this.ajxaComments.interceptors.response.use((config)=>{
+                    this.loadDown.ifLongding=false;
+                    return config;
+                });
+                //请求comment数据
+                this.ajxaComments.get(this.commentsInfo.getCommentUrl + (this.pageComment-1)+'/size=10').then((response) => {
+                    this.itemsListNow = this.commentItems = response.data.comments;
+                    //判断是否还有内容
+                    this.loadDown.ifNothing=this.pageComment>=response.data.pages;
+                });
+                this.targetId = this.commentsInfo.targetId;
+            },
+            /**
+             * 加载更多
+             */
+            handleLoadMore() {
+                this.ajxaComments.get(this.commentsInfo.getCommentUrl +(this.pageComment-1)+'/size=10', (res) => {
+                    this.commentItems.push(...(res.data));
+                    this.loadDown.ifNothing=this.pageComment>=res.data.pages;
+                });
+            },
+            /**
+             * 在dom初始化完成后判断是否还有加载更多来填充高度
+             */
+            setItemCount(){
+                //todo 检查高度是否填充
+                if(1){
+                    if(!this.loadDown.ifNothing){
+                        //如果高度没有填充，则继续请求数据
+                        this.handleLoadMore();
+                        //在dom更新后再次检查高度
+                        this.nextTick(()=>{
+                            this.setItemCount();
+                        })
+                    }
+                }
+            },
         },
         computed: {
+            ...mapState('info', ['account', 'avatarUrl']),
             buttonDis() {
                 return this.sendData === "";
             }
         },
+        watch: {
+            /**
+             * 监听章节的切换，对应的评论组
+             * @param newV
+             * @param oldV
+             */
+            commentsInfo(newV, oldV) {
+                if (newV.targetId !== oldV.targetId) {
+                    this.ajxaComments.get(this.commentsInfo.getCommentUrl + this.pageComment).then((response) => {
+                        this.itemsListNow = this.commentItems = response.data;
+                    });
+                    this.targetId = this.commentsInfo.targetId;
+                }
+            }
+        },
         components: {
-            VueScrollbar
+            VueScrollbar,
+            infoDetail
         }
     }
 </script>
@@ -291,22 +422,23 @@
         display: flex;
         flex-direction: column;
         border: 1px solid $borderColor;
-        background-color: #eeeeee;
+        background-color: #f0f4f7;
         .commentsHeader {
             font-size: 14px;
             padding: 10px;
             border-bottom: 1px solid $borderColor;
+            color: $secondaryText;
         }
         .my-scrollbar {
             height: 100%;
             width: 100%;
             flex-grow: 1;
-            background-color: #eeeeee;
+            background-color: #f0f4f7;
         }
 
         /*评论/回复的item*/
         .item {
-            width: 88%;
+            width: 92%;
             padding: 10px 10px;
             margin-bottom: 20px;
             background-color: white;
@@ -316,12 +448,6 @@
                 align-items: center;
                 position: relative;
                 border-radius: 4px 4px 0 0;
-                img {
-                    width: 30px;
-                    height: 30px;
-                    border-radius: 50%;
-                    z-index: 2;
-                }
                 .name {
                     margin-left: 8px;
                     font-size: 16px;
@@ -373,7 +499,14 @@
             flex-direction: column;
             align-items: center;
             padding: 10px 0;
+            padding-right: 8px;
             color: #000000;
+            /*加载更多*/
+            .loadMore {
+                color: $secondaryText;
+                font-size: 13px;
+                cursor: pointer;
+            }
         }
         /*回复的列表*/
         .replysList {
@@ -402,16 +535,11 @@
                     justify-content: center;
                     width: 100%;
                     flex-grow: 1;
+                    padding: 10px;
                     .listName {
                         color: $primaryColor;
-                        font-size: 18px;
-                    }
-                    .listAvatar {
-                        margin: 5px 0;
+                        font-size: 16px;
                         margin-right: 5px;
-                        width: 25px;
-                        height: 25px;
-                        border-radius: 50%;
                     }
                 }
             }
@@ -419,7 +547,7 @@
                 box-shadow: 1px 1px 4px #c4c4c4;
                 min-height: 100px;
                 margin: 10px 15px;
-                padding: 5px 10px;
+                padding: 8px 10px;
                 position: relative;
                 font-size: 15px;
                 color: black;
@@ -435,19 +563,19 @@
                     }
                 }
             }
-            .itemCount{
+            .itemCount {
                 margin: 5px 15px;
                 color: #9e9e9e;
                 font-size: 13px;
             }
             .itemsList {
-                    height: 100%;
-                    .item {
-                        margin: 5px 15px;
-                        border-top: 1px solid #ddd5d5;
-                        box-shadow: none;
-                    }
+                height: 100%;
+                .item {
+                    margin: 5px 15px;
+                    border-top: 1px solid #ddd5d5;
+                    box-shadow: none;
                 }
+            }
         }
 
         .control {
