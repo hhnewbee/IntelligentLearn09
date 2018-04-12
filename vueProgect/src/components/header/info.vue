@@ -2,11 +2,12 @@
     <div id="avatarInfoIL09">
         <!--信息弹出框-->
         <el-popover
+                width="280"
                 ref="popover2"
                 placement="bottom"
                 trigger="click">
             <!--查看详情-->
-            <el-dialog :modal='false'
+            <el-dialog :append-to-body='true'
                        :visible.sync="dialogNotificationVisible">
                 {{notiContent}}
             </el-dialog>
@@ -43,7 +44,6 @@
         <el-popover
                 ref="popover1"
                 placement="bottom"
-                class="popper"
                 width="335"
                 trigger="hover">
             <div id="avatarInfOpopper">

@@ -4,11 +4,11 @@
             <!--轮播图-->
             <el-carousel
                     type="card"
-                    height="200px"
+                    height="230px"
                     indicator-position="inside"
                     class="carousel">
-                <el-carousel-item v-for="item in 6" :key="item">
-                    <h3>{{ item }}</h3>
+                <el-carousel-item v-for="item in listNow.courses" :key="item.id">
+                    <img :src="item.icon" @click="handleCarousel(item)"/>
                 </el-carousel-item>
             </el-carousel>
             <div class="recommendContent">
@@ -56,6 +56,12 @@
             initData() {
                 this.handleChangeArea('p1', 'recommend');
             },
+            /**
+             * 轮播图进入
+             */
+            handleCarousel(item){
+                this.$router.push({path: `/course/${item.id}`, query: {path: this.$route.path}});
+    }
         },
         components: {
             courseItem,
