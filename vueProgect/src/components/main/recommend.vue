@@ -4,7 +4,7 @@
             <!--轮播图-->
             <el-carousel
                     type="card"
-                    height="230px"
+                    height="220px"
                     indicator-position="inside"
                     class="carousel">
                 <el-carousel-item v-for="item in listNow.courses" :key="item.id">
@@ -15,7 +15,7 @@
                 <div class="type">智能推荐</div>
                 <div class="course">
                     <div class="ListType">课程推荐</div>
-                    <div class="more">更多&nbsp;<span class="fa fa-chevron-right"></span></div>
+                    <div class="more" @click="handleMore('coursesPage')">更多&nbsp;<span class="fa fa-chevron-right"></span></div>
                     <div class="courseList">
                         <courseItem v-for="item in listNow.courses"
                                     :key="item.title"
@@ -25,7 +25,7 @@
                 </div>
                 <div class="article">
                     <div class="ListType">文章推荐</div>
-                    <div class="more">更多&nbsp;<span class="fa fa-chevron-right"></span></div>
+                    <div class="more" @click="handleMore('articlesPage')">更多&nbsp;<span class="fa fa-chevron-right"></span></div>
                     <div class="articleList">
                         <articleItem
                                 v-for="item in listNow.articles"
@@ -59,9 +59,15 @@
             /**
              * 轮播图进入
              */
-            handleCarousel(item){
+            handleCarousel(item) {
                 this.$router.push({path: `/course/${item.id}`, query: {path: this.$route.path}});
-    }
+            },
+            /**
+             * 更多
+             */
+            handleMore(path){
+                this.$router.push({path: `/main/${path}`});
+            }
         },
         components: {
             courseItem,
@@ -94,7 +100,7 @@
         //轮播图
         .carousel {
             width: $cnntentWith;
-            margin: 30px 40px 0;
+            margin: 20px 40px 0;
             flex-shrink: 0;
             .el-carousel__item h3 {
                 color: #475669;
@@ -145,6 +151,9 @@
                 cursor: pointer;
                 font-size: 14px;
                 color: #8a8a8a;
+                &:hover{
+                    color:$primaryColor
+                }
             }
             .course {
                 width: 100%;
