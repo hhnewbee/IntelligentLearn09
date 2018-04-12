@@ -68,34 +68,26 @@
             return {
                 name: '',
                 email: '',
-                learnTime:0,
-                visitTime:0,
-                selfInformation:{}
+                learnTime: 0,
+                visitTime: 0,
+                selfInformation: {},
+                areaFocus_:[]
             }
         },
-        activated(){
-            setTimeout(()=>{
-                if(this.account){
-                    this.$ajaxJava.get('user').then((res)=>{
-                        this.selfInformation=res.data.user.selfInformation;
-                        this.name=res.data.user.selfInformation.name;
-                        this.email=res.data.user.selfInformation.email;
-                        this.learnTime=this.$formatHouse(res.data.user.learnTime);
-                        this.visitTime=res.data.user.visitTime;
-                    })
-                }
-            },1);
+        activated() {
+            this.$ajaxJava.get('user').then((res) => {
+                this.selfInformation = res.data.user.selfInformation;
+                this.name = res.data.user.selfInformation.name;
+                this.email = res.data.user.selfInformation.email;
+                this.learnTime = this.$formatHouse(res.data.user.learnTime);
+                this.visitTime = res.data.user.visitTime;
+                let position=res.data.user.selfInformation.position;
+                this.areaFocus_=position.match('/')?position.split('/'):[position]
+            })
         },
         computed: {
             ...mapGetters(['filterType']),
-            ...mapState('info', ['account', 'avatarUrl', 'areaFocus']),
-            areaFocus_(){
-                if (this.areaFocus.match('/')) {
-                    return this.areaFocus.split('/');
-                }else{
-                    return [this.areaFocus];
-                }
-            }
+            ...mapState('info', ['account', 'avatarUrl']),
         },
         methods: {
             ...mapMutations('info', [
@@ -120,8 +112,8 @@
                     content.contentEditable = false;
                     target.style.color = '#00abf9';
                     target.innerText = "修改";
-                    this.selfInformation[tar]=content.textContent;
-                    this.$ajax.create().post('user/selfInformation',this.selfInformation).then(()=>{
+                    this.selfInformation[tar] = content.textContent;
+                    this.$ajax.create().post('user/selfInformation', this.selfInformation).then(() => {
                         this.$message.success('修改成功');
                     })
                 }
@@ -129,14 +121,14 @@
             /**
              * 显示修改
              */
-            handleSetShow(){
-                document.querySelector('#setAvatar').style.bottom='0';
+            handleSetShow() {
+                document.querySelector('#setAvatar').style.bottom = '0';
             },
             /**
              * 不显示显示修改
              */
-            handleSetClose(){
-                document.querySelector('#setAvatar').style.bottom='-30px';
+            handleSetClose() {
+                document.querySelector('#setAvatar').style.bottom = '-30px';
             },
             /**
              * 头像上传成功
@@ -144,8 +136,8 @@
              */
             handleUploaded(resp) {
                 this.setAvatarUrl(resp);
-                this.selfInformation.imgPath=resp;
-                this.$ajax.create().post('user/selfInformation',this.selfInformation).then(()=>{
+                this.selfInformation.imgPath = resp;
+                this.$ajax.create().post('user/selfInformation', this.selfInformation).then(() => {
                     this.$message.success('头像修改成功');
                 })
             },
@@ -153,11 +145,14 @@
              * 修改关注领域
              * @param focus
              */
-            handleFocusChange(focus){
-                console.log(focus);
+            handleFocusChange(focus) {
+                    this.selfInformation.position=focus.join('/');
+                    this.$ajax.create().post('user/selfInformation', this.selfInformation).then(() => {
+                    this.$message.success('修改成功');
+                })
             }
         },
-        components:{
+        components: {
             AvatarCropper
         }
     }
@@ -169,7 +164,7 @@
             margin: 20px 100px;
             padding: 10px;
             border-bottom: 1px solid #f8f4f4;
-            .avator-mode{
+            .avator-mode {
                 position: relative;
                 width: 100px;
                 height: 100px;
@@ -179,16 +174,16 @@
                     width: 100%;
                     height: 100%;
                 }
-                .update-avator{
+                .update-avator {
                     font-size: 12px;
                     position: absolute;
                     width: 100%;
                     left: 0;
                     bottom: -30px;
                     transition: bottom .3s;
-                    p{
+                    p {
                         cursor: pointer;
-                        background: rgba(0,0,0,.6);
+                        background: rgba(0, 0, 0, .6);
                         color: #fff;
                         text-align: center;
                         line-height: 30px;
@@ -199,7 +194,7 @@
                 position: absolute;
                 font-size: 15px;
                 right: 0;
-                div:nth-child(1){
+                div:nth-child(1) {
                     margin-bottom: 5px;
                 }
             }
