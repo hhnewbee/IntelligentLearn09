@@ -16,6 +16,7 @@
                 </div>
                 <avatar-cropper trigger="#setAvatar"
                                 @uploaded="handleUploaded"
+                                :upload-handlers="{withCredentials:true}"
                                 upload-url="http://172.16.148.27:8080/user/icon">
                 </avatar-cropper>
             </div>

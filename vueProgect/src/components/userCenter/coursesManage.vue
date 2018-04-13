@@ -161,6 +161,7 @@
 
 <script>
     import {manageMixin} from './manageMixin.js';
+
     export default {
         mounted() {
             this.initData([{value: '课程记录'}, {value: '课程详情'}]);
@@ -177,26 +178,31 @@
              */
             setChartData() {
                 //清空之前的数据
-                this.chartData = [[],[],[],[],[]];
+                this.chartData = [[], [], [], [], []];
                 this.tableData.forEach((data) => {
                     this.chartData[0].push(data.name);
-                    this.chartData[1].push(data.accessTimes);
-                    this.chartData[2].push(data.likes);
-                    this.chartData[3].push(data.collection);
-                    this.chartData[4].push(data.question);
+                    //todo 手动修改数据记录
+//                    this.chartData[1].push(data.accessTimes);
+//                    this.chartData[2].push(data.likes);
+//                    this.chartData[3].push(data.collection);
+//                    this.chartData[4].push(data.question);
+                    this.chartData[1].push(10);
+                    this.chartData[2].push(14);
+                    this.chartData[3].push(20);
+                    this.chartData[4].push(13);
                 })
             },
             /**
              * 设置获取数据的格式
              */
             setDataFormat(resDatas) {
-                return resDatas.courses.map((resdata)=>{
+                return resDatas.courses.map((resdata) => {
                     return {
-                        id:resdata.id,
-                        date:this.$formatDate(resdata.creationTimestamp),
-                        name:resdata.title,
-                        status:true,
-                        category:resdata.type,
+                        id: resdata.id,
+                        date: this.$formatDate(resdata.creationTimestamp),
+                        name: resdata.title,
+                        status: true,
+                        category: resdata.type,
 
                         accessTimes: resdata.learnCount,
                         likes: resdata.liking,
@@ -209,24 +215,24 @@
         components: {
             courseChart: () => import(/* webpackChunkName: "courseChart.vue" */ './courseChart.vue'),
         },
-        computed:{
-            url(){
-                return `/admin/cousers/page=${this.page-1}/size=${this.itemCount}`;
+        computed: {
+            url() {
+                return `/admin/cousers/page=${this.page - 1}/size=${this.itemCount}`;
             },
-            urlSearch(){
-                return `/admin/cousers/page=${this.pageSearch-1}/size=${this.itemCount}`;
+            urlSearch() {
+                return `/admin/cousers/page=${this.pageSearch - 1}/size=${this.itemCount}`;
             },
-            urlDelect(){
+            urlDelect() {
                 return `/admin/courses`
             }
         },
-        watch:{
+        watch: {
             //监听加载的数据变化
-            listNow(){
+            listNow() {
                 this.tableData = this.setDataFormat(this.listNow);
             }
         },
-        mixins:[manageMixin]
+        mixins: [manageMixin]
     }
 </script>
 

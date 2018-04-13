@@ -30,7 +30,7 @@
 
             <span class="text">
                 {{itemContent.textContent}}
-                <span v-if="itemContent.textContent.length>=205"
+                <span v-if="itemContent.textContent.length>=145"
                       style="font-weight: bold">…</span>
             </span>
         </div>
@@ -106,7 +106,7 @@
             setContent(itemContent, itemData) {
                 let src = null;
                 //获取所有文本，图片，视频链接
-                itemContent.textContent = this.delHtmlTag(itemData.content).substring(0,205);
+                itemContent.textContent = this.delHtmlTag(itemData.content).substring(0,145);
                 //如果图片存在的话
                 if (src = itemData.content.match(/<img.*?(?:>|\/>)/)) {
                     itemContent.img = src[0].match(/src=[\'\"]?([^\'\"]*)[\'\"]?/)[1];

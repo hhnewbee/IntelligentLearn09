@@ -183,10 +183,15 @@
                 this.chartData = [[],[],[],[],[]];
                 this.tableData.forEach((data) => {
                     this.chartData[0].push(data.name);
-                    this.chartData[1].push(data.accessTimes);
-                    this.chartData[2].push(data.likes);
-                    this.chartData[3].push(data.collection);
-                    this.chartData[4].push(data.question);
+                    //todo 手动修改数据记录
+//                    this.chartData[1].push(data.accessTimes);
+//                    this.chartData[2].push(data.likes);
+//                    this.chartData[3].push(data.collection);
+//                    this.chartData[4].push(data.question);
+                    this.chartData[1].push(10);
+                    this.chartData[2].push(14);
+                    this.chartData[3].push(20);
+                    this.chartData[4].push(13);
                 })
             },
             /**
