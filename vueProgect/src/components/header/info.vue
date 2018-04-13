@@ -48,6 +48,10 @@
                 trigger="hover">
             <div id="avatarInfOpopper">
                 <div class="line1">
+                    <Avatar :src="avatarUrl"
+                            :username="account"
+                            :size="50">
+                    </Avatar>
                     <img :src="avatarUrl"/>
                     <div class="info">
                         <div class="name">
@@ -95,8 +99,12 @@
                 </div>
             </div>
         </el-popover>
-        <img :src="avatarUrl"
-             v-popover:popover1>
+        <Avatar :src="avatarUrl"
+                :username="account"
+                :size="45"
+                style="margin-left: 40px;cursor: pointer"
+                v-popover:popover1>
+        </Avatar>
     </div>
 </template>
 
@@ -104,6 +112,7 @@
     import {mapMutations} from 'vuex';
     import {mapState} from 'vuex';
     import infoDetail from '../userCenter/infoDetail.vue';
+    import Avatar from 'vue-avatar';
 
     export default {
         created() {
@@ -222,7 +231,8 @@
             }
         },
         components: {
-            infoDetail
+            infoDetail,
+            Avatar
         }
     }
 </script>
@@ -247,13 +257,6 @@
             border-color: inherit;
             font-size: 16px;
             color: inherit;
-        }
-        img {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            margin-left: 40px;
-            cursor: pointer
         }
     }
 
@@ -288,11 +291,6 @@
             display: flex;
             align-items: center;
             justify-content: flex-start;
-            img {
-                border-radius: 50%;
-                height: 50px;
-                width: 50px
-            }
             .info {
                 margin-left: 10px;
                 .name {

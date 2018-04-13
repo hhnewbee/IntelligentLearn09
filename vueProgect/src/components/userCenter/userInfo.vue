@@ -9,7 +9,10 @@
             <div class="avator-mode"
                  @mouseenter="handleSetShow"
                  @mouseleave="handleSetClose">
-                <img :src="avatarUrl">
+                <Avatar :src="avatarUrl"
+                        :username="account"
+                        :size="100">
+                </Avatar>
                 <div class="update-avator"
                      id="setAvatar">
                     <p>更换头像</p>
@@ -63,6 +66,7 @@
 <script>
     import {mapGetters, mapState, mapMutations} from 'vuex';
     import AvatarCropper from "vue-avatar-cropper";
+    import Avatar from 'vue-avatar';
 
     export default {
         data() {
@@ -154,7 +158,8 @@
             }
         },
         components: {
-            AvatarCropper
+            AvatarCropper,
+            Avatar
         }
     }
 </script>
@@ -171,10 +176,6 @@
                 height: 100px;
                 border-radius: 50%;
                 overflow: hidden;
-                img {
-                    width: 100%;
-                    height: 100%;
-                }
                 .update-avator {
                     font-size: 12px;
                     position: absolute;

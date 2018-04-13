@@ -126,21 +126,21 @@ export let pageRequire = {
             }else{
                 this.typeChoose = this.areaFocus;
             }
-            this.handleChangeArea(`new${this.typeChoose}P1`, `${this.url}/choose=new/type=${this.typeChoose}/page=0/size=10`);
+            this.handleChangeArea(`new${this.typeChoose}P1`, `${this.url}/choose=new/type=${this.typeChoose}/page=0/size=12`);
         },
         /**
          * 最新最热
          */
         handleChoose(label) {
             let valueChoose = label === '最新' ? 'new' : 'hot';
-            this.handleChangeArea(valueChoose + this.typeChoose + 'p1', `${this.url}/choose=${valueChoose}/type=${this.typeChoose}/page=0/size=10`);
+            this.handleChangeArea(valueChoose + this.typeChoose + 'p1', `${this.url}/choose=${valueChoose}/type=${this.typeChoose}/page=0/size=12`);
         },
         /**
          * 类型选择
          */
         hanleType(label) {
             let valueChoose = this.choose === '最新' ? 'new' : 'hot';
-            this.handleChangeArea(valueChoose + label + 'p1', `${this.url}/choose=${valueChoose}/type=${label}/page=0/size=10`);
+            this.handleChangeArea(valueChoose + label + 'p1', `${this.url}/choose=${valueChoose}/type=${label}/page=0/size=12`);
         },
         /**
          * 分页
