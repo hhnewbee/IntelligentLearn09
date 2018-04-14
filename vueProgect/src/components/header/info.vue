@@ -52,7 +52,6 @@
                             :username="account"
                             :size="50">
                     </Avatar>
-                    <img :src="avatarUrl"/>
                     <div class="info">
                         <div class="name">
                             {{account}}

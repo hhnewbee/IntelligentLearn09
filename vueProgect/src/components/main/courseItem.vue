@@ -48,7 +48,7 @@
         .name {
             align-self: flex-start;
             font-size: 16px;
-            color: #18C0DF;
+            color: $primaryColor;
             font-weight: bold;
             margin: 12px 10px;
         }

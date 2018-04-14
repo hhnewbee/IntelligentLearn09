@@ -7,7 +7,7 @@
                 mode="horizontal"
                 :router='true'>
             <div class="img" style="border-bottom: 2px solid transparent;">
-                <img src="../../static/imgs/softIcon.jpg">
+                <img src="../../static/imgs/softIcon.png">
             </div>
             <el-menu-item index="/main/recommend">首页</el-menu-item>
             <el-menu-item index="/main/coursesPage">课程</el-menu-item>

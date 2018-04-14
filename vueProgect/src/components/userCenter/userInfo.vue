@@ -18,8 +18,8 @@
                     <p>更换头像</p>
                 </div>
                 <avatar-cropper trigger="#setAvatar"
+                                @uploading="setAvatarUpload"
                                 @uploaded="handleUploaded"
-                                :upload-handlers="{withCredentials:true}"
                                 upload-url="http://172.16.148.27:8080/user/icon">
                 </avatar-cropper>
             </div>
@@ -155,6 +155,12 @@
                     this.$ajax.create().post('user/selfInformation', this.selfInformation).then(() => {
                     this.$message.success('修改成功');
                 })
+            },
+            /**
+             * 设置图片上传的跨域问题
+             */
+            setAvatarUpload(form,xhr){
+                xhr.withCredentials=true;
             }
         },
         components: {
@@ -170,6 +176,7 @@
             margin: 20px 100px;
             padding: 10px;
             border-bottom: 1px solid #f8f4f4;
+            color:$secondaryText;
             .avator-mode {
                 position: relative;
                 width: 100px;

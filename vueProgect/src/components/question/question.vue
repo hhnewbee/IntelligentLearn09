@@ -166,6 +166,7 @@
     import {areaCaching, likeAcollect} from '../mixins.js';
     import VueScrollbar from 'vue2-scrollbar'
     import {mapState} from 'vuex';
+    import infoDetail from '../userCenter/infoDetail.vue';
 
     export default {
         mounted() {
@@ -290,7 +291,8 @@
         components: {
             rightItem,
             footer_,
-            VueScrollbar
+            VueScrollbar,
+            infoDetail
         },
         computed:{
             ...mapState('info',['account','avatarUrl'])

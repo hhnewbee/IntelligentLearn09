@@ -112,8 +112,9 @@ module.exports = {
     plugins: [
         new htmlWebpackPlugin({
             template: './vueProgect/src/index.html',
+            title:'智能在线学习平台',
             filename: 'index.html',
-            favicon: './vueProgect/src/static/imgs/softIcon.jpg'
+            favicon: './vueProgect/src/static/imgs/softIcon.png'
         }),
         new CleanWebpackPlugin(['dist']),
         //让render的哈希值不随文件的增删改变
