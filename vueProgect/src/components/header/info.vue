@@ -2,7 +2,7 @@
     <div id="avatarInfoIL09">
         <!--信息弹出框-->
         <el-popover
-                width="280"
+                width="300"
                 ref="popover2"
                 placement="bottom"
                 trigger="click">
@@ -13,14 +13,24 @@
             </el-dialog>
             <div id="noticeInfoIL09"
                  v-if="notifications.length">
-                <div v-for="item in notifications"
+                <div class="notMessage" v-for="item in notifications"
                      @click="handleNotification(item)">
-                    <p v-if="item.type.content==='回复了我'"
-                       style="color: #14c1e9">
-                        <info-detail :account="item.type.account"
-                                     :avatarUrl="item.type.avatarUrl"
-                                     :size="25">
-                        </info-detail>
+                    <div v-if="item.type.content==='回复了我'"
+                       style="color: #14c1e9;display: flex;align-items: center">
+                        <Avatar :username="item.type.account"
+                                :src="item.type.avatarUrl"
+                                style="margin-right: 6px"
+                                :size="25">
+                        </Avatar>
+                        <span>{{item.type.account}}&nbsp;{{item.type.content}}</span>
+                    </div>
+                    <p v-else-if="item.type.content==='评论了我'"
+                       style="color: #14c1e9;display: flex;align-items: center">
+                        <Avatar :username="item.type.account"
+                                :src="item.type.avatarUrl"
+                                style="margin-right: 6px"
+                                :size="25">
+                        </Avatar>
                         <span>{{item.type.account}}&nbsp;{{item.type.content}}</span>
                     </p>
                     <p v-else style="color: red">{{item.type}}：</p>
@@ -28,7 +38,7 @@
                     <p class="el-icon-time">&nbsp;{{item.time | formatDateTime}}</p>
                 </div>
             </div>
-            <div v-else style="color: #8a8a8a;display: flex;justify-content: center">暂无信息</div>
+            <div class="notMessage" v-else style="color: #8a8a8a;display: flex;justify-content: center">暂无信息</div>
         </el-popover>
         <el-badge :max="100"
                   :hidden="!notifications.length"
@@ -190,8 +200,15 @@
                                             case 'reply': {
                                                 return {
                                                     content: '回复了我',
-                                                    account: resdata.to.account,
-                                                    avatarUrl: resdata.to.selfInformation.imgPath
+                                                    account: resdata.from.account,
+                                                    avatarUrl: resdata.from.selfInformation.imgPath
+                                                };
+                                            }
+                                            case 'comment':{
+                                                return {
+                                                    content: '评论了我',
+                                                    account: resdata.from.account,
+                                                    avatarUrl: resdata.from.selfInformation.imgPath
                                                 };
                                             }
                                             case 'system': {
@@ -260,7 +277,7 @@
     }
 
     #noticeInfoIL09 {
-        div {
+        .notMessage {
             padding: 10px 10px 5px;
             border-bottom: 1px solid #eeeeee;
             border-radius: 4px;
