@@ -194,7 +194,10 @@ let manageMixin = {
                 this.chartData[0].push(data.name);
                 this.chartData[1].push(data.useTime);
                 this.chartData[2].push(data.accessTimes);
-            })
+            });
+            //todo 手动设置。为了展示效果
+            this.chartData[1]=[];
+            this.chartData[1].push([20],[3],[10],[1],[5],[12]);
         },
         /**
          * 显示更多功能
