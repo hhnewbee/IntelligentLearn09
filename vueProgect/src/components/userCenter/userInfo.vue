@@ -82,7 +82,7 @@
         activated() {
             this.$ajaxJava.get('user').then((res) => {
                 this.selfInformation = res.data.user.selfInformation;
-                this.name = res.data.user.selfInformation.name;
+                this.name = res.data.user.selfInformation.trueName;
                 this.email = res.data.user.selfInformation.email;
                 this.learnTime = this.$formatHouse(res.data.user.learnTime);
                 this.visitTime = res.data.user.visitTime;
