@@ -111,7 +111,7 @@
                 if (type === 'img' | type === 'video' | type === 'file') {
                     this.uploadType = type;
                     //todo 设置上传地址
-                    this.uploadUrl = `http://172.16.148.27:8080/upload/questionFile`;
+                    this.uploadUrl = `http://127.0.0.1:8080/upload/questionFile`;
                     document.querySelector('#uploadButton').click();
                     return;
                 }

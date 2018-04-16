@@ -453,7 +453,7 @@
             editCommand(type) {
                 if (type === 'img' | type === 'video' | type === 'file') {
                     this.uploadType = type;
-                    this.uploadUrl = `http://172.16.148.27:8080/upload/forumFile`;//设置上传地址
+                    this.uploadUrl = `http://127.0.0.1:8080/upload/forumFile`;//设置上传地址
                     //模拟点击上传组件的文件选择按钮
                     document.querySelector('#uploadButton').click();
                     return;

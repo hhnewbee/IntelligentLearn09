@@ -20,7 +20,7 @@
                 <avatar-cropper trigger="#setAvatar"
                                 @uploading="setAvatarUpload"
                                 @uploaded="handleUploaded"
-                                upload-url="http://172.16.148.27:8080/user/icon">
+                                upload-url="http://127.0.0.1:8080/user/icon">
                 </avatar-cropper>
             </div>
             <div style="margin: 0 30px">
