@@ -66,13 +66,15 @@
             //轮播图的数据
             listNow(){
                 //todo 手动添加轮播图，为了展示效果
-                this.carousel= [
-                    'http://127.0.0.1:3100/img/lb/a.jpg',
-                    'http://127.0.0.1:3100/img/lb/b.jpg',
-                    'http://127.0.0.1:3100/img/lb/c.jpg',
-                    'http://127.0.0.1:3100/img/lb/d.jpg',
-                    'http://127.0.0.1:3100/img/lb/e.jpg',
-                ]
+//                this.carousel= [
+//                    'http://127.0.0.1:3100/img/lb/a.jpg',
+//                    'http://127.0.0.1:3100/img/lb/b.jpg',
+//                    'http://127.0.0.1:3100/img/lb/c.jpg',
+//                    'http://127.0.0.1:3100/img/lb/d.jpg',
+//                    'http://127.0.0.1:3100/img/lb/e.jpg',
+//                ]
+                //todo 部署需要，又改了回去
+                this.carousel=this.listNow.courses.slice(0,5);
             }
         },
         methods: {
