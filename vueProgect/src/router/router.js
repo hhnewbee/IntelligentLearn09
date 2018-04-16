@@ -5,6 +5,10 @@ let router = new VueRouter(
     {
         routes: [
             {
+                path: '*',
+                component: () => import(/* webpackChunkName: "404page.vue" */ '../components/main/404page.vue'),
+            },
+            {
                 path: '/',
                 redirect: {
                     path: '/main/recommend',

@@ -99,7 +99,7 @@
                     //遍历每个视频文件
                     res.data.file.forEach((file) => {
                         //判断是否是章节,因为资源夹带在里面了
-                        if (file.chapter) {
+                        if (file.chapter&&file.chapter!=='file') {
 
 //                            //判断该章节数组是否存在(旧的章节数据保存机制)
 //                            if (!this.chapter.chapters[file.chapter]) {

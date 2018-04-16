@@ -53,7 +53,6 @@
 
 <script>
     import backHeader from '../header/backHeader.vue';
-    import {mapState} from 'vuex'
     import {likeAcollect} from '../mixins.js';
     export default {
         created() {
@@ -78,9 +77,6 @@
                 //评论的信息
                 commentsInfo:{}
             }
-        },
-        computed:{
-            ...mapState('info',['account,avatarUrl']),
         },
         methods: {
             /**
@@ -113,12 +109,14 @@
                         break;
                     }
                     case '讨论': {
-                        this.discussInfo={
-                            theme:this.articleData.title,
-                            nickName:this.account,
-                            avatarUrl:this.avatarUrl
-                        };
-                        this.changePop = 'discuss';
+                        this.$ajax.create().get('user').then(({data})=>{
+                            this.discussInfo = {
+                                theme: this.articleData.title,
+                                nickName: data.user.account,
+                                avatarUrl: data.user.selfInformation.imgPath
+                            };
+                            this.changePop = 'discuss';
+                        });
                         break;
                     }
                     case '问题': {

@@ -8,7 +8,7 @@
                     indicator-position="inside"
                     class="carousel">
                 <el-carousel-item v-for="item in carousel" :key="item.id">
-                    <img :src="item.icon" @click="handleCarousel(item)"/>
+                    <img :src="item" style="width: 100%;height: 100%" @click="handleCarousel(item)"/>
                 </el-carousel-item>
             </el-carousel>
             <div class="recommendContent">
@@ -17,7 +17,10 @@
                     <div class="ListType">课程推荐</div>
                     <div class="more" @click="handleMore('coursesPage')">更多&nbsp;<span class="fa fa-chevron-right"></span></div>
                     <div class="courseList">
-                        <courseItem v-for="item in listNow.courses"
+                        <img v-if="listNow.courses.slice(0,12).length===0"
+                             style="margin: 0 auto"
+                             src="../../static/imgs/notData.png">
+                        <courseItem v-for="item in listNow.courses.slice(0,12)"
                                     :key="item.title"
                                     :data="item">
                         </courseItem>
@@ -27,6 +30,8 @@
                     <div class="ListType">文章推荐</div>
                     <div class="more" @click="handleMore('articlesPage')">更多&nbsp;<span class="fa fa-chevron-right"></span></div>
                     <div class="articleList">
+                        <img v-if="listNow.articles.length===0"
+                             src="../../static/imgs/notData.png">
                         <articleItem
                                 v-for="item in listNow.articles"
                                 :key="item.title"
@@ -60,7 +65,14 @@
         watch:{
             //轮播图的数据
             listNow(){
-                this.carousel= this.listNow.courses.slice(0,5);
+                //todo 手动添加轮播图，为了展示效果
+                this.carousel= [
+                    'http://127.0.0.1:3100/img/lb/a.jpg',
+                    'http://127.0.0.1:3100/img/lb/b.jpg',
+                    'http://127.0.0.1:3100/img/lb/c.jpg',
+                    'http://127.0.0.1:3100/img/lb/d.jpg',
+                    'http://127.0.0.1:3100/img/lb/e.jpg',
+                ]
             }
         },
         methods: {

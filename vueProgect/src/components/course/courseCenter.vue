@@ -65,7 +65,6 @@
             }
         },
         computed:{
-            ...mapState('info',['account,avatarUrl']),
             ...mapState('course',['videoUrl','courseData','videoId']),
         },
         components: {
@@ -85,12 +84,14 @@
                         break;
                     }
                     case 2: {
-                        this.discussInfo = {
-                            theme: this.courseData.title,
-                            nickName: this.account,
-                            avatarUrl: this.avatarUrl
-                        };
-                        this.changePop = 'discuss';
+                        this.$ajax.create().get('user').then(({data})=>{
+                            this.discussInfo = {
+                                theme: this.courseData.title,
+                                nickName: data.user.account,
+                                avatarUrl: data.user.selfInformation.imgPath
+                            };
+                            this.changePop = 'discuss';
+                        });
                         break;
                     }
                     case 3: {

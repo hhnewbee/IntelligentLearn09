@@ -1,5 +1,10 @@
 <template>
     <div id="loginIL09">
+        <div class="iconTitle">
+            <img src="../../static/imgs/softIcon.png">
+            <div>智能在线学习平台
+            </div>
+        </div>
         <el-form class="loginForm"
                  v-if="ifLogin==='登录'"
                  :model="formDataLogin"
@@ -315,8 +320,20 @@
     #loginIL09 {
         height: 100%;
         display: flex;
+        flex-direction: column;
         justify-content: center;
         align-items: center;
+        background-image:url("../../static/imgs/background.jpg");
+        .iconTitle{
+            display: flex;
+            justify-content:center;
+            align-items: center;
+            div{
+                color:$primaryColor;
+                font-size: 18px;
+                font-weight: bold;
+            }
+        }
         .loginForm {
             width: 330px;
             padding: 20px;

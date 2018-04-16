@@ -202,6 +202,7 @@
                 background
                 layout="prev, pager, next"
                 :current-page="currentPage"
+                :page-size="1"
                 :total="tableMainPage">
         </el-pagination>
 

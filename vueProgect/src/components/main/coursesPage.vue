@@ -29,6 +29,9 @@
         </div>
 
         <div class="coursesContent">
+            <img v-if="listNow.courses.length===0"
+                 style="margin: 0 auto;"
+                 src="../../static/imgs/notData.png">
             <courseItem :data="item"
                         v-for="item in listNow.courses"
                         :key="item.title">

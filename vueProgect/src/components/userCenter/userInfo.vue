@@ -9,12 +9,16 @@
             <div class="avator-mode"
                  @mouseenter="handleSetShow"
                  @mouseleave="handleSetClose">
-                <img :src="avatarUrl">
+                <Avatar :src="avatarUrl"
+                        :username="account"
+                        :size="100">
+                </Avatar>
                 <div class="update-avator"
                      id="setAvatar">
                     <p>更换头像</p>
                 </div>
                 <avatar-cropper trigger="#setAvatar"
+                                @uploading="setAvatarUpload"
                                 @uploaded="handleUploaded"
                                 upload-url="http://172.16.148.27:8080/user/icon">
                 </avatar-cropper>
@@ -62,6 +66,7 @@
 <script>
     import {mapGetters, mapState, mapMutations} from 'vuex';
     import AvatarCropper from "vue-avatar-cropper";
+    import Avatar from 'vue-avatar';
 
     export default {
         data() {
@@ -77,7 +82,7 @@
         activated() {
             this.$ajaxJava.get('user').then((res) => {
                 this.selfInformation = res.data.user.selfInformation;
-                this.name = res.data.user.selfInformation.name;
+                this.name = res.data.user.selfInformation.trueName;
                 this.email = res.data.user.selfInformation.email;
                 this.learnTime = this.$formatHouse(res.data.user.learnTime);
                 this.visitTime = res.data.user.visitTime;
@@ -150,10 +155,17 @@
                     this.$ajax.create().post('user/selfInformation', this.selfInformation).then(() => {
                     this.$message.success('修改成功');
                 })
+            },
+            /**
+             * 设置图片上传的跨域问题
+             */
+            setAvatarUpload(form,xhr){
+                xhr.withCredentials=true;
             }
         },
         components: {
-            AvatarCropper
+            AvatarCropper,
+            Avatar
         }
     }
 </script>
@@ -164,16 +176,13 @@
             margin: 20px 100px;
             padding: 10px;
             border-bottom: 1px solid #f8f4f4;
+            color:$secondaryText;
             .avator-mode {
                 position: relative;
                 width: 100px;
                 height: 100px;
                 border-radius: 50%;
                 overflow: hidden;
-                img {
-                    width: 100%;
-                    height: 100%;
-                }
                 .update-avator {
                     font-size: 12px;
                     position: absolute;

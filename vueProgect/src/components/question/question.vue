@@ -52,7 +52,7 @@
                     {{answer.content}}
                 </div>
                 <div class="info" style="align-self: flex-start">
-                    <div class="likes fa fa-heart ic">&nbsp;{{answer.liking}}人赞同</div>
+                    <div class="likes fa fa-heart ic">&nbsp;0人赞同</div>
                     <div @click="openChatList(answer)"
                          class="comments fa fa-comments ic">
                         &nbsp;{{answer.replies}}个回复
@@ -166,6 +166,7 @@
     import {areaCaching, likeAcollect} from '../mixins.js';
     import VueScrollbar from 'vue2-scrollbar'
     import {mapState} from 'vuex';
+    import infoDetail from '../userCenter/infoDetail.vue';
 
     export default {
         mounted() {
@@ -209,13 +210,7 @@
                 //获取答案列表
                 this.handleChangeArea('answerP1',`question/${this.$route.params.questionId}/page=0/size=10`);
                 //侧边推荐数据
-                this.similarityQuestion = [
-                    {content: '我的回答内容我的回答内容1我的回答内容我的回答内容1', time: '2013-11-11 22:33'},
-                    {content: '我的回答内容我的回答内容1我的回答内容我的回答内容1', time: '2013-13-23 22:33'},
-                    {content: '答内容我的回答内容1', time: '2013-12-3 22:33'},
-                    {content: '我的回答内容我的回答内容1我的回答内容我的回答内容1', time: '2013-1-4 22:33'},
-                    {content: '我的回答内容我的回答内容1我的回答内容我的回答内容1', time: '2013-12-23 22:33'}
-                ];
+                this.similarityQuestion = [];
             },
             /**
              * 打开对话列表，回去评论的回复
@@ -253,6 +248,9 @@
                 }).then(()=>{
                     this.$message.success('回答成功');
                     this.answersContent='';
+                    this.$forceUpdate();
+                    //todo 应该用数据驱动刷新的
+                    window.location.reload();
                 });
             },
             /**
@@ -293,7 +291,8 @@
         components: {
             rightItem,
             footer_,
-            VueScrollbar
+            VueScrollbar,
+            infoDetail
         },
         computed:{
             ...mapState('info',['account','avatarUrl'])

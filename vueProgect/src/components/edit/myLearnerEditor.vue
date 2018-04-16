@@ -410,6 +410,8 @@
                     });
                     //清空内容
                     this.editarea.innerHTML = '';
+                    //刷新出上的内容
+                    window.location.reload();
                 }).catch(()=>{
                     this.$message({
                         type: 'error',
