@@ -6,8 +6,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "devServer": "webpack-dev-server --config ./vueProgect/webpack.config.dev.js",
+    "devSCT": "webpack-dev-server --config ./component/webpack.config.dev.js",
     "devBuild": "webpack --config ./vueProgect/webpack.config.dev.js",
     "proBuild": "webpack --env.production --config ./vueProgect/webpack.config.pro.js --profile --json > stats.json",
+    "proSCT": "webpack-dev-server --config ./component/webpack.config.pro.js",
     "gulp": "gulp --gulpfile ./vueProgect/gulpfile.js minifyImage"
   },
   "repository": {
