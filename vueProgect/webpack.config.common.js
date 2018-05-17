@@ -101,7 +101,7 @@ module.exports = {
                     outputPath: 'static/font/'
                 }
             },
-            //webpack中已经包含了es5的解析器和更多相应的配置
+            //webpack中已经包含了es6的模块解析，以及浏览器的部分es6解析
             {
                 test: /\.js$/,
                 loader: 'babel-loader',
